@@ -137,7 +137,7 @@ create table PAYMENT
    AMOUNT               DECIMAL(13,4) not null,
    ACCOUNT_FROM         bigint unsigned not null,
    ACCOUN_TO            bigint unsigned not null,
-   OPERATION_DATE       date not null,
+   OPERATION_DATE       datetime not null,
    primary key (ID),
    foreign key (ACCOUNT_FROM) references ACCOUNT(ID) on delete restrict on update restrict,
    foreign key (ACCOUN_TO) references ACCOUNT(ID) on delete restrict on update restrict
