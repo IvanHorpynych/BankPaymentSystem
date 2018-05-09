@@ -12,7 +12,7 @@ public class CreditAccount extends Account{
     private final static int DEFAULT_TYPE_ID = AccountType.CREDIT_TYPE_ID;
 
     private BigDecimal creditLimit;
-    private int interestRate;
+    private long interestRate;
     private Date lastOperationDate;
     private BigDecimal accruedInterest;
     private Date validityDate;
@@ -21,7 +21,7 @@ public class CreditAccount extends Account{
     public CreditAccount() {
     }
 
-    public static class Builder extends Account.AbstractBuilder<Builder>{
+    public static class Builder extends Account.AbstractBuilder<Builder, CreditAccount>{
         private final CreditAccount creditAccount;
 
         public Builder() {
@@ -44,7 +44,7 @@ public class CreditAccount extends Account{
             return this;
         }
 
-        public CreditAccount.Builder setInterestRate(int interestRate) {
+        public CreditAccount.Builder setInterestRate(long interestRate) {
             creditAccount.setInterestRate(interestRate);
             return this;
         }
@@ -67,7 +67,17 @@ public class CreditAccount extends Account{
 
         @Override
         protected Builder getThis() {
-            return null;
+            return this;
+        }
+
+        @Override
+        protected CreditAccount getAccount() {
+            return creditAccount;
+        }
+
+        @Override
+        public CreditAccount build() {
+            return creditAccount;
         }
     }
 
@@ -83,11 +93,11 @@ public class CreditAccount extends Account{
         this.creditLimit = creditLimit;
     }
 
-    public int getInterestRate() {
+    public long getInterestRate() {
         return interestRate;
     }
 
-    public void setInterestRate(int interestRate) {
+    public void setInterestRate(long interestRate) {
         this.interestRate = interestRate;
     }
 

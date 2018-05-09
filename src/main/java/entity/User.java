@@ -49,8 +49,8 @@ public class User {
             return this;
         }
 
-        public Builder setPassword(String hashPass) {
-            user.setPassword(hashPass);
+        public Builder setPassword(String password) {
+            user.setPassword(password);
             return this;
         }
 

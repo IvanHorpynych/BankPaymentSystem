@@ -1,6 +1,6 @@
 package entity;
 
-abstract class Designation {
+public abstract class Designation {
     private int id;
     private String name;
 

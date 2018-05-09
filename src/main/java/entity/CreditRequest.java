@@ -18,9 +18,10 @@ public class CreditRequest {
 
     private long requestNumber;
     private User accountHolder;
-    private int interestRate;
+    private long interestRate;
     private BigDecimal creditLimit;
     private Status status;
+    private Date validityDate;
 
 
     public CreditRequest() {
@@ -40,7 +41,7 @@ public class CreditRequest {
             return this;
         }
 
-        public Builder setInterestRate(int interestRate) {
+        public Builder setInterestRate(long interestRate) {
             creditRequest.setInterestRate(interestRate);
             return this;
         }
@@ -61,10 +62,19 @@ public class CreditRequest {
             return this;
         }
 
+        public CreditRequest.Builder setValidityDate(Date date) {
+            creditRequest.setValidityDate(date);
+            return this;
+        }
+
         public CreditRequest build() {
             return creditRequest;
         }
 
+    }
+
+    public static CreditRequest.Builder newBuilder() {
+        return new CreditRequest.Builder();
     }
 
     public long getRequestNumber() {
@@ -83,11 +93,11 @@ public class CreditRequest {
         this.accountHolder = accountHolder;
     }
 
-    public int getInterestRate() {
+    public long getInterestRate() {
         return interestRate;
     }
 
-    public void setInterestRate(int interestRate) {
+    public void setInterestRate(long interestRate) {
         this.interestRate = interestRate;
     }
 
@@ -107,6 +117,14 @@ public class CreditRequest {
         this.status = status;
     }
 
+    public Date getValidityDate() {
+        return validityDate;
+    }
+
+    public void setValidityDate(Date validityDate) {
+        this.validityDate = validityDate;
+    }
+
     @Override
     public String toString() {
         return "CreditRequest{" +
@@ -115,6 +133,7 @@ public class CreditRequest {
                 ", creditLimit=" + creditLimit +
                 ", interestRate=" + interestRate +
                 ", status=" + status +
+                ", validityDate=" + validityDate +
                 '}';
     }
 

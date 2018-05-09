@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by JohnUkraine on 5/06/2018.
  */
 
-abstract class Account {
+public abstract class Account {
     public final static BigDecimal DEFAULT_BALANCE = BigDecimal.ZERO;
 
     public final static String DEFAULT_TYPE = "REGULAR";
@@ -36,55 +36,53 @@ abstract class Account {
         this.accountType = accountType;
     }*/
 
-    public static abstract class AbstractBuilder<T extends AbstractBuilder<T>> {
-        private Account account;
+    public static abstract class AbstractBuilder<T extends AbstractBuilder<T,A>, A extends Account> {
+        //private Account account;
 
         protected abstract T getThis();
+        protected abstract A getAccount();
+        public abstract Account build();
 
         public T setAccountNumber(long accountNumber) {
-            account.setAccountNumber(accountNumber);
+            getAccount().setAccountNumber(accountNumber);
             return getThis();
         }
 
         public T setAccountHolder(User accountHolder) {
-            account.setAccountHolder(accountHolder);
+            getAccount().setAccountHolder(accountHolder);
             return getThis();
         }
 
         public T setAccountType(AccountType accountType) {
-            account.setAccountType(accountType);
+            getAccount().setAccountType(accountType);
             return getThis();
         }
 
         public T setDefaultAccountType() {
-            account.setAccountType(new AccountType(DEFAULT_TYPE_ID,
+            getAccount().setAccountType(new AccountType(DEFAULT_TYPE_ID,
                     DEFAULT_TYPE));
             return getThis();
         }
 
         public T setBalance(BigDecimal balance) {
-            account.setBalance(balance);
+            getAccount().setBalance(balance);
             return getThis();
         }
 
         public T setDefaultBalance() {
-            account.setBalance(DEFAULT_BALANCE);
+            getAccount().setBalance(DEFAULT_BALANCE);
             return getThis();
         }
 
         public T setStatus(Status status) {
-            account.setStatus(status);
+            getAccount().setStatus(status);
             return getThis();
         }
 
         public T setDefaultStatus() {
-            account.setStatus(new Status(DEFAULT_STATUS_ID,
+            getAccount().setStatus(new Status(DEFAULT_STATUS_ID,
                     DEFAULT_STATUS));
             return getThis();
-        }
-
-        public Account build() {
-            return account;
         }
 
     }
@@ -101,7 +99,7 @@ abstract class Account {
         return accountHolder;
     }
 
-    public void setAccountHolder(User user) {
+    public void setAccountHolder(User accountHolder) {
         this.accountHolder = accountHolder;
     }
 
@@ -134,7 +132,7 @@ abstract class Account {
     public String toString() {
         return "Account{" +
                 "accountNumber=" + accountNumber +
-                "holder=" + accountHolder +
+                ", user=" + accountHolder +
                 ", type=" + accountType.getName() +
                 ", status=" + status +
                 '}';
