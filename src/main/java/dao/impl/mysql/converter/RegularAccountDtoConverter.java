@@ -9,7 +9,7 @@ import java.sql.SQLException;
 /**
  * Created by JohnUkraine on 5/07/2018.
  */
-public class RegularAccountDtoConverter implements DtoConverter<Account>{
+public class RegularAccountDtoConverter implements DtoConverter<RegularAccount>{
     private final static String ACCOUNT_NUMBER_FIELD = "id";
     private final static String BALANCE_FIELD = "balance";
 

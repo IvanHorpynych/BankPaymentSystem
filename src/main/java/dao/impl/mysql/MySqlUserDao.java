@@ -19,7 +19,7 @@ import java.util.Optional;
  */
 public class MySqlUserDao implements UserDao {
     private final static String SELECT_ALL =
-            "SELECT user.id, user.role_id," +
+            "SELECT user.id AS user_id, user.role_id," +
                     "user.first_name," +
                     "user.last_name, user.email," +
                     "user.password,user.phone_number," +

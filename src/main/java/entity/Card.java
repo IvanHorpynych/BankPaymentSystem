@@ -117,6 +117,17 @@ public class Card {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "Card{" +
+                "cardNumber=" + cardNumber +
+                ", accountId=" + getAccount().getAccountNumber() +
+                ", pin=" + pin +/////////////////////
+                ", cvv=" + cvv +
+                ", expireDate=" + expireDate +
+                ", type=" + type.toString() +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {

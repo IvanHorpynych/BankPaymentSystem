@@ -23,8 +23,9 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
                     "cad.interest_rate, cad.last_operation, " +
                     "cad.accrued_interest, cad.validity_date, " +
                     "type.id AS type_id, type.name AS type_name, " +
-                    "status.id AS status_id, status.name AS status_name, " +
-                    "user.id, user.first_name, " +
+                    "status.id " +
+                    "status.name " +
+                    "user.id AS user_id, user.first_name, " +
                     "user.last_name, user.email, " +
                     "user.password, user.phone_number, " +
                     "role.id AS role_id, role.name AS role_name " +
@@ -33,7 +34,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
                     "JOIN role ON role_id = role.id " +
                     "JOIN account_type AS type ON type_id = type.id " +
                     "LEFT JOIN credit_account_details AS cad ON account.id = cad.id " +
-                    "LEFT JOIN status ON cad.status_id = status.id " +
+                    "LEFT JOIN status ON account.status_id = status.id " +
                     "WHERE type_id = (select id " +
                     "from account_type where name like 'CREDIT') ";
 
@@ -44,7 +45,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
             "and account.user_id = ? ";
 
     private final static String AND_STATUS =
-            "and cad.status_id = ? ";
+            "and account.status_id = ? ";
 
     private final static String WHERE_ACCOUNT_NUMBER =
             "WHERE id = ? ";
@@ -57,32 +58,31 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
 
     private final static String INSERT =
             "INSERT INTO account " +
-                    "(user_id, type_id) " +
-                    "VALUES(?, ?) ";
+                    "(user_id, type_id, status_id) " +
+                    "VALUES(?, ?, ?) ";
 
     private final static String INSERT_DETAILS =
             "INSERT INTO credit_account_details " +
                     "(id, balance, credit_limit, interest_rate, " +
                     "last_operation, accrued_interest, " +
-                    "validity_date, status_id) " +
-                    "VALUES(?, ?, ?, ?, ?, ?, ?, ?) ";
+                    "validity_date) " +
+                    "VALUES(?, ?, ?, ?, ?, ?, ?) ";
 
     private final static String UPDATE =
             "UPDATE credit_account_details SET " +
                     "balance = ?, last_operation = ?, " +
-                    "accrued_interest = ?, validity_date = ?, " +
-                    "status_id = ? ";
+                    "accrued_interest = ?, validity_date = ? ";
 
     private final static String UPDATE_STATUS =
-            "UPDATE credit_account_details SET " +
+            "UPDATE account SET " +
                     "status_id = ? ";
 
     private final static String INCREASE_BALANCE =
-            "UPDATE credit_account_details Set " +
+            "UPDATE credit_account_details SET " +
                     "balance = balance + ? ";
 
     private final static String DECREASE_BALANCE =
-            "UPDATE credit_account_details Set " +
+            "UPDATE credit_account_details SET " +
                     "balance = balance - ? ";
 
     private final static String DELETE =
@@ -130,7 +130,8 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
         long accountNumber = defaultDao.executeInsertWithGeneratedPrimaryKey(
                 INSERT,
                 account.getAccountHolder().getId(),
-                account.getAccountType().getId()
+                account.getAccountType().getId(),
+                account.getStatus().getId()
         );
 
         account.setAccountNumber(accountNumber);
@@ -142,8 +143,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
                 account.getInterestRate(),
                 TimeConverter.toTimestamp(account.getLastOperationDate()),
                 account.getAccruedInterest(),
-                TimeConverter.toTimestamp(account.getValidityDate()),
-                account.getStatus().getId()
+                TimeConverter.toTimestamp(account.getValidityDate())
         );
 
         return account;
@@ -159,7 +159,6 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
                 TimeConverter.toTimestamp(account.getLastOperationDate()),
                 account.getAccruedInterest(),
                 TimeConverter.toTimestamp(account.getValidityDate()),
-                account.getStatus().getId(),
                 account.getAccountNumber()
         );
     }
@@ -231,13 +230,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
         try {
             System.out.println("Find all:");
             mySqlCreditAccountDao = new MySqlCreditAccountDao(dataSource.getConnection());
-            for (CreditAccount creditAccount : mySqlCreditAccountDao.findAll()) {
-                System.out.println(creditAccount);
-                System.out.println(creditAccount.getAccountType());
-                System.out.println(creditAccount.getAccountHolder());
-                System.out.println(creditAccount.getStatus());
-                System.out.println();
-            }
+            ((MySqlCreditAccountDao) mySqlCreditAccountDao).printAccount(mySqlCreditAccountDao.findAll());
 
             int random = (int) (Math.random() * 100);
 
@@ -271,78 +264,58 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
             );
 
             System.out.println("Find all:");
-            for (CreditAccount ca : mySqlCreditAccountDao.findAll()) {
-                System.out.println(ca);
-                System.out.println(ca.getAccountType());
-                System.out.println(ca.getAccountHolder());
-                System.out.println(ca.getStatus());
-                System.out.println();
-            }
+            ((MySqlCreditAccountDao) mySqlCreditAccountDao).printAccount(mySqlCreditAccountDao.findAll());
 
             System.out.println("update:");
             creditAccount.setAccruedInterest(BigDecimal.valueOf(12345));
             mySqlCreditAccountDao.update(creditAccount);
 
             System.out.println("Find all:");
-            for (CreditAccount ca : mySqlCreditAccountDao.findAll()) {
-                System.out.println(ca);
-                System.out.println(ca.getAccountType());
-                System.out.println(ca.getAccountHolder());
-                System.out.println(ca.getStatus());
-                System.out.println();
-            }
+            ((MySqlCreditAccountDao) mySqlCreditAccountDao).printAccount(mySqlCreditAccountDao.findAll());
 
             System.out.println("Increase:");
             mySqlCreditAccountDao.increaseBalance(creditAccount, BigDecimal.valueOf(100));
 
             System.out.println("Find all:");
-            for (CreditAccount ca : mySqlCreditAccountDao.findAll()) {
-                System.out.println(ca);
-                System.out.println(ca.getAccountType());
-                System.out.println(ca.getAccountHolder());
-                System.out.println(ca.getStatus());
-                System.out.println();
-            }
+            ((MySqlCreditAccountDao) mySqlCreditAccountDao).printAccount(mySqlCreditAccountDao.findAll());
 
             System.out.println("decrease:");
             mySqlCreditAccountDao.decreaseBalance(creditAccount, BigDecimal.valueOf(100));
 
             System.out.println("Find all:");
-            for (CreditAccount ca : mySqlCreditAccountDao.findAll()) {
-                System.out.println(ca);
-                System.out.println(ca.getAccountType());
-                System.out.println(ca.getAccountHolder());
-                System.out.println(ca.getStatus());
-                System.out.println();
-            }
+            ((MySqlCreditAccountDao) mySqlCreditAccountDao).printAccount(mySqlCreditAccountDao.findAll());
 
             System.out.println("update status:");
             mySqlCreditAccountDao.updateAccountStatus(creditAccount,new Status(4,"PENDING"));
 
             System.out.println("Find all:");
-            for (CreditAccount ca : mySqlCreditAccountDao.findAll()) {
-                System.out.println(ca);
-                System.out.println(ca.getAccountType());
-                System.out.println(ca.getAccountHolder());
-                System.out.println(ca.getStatus());
-                System.out.println();
-            }
+            ((MySqlCreditAccountDao) mySqlCreditAccountDao).printAccount(mySqlCreditAccountDao.findAll());
 
             System.out.println("delete:");
             mySqlCreditAccountDao.delete(creditAccount.getAccountNumber());
 
             System.out.println("Find all:");
-            for (CreditAccount ca : mySqlCreditAccountDao.findAll()) {
-                System.out.println(ca);
-                System.out.println(ca.getAccountType());
-                System.out.println(ca.getAccountHolder());
-                System.out.println(ca.getStatus());
-                System.out.println();
-            }
+            ((MySqlCreditAccountDao) mySqlCreditAccountDao).printAccount(mySqlCreditAccountDao.findAll());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+    }
+
+    protected void printAccount(List<CreditAccount> list){
+        for (CreditAccount creditAccount : list) {
+            System.out.println("Account Number: "+creditAccount.getAccountNumber()+";");
+            System.out.println("Account Holder: "+creditAccount.getAccountHolder()+"; "+creditAccount.getAccountHolder().getRole()+"; ");
+            System.out.println("Account type: "+creditAccount.getAccountType()+";");
+            System.out.println("Balance: "+creditAccount.getBalance()+";");
+            System.out.println("Credit limit: "+creditAccount.getCreditLimit()+";");
+            System.out.println("Interest Rate: "+creditAccount.getInterestRate()+";");
+            System.out.println("Last operation: "+creditAccount.getLastOperationDate()+";");
+            System.out.println("Accrued interest: "+creditAccount.getAccruedInterest()+";");
+            System.out.println("Validity date: "+creditAccount.getValidityDate()+";");
+            System.out.println("Status: "+creditAccount.getStatus()+";");
+            System.out.println();
+        }
     }
 
 }

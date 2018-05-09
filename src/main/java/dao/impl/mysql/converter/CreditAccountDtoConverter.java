@@ -20,8 +20,6 @@ public class CreditAccountDtoConverter implements DtoConverter<CreditAccount>{
     private final static String LAST_OPERATION_DATE_FIELD = "last_operation";
     private final static String ACCRUED_INTEREST_FIELD = "accrued_interest";
     private final static String VALIDITY_DATE_FIELD = "validity_date";
-    private final static String STATUS_TABLE_PREFIX = "status.";
-    private final static String USER_TABLE_PREFIX = "user.";
 
     private final DtoConverter<User> userConverter;
     private final DtoConverter<AccountType> accountTypeConverter;
@@ -46,7 +44,7 @@ public class CreditAccountDtoConverter implements DtoConverter<CreditAccount>{
 
        User accountHolder = userConverter.convertToObject(resultSet);
        AccountType accountType = accountTypeConverter.convertToObject(resultSet);
-       Status status = statusConverter.convertToObject(resultSet,STATUS_TABLE_PREFIX);
+       Status status = statusConverter.convertToObject(resultSet);
 
         return  CreditAccount.newBuilder().
                setAccountNumber(resultSet.
@@ -57,7 +55,7 @@ public class CreditAccountDtoConverter implements DtoConverter<CreditAccount>{
                setCreditLimit(resultSet.
                        getBigDecimal(tablePrefix+CREDIT_LIMIT_FIELD)).
                setInterestRate(resultSet.
-                       getLong(tablePrefix+INTEREST_RATE_FIELD)).
+                       getFloat(tablePrefix+INTEREST_RATE_FIELD)).
                setLastOperationDate(TimeConverter.
                        toDate(resultSet.getTimestamp(
                                tablePrefix+VALIDITY_DATE_FIELD))).

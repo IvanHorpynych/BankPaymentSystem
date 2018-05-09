@@ -16,26 +16,18 @@ import java.util.Objects;
 public class CardDtoConverter implements DtoConverter<Card> {
 
     private DtoConverter<? extends Account> accountConverter;
-    /*private final DtoConverter<User> userConverter;
-
-    public CardDtoConverter() {
-        this(new UserDtoConverter());
-    }
-
-    public CardDtoConverter(DtoConverter<User> userConverter) {
-        this.userConverter = userConverter;
-    }*/
+    private String accountTablePrefix;
 
     @Override
     public Card convertToObject(ResultSet resultSet, String tablePrefix)
             throws SQLException {
-
-        accountConverter = accountDtoSelection(
-                resultSet.getInt(
-                        AccountTypeDtoConverter.NAME_FIELD));
+            int typeId = resultSet.getInt(
+                    AccountTypeDtoConverter.ID_FIELD);
+        accountConverter = accountDtoSelection(typeId);
+        accountTablePrefix = accountTablePrefixSelection(typeId);
         Objects.requireNonNull(accountConverter, "AccountConverter object must be not null");
         Account cardAccount = accountConverter.
-                convertToObject(resultSet);
+                convertToObject(resultSet,accountTablePrefix);
 
        /* User cardHolder = userConverter.
                 convertToObject(resultSet);*/

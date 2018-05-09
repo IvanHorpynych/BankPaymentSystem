@@ -42,7 +42,7 @@ public class CreditRequestDtoConverter implements DtoConverter<CreditRequest>{
                        getLong(tablePrefix+REQUEST_NUMBER_FIELD)).
                setAccountHolder(accountHolder).
                setInterestRate(resultSet.
-                       getLong(tablePrefix+INTEREST_RATE_FIELD)).
+                       getFloat(tablePrefix+INTEREST_RATE_FIELD)).
                setStatus(status).
                setValidityDate(TimeConverter.
                        toDate(resultSet.getTimestamp(

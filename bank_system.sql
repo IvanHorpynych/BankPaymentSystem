@@ -63,7 +63,9 @@ create table ACCOUNT
   ID                   bigint unsigned not null AUTO_INCREMENT,
   USER_ID              int unsigned not null,
   TYPE_ID              tinyint unsigned not null,
+  STATUS_ID            tinyint unsigned not null,
   primary key (ID),
+  constraint ACCOUNT_FK_STATUS_ID foreign key (STATUS_ID) references STATUS (ID) on delete restrict on update restrict,
   constraint FK_USER_ID foreign key (USER_ID) references USER (ID) on delete restrict on update restrict,
   constraint FK_TYPE_ID foreign key (TYPE_ID) references ACCOUNT_TYPE (ID) on delete restrict on update restrict
 );
@@ -81,13 +83,9 @@ create table CREDIT_ACCOUNT_DETAILS
   LAST_OPERATION       timestamp not null,
   ACCRUED_INTEREST     DECIMAL(13,4) not null,
   VALIDITY_DATE        timestamp not null,
-  STATUS_ID            tinyint unsigned not null,
   primary key (ID),
-  constraint CAD_FK_STATUS_ID foreign key (STATUS_ID) references STATUS (ID) on delete restrict on update restrict,
   constraint CAD_FK_ACCOUNT_ID foreign key (ID) references ACCOUNT (ID) on delete restrict on update restrict
 );
-
-
 
 /*==============================================================*/
 /* Table: DEBIT_ACCOUNT_DETAILS                                 */
@@ -99,9 +97,7 @@ create table DEBIT_ACCOUNT_DETAILS
   LAST_OPERATION       timestamp not null,
   MIN_BALANCE          DECIMAL(13,4) not null,
   ANNUAL_RATE          real not null,
-  STATUS_ID            tinyint unsigned not null,
   primary key (ID),
-  constraint DAD_FK_STATUS_ID foreign key (STATUS_ID) references STATUS (ID) on delete restrict on update restrict,
   constraint DAD_FK_ACCOUNT_ID foreign key (ID) references ACCOUNT (ID) on delete restrict on update restrict
 );
 
@@ -113,9 +109,7 @@ create table REGULAR_ACCOUNT_DETAILS
 (
   ID             bigint unsigned not null AUTO_INCREMENT,
   BALANCE        DECIMAL(13, 4)  not null,
-  STATUS_ID      tinyint unsigned not null,
   primary key (ID),
-  constraint RAD_FK_STATUS_ID foreign key (STATUS_ID) references STATUS (ID) on delete restrict on update restrict,
   constraint RAD_FK_ACCOUNT_ID foreign key (ID) references ACCOUNT (ID) on delete restrict on update restrict
 );
 
@@ -125,14 +119,13 @@ create table REGULAR_ACCOUNT_DETAILS
 /*==============================================================*/
 create table CARD
 (
-  ID                   bigint unsigned not null AUTO_INCREMENT,
   ACCOUNT_ID           bigint unsigned not null,
-  CARD_NUMBER          bigint(16) unsigned not null unique,
+  CARD_NUMBER          bigint(16) unsigned not null AUTO_INCREMENT = 1000000000000000,
   PIN                  SMALLINT(4) unsigned not null,
   CVV                  SMALLINT(3) unsigned not null,
   EXPIRE_DATE          timestamp not null,
   TYPE                 VARCHAR(20) not null,
-  primary key (ID),
+  primary key (CARD_NUMBER),
   constraint CARD_FK_ACCOUNT_ID foreign key (ACCOUNT_ID) references ACCOUNT (ID) on delete restrict on update restrict
 );
 
@@ -181,45 +174,45 @@ insert into ACCOUNT_TYPE (ID, NAME) values (4, 'CREDIT'), (8, 'DEBIT'), (16, 'RE
 insert into STATUS (ID, NAME) values (1, 'ACTIVE'), (4, 'PENDING'), (8, 'REJECT'), (16, 'BLOCKED');
 
 start transaction;
-insert into ACCOUNT (USER_ID, TYPE_ID) values ((select ID
+insert into ACCOUNT (USER_ID, TYPE_ID, STATUS_ID) values ((select ID
                                                 from USER
                                                 where (select id
                                                        from role
                                                        where NAME = 'USER') = ROLE_ID), (select ID
                                                                                          from ACCOUNT_TYPE
-                                                                                         where NAME = 'DEBIT'));
-insert into DEBIT_ACCOUNT_DETAILS (ID, BALANCE, LAST_OPERATION, MIN_BALANCE, ANNUAL_RATE, STATUS_ID) values (last_insert_id(),2200,now(),1000, 8.2, (select ID from STATUS where NAME = 'ACTIVE'));
+                                                                                         where NAME = 'DEBIT'), (select ID from STATUS where NAME = 'ACTIVE'));
+insert into DEBIT_ACCOUNT_DETAILS (ID, BALANCE, LAST_OPERATION, MIN_BALANCE, ANNUAL_RATE) values (last_insert_id(),2200,now(),1000, 8.2);
 
-insert into CARD (ACCOUNT_ID, CARD_NUMBER, PIN, CVV, EXPIRE_DATE, TYPE) values (last_insert_id(),1111111111111111,1234,444,'2019-1-01','VISA');
+insert into CARD (ACCOUNT_ID, PIN, CVV, EXPIRE_DATE, TYPE) values (last_insert_id(),1234,444,'2019-1-01','VISA');
 
 commit;
 
 
 start transaction;
-insert into ACCOUNT (USER_ID, TYPE_ID) values ((select ID
+insert into ACCOUNT (USER_ID, TYPE_ID, STATUS_ID) values ((select ID
                                                 from USER
                                                 where (select id
                                                        from role
                                                        where NAME = 'USER') = ROLE_ID), (select ID
                                                                                          from ACCOUNT_TYPE
-                                                                                         where NAME = 'CREDIT'));
-insert into CREDIT_ACCOUNT_DETAILS (ID, BALANCE, CREDIT_LIMIT, INTEREST_RATE, LAST_OPERATION, ACCRUED_INTEREST, VALIDITY_DATE, STATUS_ID) values (last_insert_id(),-100,2500,12.5,now(),123,'2019-1-01', (select ID from STATUS where NAME = 'ACTIVE'));
+                                                                                         where NAME = 'CREDIT'), (select ID from STATUS where NAME = 'ACTIVE'));
+insert into CREDIT_ACCOUNT_DETAILS (ID, BALANCE, CREDIT_LIMIT, INTEREST_RATE, LAST_OPERATION, ACCRUED_INTEREST, VALIDITY_DATE) values (last_insert_id(),-100,2500,12.5,now(),123,'2019-1-01');
 
 insert into CARD (ACCOUNT_ID, CARD_NUMBER, PIN, CVV, EXPIRE_DATE, TYPE) values (last_insert_id(),2222222222222222,1234,555,'2019-1-01', 'VISA');
 
 commit;
 
 start transaction;
-insert into ACCOUNT (USER_ID, TYPE_ID) values ((select ID
+insert into ACCOUNT (USER_ID, TYPE_ID, STATUS_ID) values ((select ID
                                                 from USER
                                                 where (select id
                                                        from role
                                                        where NAME = 'USER') = ROLE_ID), (select ID
                                                                                          from ACCOUNT_TYPE
-                                                                                         where NAME = 'REGULAR'));
-insert into REGULAR_ACCOUNT_DETAILS (ID, BALANCE, STATUS_ID) values (last_insert_id(),150, (select ID from STATUS where NAME = 'ACTIVE'));
+                                                                                         where NAME = 'REGULAR'), (select ID from STATUS where NAME = 'ACTIVE'));
+insert into REGULAR_ACCOUNT_DETAILS (ID, BALANCE) values (last_insert_id(),150);
 
-insert into CARD (ACCOUNT_ID, CARD_NUMBER, PIN, CVV, EXPIRE_DATE, TYPE) values (last_insert_id(),3333333333333333,1234,666,'2019-1-01', 'MASTERCARD');
+insert into CARD (ACCOUNT_ID, PIN, CVV, EXPIRE_DATE, TYPE) values (last_insert_id(),1234,666,'2019-1-01', 'MASTERCARD');
 
 commit;
 

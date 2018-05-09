@@ -49,4 +49,5 @@ public interface CreditAccountDao extends GenericDao<CreditAccount, Long> {
      */
     void updateAccountStatus(CreditAccount account, Status status);
 
+
 }

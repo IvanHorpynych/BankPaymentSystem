@@ -1,5 +1,6 @@
 package dao.abstraction;
 
+import entity.CreditAccount;
 import entity.DebitAccount;
 import entity.Status;
 import entity.User;
@@ -47,5 +48,13 @@ public interface DebitAccountDao extends GenericDao<DebitAccount, Long> {
      * @param status new status of account to update
      */
     void updateAccountStatus(DebitAccount account, Status status);
+
+    /**
+     * Updates certain debit account minimum balance.
+     *
+     * @param account account which status will be updated.
+     * @param minBalance new minimum balance of account to update
+     */
+    void updateMinBalance(DebitAccount account, BigDecimal minBalance);
 
 }

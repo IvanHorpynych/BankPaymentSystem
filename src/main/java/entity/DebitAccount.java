@@ -12,7 +12,7 @@ public class DebitAccount extends Account{
     private final static int DEFAULT_TYPE_ID = AccountType.DEBIT_TYPE_ID;
 
     private BigDecimal minBalance;
-    private long annualRate;
+    private float annualRate;
     private Date lastOperationDate;
 
 
@@ -47,7 +47,7 @@ public class DebitAccount extends Account{
             return this;
         }
 
-        public DebitAccount.Builder setAnnualRate(long annualRate) {
+        public DebitAccount.Builder setAnnualRate(float annualRate) {
             debitAccount.setAnnualRate(annualRate);
             return this;
         }
@@ -60,7 +60,7 @@ public class DebitAccount extends Account{
 
         @Override
         protected Builder getThis() {
-            return null;
+            return this;
         }
 
         @Override
@@ -87,11 +87,11 @@ public class DebitAccount extends Account{
         this.minBalance = minBalance;
     }
 
-    public long getAnnualRate() {
+    public float getAnnualRate() {
         return annualRate;
     }
 
-    public void setAnnualRate(long annualRate) {
+    public void setAnnualRate(float annualRate) {
         this.annualRate = annualRate;
     }
 

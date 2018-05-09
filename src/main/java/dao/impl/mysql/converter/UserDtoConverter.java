@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * Created by JohnUkraine on 5/07/2018.
  */
 public class UserDtoConverter implements DtoConverter<User>{
-    private final static String ID_FIELD = "id";
+    private final static String ID_FIELD = "user_id";
     private final static String FIRST_NAME_FIELD = "first_name";
     private final static String LAST_NAME_FIELD = "last_name";
     private final static String EMAIL_FIELD = "email";

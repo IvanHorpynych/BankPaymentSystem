@@ -18,7 +18,7 @@ public class CreditRequest {
 
     private long requestNumber;
     private User accountHolder;
-    private long interestRate;
+    private float interestRate;
     private BigDecimal creditLimit;
     private Status status;
     private Date validityDate;
@@ -41,7 +41,7 @@ public class CreditRequest {
             return this;
         }
 
-        public Builder setInterestRate(long interestRate) {
+        public Builder setInterestRate(float interestRate) {
             creditRequest.setInterestRate(interestRate);
             return this;
         }
@@ -93,11 +93,11 @@ public class CreditRequest {
         this.accountHolder = accountHolder;
     }
 
-    public long getInterestRate() {
+    public float getInterestRate() {
         return interestRate;
     }
 
-    public void setInterestRate(long interestRate) {
+    public void setInterestRate(float interestRate) {
         this.interestRate = interestRate;
     }
 

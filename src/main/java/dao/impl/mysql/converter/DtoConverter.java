@@ -13,11 +13,13 @@ import java.util.List;
  *
  * @param <T> type of entity object
  *
- * @author John Ukraine
+ * @author JohnUkraine
  */
 public interface DtoConverter <T> {
     String EMPTY_STRING = "";
-
+    String CREDIT_TABLE_PREFIX = "credit_";
+    String DEBIT_TABLE_PREFIX = "debit_";
+    String REGULAR_TABLE_PREFIX = "regular_";
     /**
      * Read data from a result set and convert it to list of objects.
      *
@@ -76,6 +78,16 @@ public interface DtoConverter <T> {
             return new DebitAccountDtoConverter();
         else if (typeId == AccountType.REGULAR_TYPE_ID)
             return new RegularAccountDtoConverter();
+        return null;
+    }
+
+    default String accountTablePrefixSelection(int typeId){
+        if (typeId == AccountType.CREDIT_TYPE_ID)
+            return CREDIT_TABLE_PREFIX;
+        else if (typeId == AccountType.DEBIT_TYPE_ID)
+            return DEBIT_TABLE_PREFIX;
+        else if (typeId == AccountType.REGULAR_TYPE_ID)
+            return REGULAR_TABLE_PREFIX;
         return null;
     }
 }

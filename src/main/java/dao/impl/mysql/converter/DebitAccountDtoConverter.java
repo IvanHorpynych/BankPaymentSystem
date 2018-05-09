@@ -9,12 +9,12 @@ import java.sql.SQLException;
 /**
  * Created by JohnUkraine on 5/07/2018.
  */
-public class DebitAccountDtoConverter implements DtoConverter<Account>{
+public class DebitAccountDtoConverter implements DtoConverter<DebitAccount>{
     private final static String ACCOUNT_NUMBER_FIELD = "id";
     private final static String BALANCE_FIELD = "balance";
     private final static String MIN_BALANCE_FIELD = "min_balance";
     private final static String LAST_OPERATION_DATE_FIELD = "last_operation";
-    private final static String ANNUAL_RATE_FIELD = "ANNUAL_RATE";
+    private final static String ANNUAL_RATE_FIELD = "annual_rate";
 
     private final DtoConverter<User> userConverter;
     private final DtoConverter<AccountType> accountTypeConverter;
@@ -51,7 +51,7 @@ public class DebitAccountDtoConverter implements DtoConverter<Account>{
                 setLastOperationDate(TimeConverter.
                         toDate(resultSet.getTimestamp(
                                 tablePrefix+LAST_OPERATION_DATE_FIELD))).
-                setAnnualRate(resultSet.getLong(tablePrefix+ANNUAL_RATE_FIELD)).
+                setAnnualRate(resultSet.getFloat(tablePrefix+ANNUAL_RATE_FIELD)).
                 setStatus(status).
                 build();
 
