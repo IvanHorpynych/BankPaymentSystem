@@ -21,59 +21,22 @@ import java.util.*;
 
 public class MySqlCardDao implements CardDao {
     private final static String SELECT_ALL =
-            "SELECT" +
-                    "  card_number, " +
-                    "  pin, cvv, expire_date, type, " +
-                    "  user.id AS user_id, user.first_name, " +
-                    "  user.last_name, user.email, " +
-                    "  user.phone_number, user.password, " +
-                    "  user.role_id, " +
-                    "  role.name AS role_name, " +
-                    "  account.id, " +
-                    "  account.status_id, status.name AS status_name, " +
-                    "  type.id AS type_id, type.name AS type_name, " +
-                    "  cad.id AS credit_id, " +
-                    "  cad.balance AS credit_balance, " +
-                    "  cad.credit_limit AS credit_credit_limit, " +
-                    "  cad.interest_rate AS credit_interest_rate, " +
-                    "  cad.last_operation AS credit_last_operation, " +
-                    "  cad.accrued_interest AS credit_accrued_interest, " +
-                    "  cad.validity_date AS credit_validity_date, " +
-                    "  dad.id AS debit_id, " +
-                    "  dad.balance AS debit_balance, " +
-                    "  dad.annual_rate AS debit_annual_rate, " +
-                    "  dad.last_operation AS debit_last_operation, " +
-                    "  dad.min_balance AS debit_min_balance, " +
-                    "  rad.id AS regular_id, " +
-                    "  rad.balance AS regular_balance " +
-                    "FROM card " +
-                    "  JOIN account ON account_id = account.id " +
-                    "  JOIN user ON account.user_id = user.id " +
-                    "  JOIN role ON user.role_id = role.id " +
-                    "  JOIN account_type AS type ON account.type_id = type.id " +
-                    "  LEFT JOIN credit_account_details AS cad " +
-                    "    ON account.id = cad.id " +
-                    "  LEFT JOIN debit_account_details AS dad " +
-                    "    ON account.id = dad.id " +
-                    "  LEFT JOIN regular_account_details AS rad " +
-                    "    ON account.id = rad.id " +
-                    "  LEFT JOIN status " +
-                    "    ON account.status_id  =status.id ";
+            "SELECT * FROM card_details ";
 
     private final static String WHERE_CARD_NUMBER =
             "WHERE card_number = ? ";
 
     private final static String WHERE_ACCOUNT =
-            "WHERE card.account_id = ? ";
+            "WHERE id = ? ";
 
     private final static String WHERE_USER =
-            "WHERE user.id = ? ";
+            "WHERE user_id = ? ";
 
     private final static String AND_STATUS =
-            " and status.id = ?";
+            " and status_id = ?";
 
     private final static String AND_TYPE =
-            " and type.id = ?";
+            " and type_id = ?";
 
     private final static String INSERT =
             "INSERT INTO card" +
@@ -250,6 +213,11 @@ public class MySqlCardDao implements CardDao {
             System.out.println("Find one:");
             ((MySqlCardDao) mySqlCardDao).printCard(temp);
 
+            System.out.println("Find by account");
+            for (Card temp1 : mySqlCardDao.findByAccount(creditAccount)) {
+                System.out.println(temp1);
+            }
+
             System.out.println("update:");
             card.setCvv(333);
             card.setType(Card.CardType.VISA);
@@ -279,12 +247,6 @@ public class MySqlCardDao implements CardDao {
     protected void printCard(List<Card> list){
         for (Card card : list) {
             System.out.println("Card: "+card);
-            System.out.println("Account Number: "+card.getAccount().getAccountNumber()+";");
-            System.out.println("Account: "+card.getAccount()+";");
-            System.out.println("Account Holder: "+card.getAccount().getAccountHolder()+"; "+card.getAccount().getAccountHolder().getRole()+"; ");
-            System.out.println("Account type: "+card.getAccount().getAccountType()+";");
-            System.out.println("Balance: "+card.getAccount().getBalance()+";");
-            System.out.println("Status: "+card.getAccount().getStatus()+";");
             System.out.println();
         }
     }
