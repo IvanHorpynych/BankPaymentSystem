@@ -1,5 +1,4 @@
 package dao.abstraction;
-;
 
 import entity.CreditRequest;
 import entity.Status;
@@ -30,6 +29,6 @@ public interface CreditRequestDao extends GenericDao<CreditRequest, Long> {
      * @param request account which status will be updated.
      * @param status new status of account to update
      */
-    void updateAccountStatus(CreditRequest request, Status status);
+    void updateRequestStatus(CreditRequest request, Status status);
 
 }

@@ -6,7 +6,7 @@ import entity.User;
 
 import java.util.List;
 
-public interface PaymentDao extends GenericDao<Payment, Integer> {
+public interface PaymentDao extends GenericDao<Payment, Long> {
 
     /**
      * Retrieves all payments associated with certain account.
