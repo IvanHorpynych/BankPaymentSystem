@@ -20,6 +20,8 @@ public interface DtoConverter <T> {
     String CREDIT_TABLE_PREFIX = "credit_";
     String DEBIT_TABLE_PREFIX = "debit_";
     String REGULAR_TABLE_PREFIX = "regular_";
+    String FIRST_ACCOUNT_ORDER_TABLE_PREFIX = "acc1_";
+    String SECOND_ACCOUNT_ORDER_TABLE_PREFIX = "acc2_";
     /**
      * Read data from a result set and convert it to list of objects.
      *
@@ -90,4 +92,13 @@ public interface DtoConverter <T> {
             return REGULAR_TABLE_PREFIX;
         return null;
     }
+
+    default String accountOrderIdentifier(String tablePrefix){
+        if(tablePrefix.contains(FIRST_ACCOUNT_ORDER_TABLE_PREFIX))
+            return FIRST_ACCOUNT_ORDER_TABLE_PREFIX;
+        else if(tablePrefix.contains(SECOND_ACCOUNT_ORDER_TABLE_PREFIX))
+            return SECOND_ACCOUNT_ORDER_TABLE_PREFIX;
+        else return EMPTY_STRING;
+    }
+
 }

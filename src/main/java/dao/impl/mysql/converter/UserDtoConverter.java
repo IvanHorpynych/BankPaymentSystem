@@ -18,6 +18,7 @@ public class UserDtoConverter implements DtoConverter<User>{
     private final static String PASSWORD_FIELD = "password";
 
     private final DtoConverter<Role> roleConverter;
+    private String accountOrder;
 
     public UserDtoConverter() {
     this(new RoleDtoConverter());
@@ -32,12 +33,15 @@ public class UserDtoConverter implements DtoConverter<User>{
     public User convertToObject(ResultSet resultSet, String tablePrefix)
             throws SQLException{
 
-        Role tempRole = roleConverter.convertToObject(resultSet);
+        accountOrder = accountOrderIdentifier(tablePrefix);
+
+        Role role = roleConverter.convertToObject(resultSet,
+                accountOrder);
 
         User user = User.newBuilder()
                 .setId(resultSet.getInt(
                         tablePrefix + ID_FIELD))
-                .setRole(tempRole)
+                .setRole(role)
                 .setFirstName(resultSet.getString(
                         tablePrefix + FIRST_NAME_FIELD))
                 .setLastName(resultSet.getString(

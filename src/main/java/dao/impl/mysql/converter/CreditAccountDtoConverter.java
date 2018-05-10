@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by JohnUkraine on 5/07/2018.
  */
-public class CreditAccountDtoConverter implements DtoConverter<CreditAccount>{
+public class CreditAccountDtoConverter implements DtoConverter<CreditAccount> {
 
     private final static String ACCOUNT_NUMBER_FIELD = "id";
     private final static String BALANCE_FIELD = "balance";
@@ -24,6 +24,7 @@ public class CreditAccountDtoConverter implements DtoConverter<CreditAccount>{
     private final DtoConverter<User> userConverter;
     private final DtoConverter<AccountType> accountTypeConverter;
     private final DtoConverter<Status> statusConverter;
+    private String accountOrder;
 
     public CreditAccountDtoConverter() {
         this(new UserDtoConverter(), new AccountTypeDtoConverter(),
@@ -31,8 +32,8 @@ public class CreditAccountDtoConverter implements DtoConverter<CreditAccount>{
     }
 
     private CreditAccountDtoConverter(DtoConverter<User> userConverter,
-                                     DtoConverter<AccountType> accountTypeConverter,
-                                     DtoConverter<Status> statusConverter) {
+                                      DtoConverter<AccountType> accountTypeConverter,
+                                      DtoConverter<Status> statusConverter) {
         this.userConverter = userConverter;
         this.accountTypeConverter = accountTypeConverter;
         this.statusConverter = statusConverter;
@@ -42,30 +43,35 @@ public class CreditAccountDtoConverter implements DtoConverter<CreditAccount>{
     public CreditAccount convertToObject(ResultSet resultSet, String tablePrefix)
             throws SQLException {
 
-       User accountHolder = userConverter.convertToObject(resultSet);
-       AccountType accountType = accountTypeConverter.convertToObject(resultSet);
-       Status status = statusConverter.convertToObject(resultSet);
+        accountOrder = accountOrderIdentifier(tablePrefix);
 
-        return  CreditAccount.newBuilder().
-               setAccountNumber(resultSet.
-                       getLong(tablePrefix+ACCOUNT_NUMBER_FIELD)).
-               setAccountHolder(accountHolder).
-               setAccountType(accountType).
-               setBalance(resultSet.getBigDecimal(tablePrefix+BALANCE_FIELD)).
-               setCreditLimit(resultSet.
-                       getBigDecimal(tablePrefix+CREDIT_LIMIT_FIELD)).
-               setInterestRate(resultSet.
-                       getFloat(tablePrefix+INTEREST_RATE_FIELD)).
-               setLastOperationDate(TimeConverter.
-                       toDate(resultSet.getTimestamp(
-                               tablePrefix+VALIDITY_DATE_FIELD))).
-               setAccruedInterest(resultSet.
-                       getBigDecimal(tablePrefix+ACCRUED_INTEREST_FIELD)).
-               setValidityDate(TimeConverter.
-                       toDate(resultSet.getTimestamp(
-                               tablePrefix+LAST_OPERATION_DATE_FIELD))).
-               setStatus(status).
-               build();
+        User accountHolder = userConverter.convertToObject(resultSet,
+                accountOrder);
+        AccountType accountType = accountTypeConverter.convertToObject(resultSet,
+                accountOrder);
+        Status status = statusConverter.convertToObject(resultSet,
+                accountOrder);
+
+        return CreditAccount.newBuilder().
+                setAccountNumber(resultSet.
+                        getLong(tablePrefix + ACCOUNT_NUMBER_FIELD)).
+                setAccountHolder(accountHolder).
+                setAccountType(accountType).
+                setBalance(resultSet.getBigDecimal(tablePrefix + BALANCE_FIELD)).
+                setCreditLimit(resultSet.
+                        getBigDecimal(tablePrefix + CREDIT_LIMIT_FIELD)).
+                setInterestRate(resultSet.
+                        getFloat(tablePrefix + INTEREST_RATE_FIELD)).
+                setLastOperationDate(TimeConverter.
+                        toDate(resultSet.getTimestamp(
+                                tablePrefix + VALIDITY_DATE_FIELD))).
+                setAccruedInterest(resultSet.
+                        getBigDecimal(tablePrefix + ACCRUED_INTEREST_FIELD)).
+                setValidityDate(TimeConverter.
+                        toDate(resultSet.getTimestamp(
+                                tablePrefix + LAST_OPERATION_DATE_FIELD))).
+                setStatus(status).
+                build();
 
     }
 }

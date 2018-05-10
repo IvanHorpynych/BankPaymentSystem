@@ -17,11 +17,12 @@ public class CardDtoConverter implements DtoConverter<Card> {
 
     private DtoConverter<? extends Account> accountConverter;
     private String accountTablePrefix;
+    private int typeId;
 
     @Override
     public Card convertToObject(ResultSet resultSet, String tablePrefix)
             throws SQLException {
-            int typeId = resultSet.getInt(
+            typeId = resultSet.getInt(
                     AccountTypeDtoConverter.ID_FIELD);
         accountConverter = accountDtoSelection(typeId);
         accountTablePrefix = accountTablePrefixSelection(typeId);

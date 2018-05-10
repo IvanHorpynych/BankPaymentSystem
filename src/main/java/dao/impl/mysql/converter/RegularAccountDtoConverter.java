@@ -16,7 +16,7 @@ public class RegularAccountDtoConverter implements DtoConverter<RegularAccount>{
     private final DtoConverter<User> userConverter;
     private final DtoConverter<AccountType> accountTypeConverter;
     private final DtoConverter<Status> statusConverter;
-
+    private String accountOrder;
     public RegularAccountDtoConverter() {
         this(new UserDtoConverter(), new AccountTypeDtoConverter(),
                 new StatusDtoConverter());
@@ -34,9 +34,14 @@ public class RegularAccountDtoConverter implements DtoConverter<RegularAccount>{
     public RegularAccount convertToObject(ResultSet resultSet, String tablePrefix)
             throws SQLException {
 
-        User accountHolder = userConverter.convertToObject(resultSet);
-        AccountType accountType = accountTypeConverter.convertToObject(resultSet);
-        Status status = statusConverter.convertToObject(resultSet);
+        accountOrder = accountOrderIdentifier(tablePrefix);
+
+        User accountHolder = userConverter.convertToObject(resultSet,
+                accountOrder);
+        AccountType accountType = accountTypeConverter.convertToObject(resultSet,
+                accountOrder);
+        Status status = statusConverter.convertToObject(resultSet,
+                accountOrder);
 
         RegularAccount regularAccount = RegularAccount.newBuilder().
                 setAccountNumber(resultSet.
