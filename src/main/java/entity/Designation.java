@@ -4,7 +4,10 @@ public abstract class Designation {
     private int id;
     private String name;
 
-    public Designation() {};
+    public Designation() {
+    }
+
+    ;
 
     public Designation(int id, String name) {
         this.id = id;
@@ -29,8 +32,9 @@ public abstract class Designation {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName()+"{" +
-                "name='" + name + '\'' +
+        return getClass().getSimpleName() + "{" +
+                "id=" + id +
+                ", name= " + name +
                 '}';
     }
 
@@ -39,7 +43,7 @@ public abstract class Designation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Designation designation  = (Designation) o;
+        Designation designation = (Designation) o;
 
         return id == designation.id;
     }

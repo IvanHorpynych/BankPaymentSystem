@@ -121,8 +121,8 @@ public class Card {
     public String toString() {
         return "Card{" +
                 "cardNumber=" + cardNumber +
-                ", accountId=" + getAccount().getAccountNumber() +
-                ", pin=" + pin +/////////////////////
+                ", accountId=" + getAccount() +
+                ", pin=" + pin +
                 ", cvv=" + cvv +
                 ", expireDate=" + expireDate +
                 ", type=" + type.toString() +

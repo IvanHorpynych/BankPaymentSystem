@@ -138,6 +138,10 @@ public class User {
         return "User{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", email=" + email  +
+                ", phoneNumber=" + phoneNumber  +
+                ", password=" + password  +
+                ", role=" + role  +
                 '}';
     }
 

@@ -133,7 +133,7 @@ public abstract class Account {
         return "Account{" +
                 "accountNumber=" + accountNumber +
                 ", user=" + accountHolder +
-                ", type=" + accountType.getName() +
+                ", type=" + accountType +
                 ", status=" + status +
                 '}';
     }

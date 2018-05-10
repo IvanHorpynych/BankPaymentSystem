@@ -8,7 +8,7 @@ import java.util.Date;
  */
 
 public class Payment {
-    private int id;
+    private long id;
     private BigDecimal amount;
     private Account accountFrom;
     private Account accountTo;
@@ -21,7 +21,7 @@ public class Payment {
             payment = new Payment();
         }
 
-        public Builder setId(int id) {
+        public Builder setId(long id) {
             payment.setId(id);
             return this;
         }
@@ -55,11 +55,11 @@ public class Payment {
         return new Builder();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -93,5 +93,15 @@ public class Payment {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id=" + id +
+                ", amount=" + amount  +
+                ", accountFrom=" + accountFrom  +
+                ", accountTo=" + accountTo  +
+                '}';
     }
 }

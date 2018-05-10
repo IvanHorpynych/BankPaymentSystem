@@ -31,6 +31,10 @@ public class CreditRequest {
     public static class Builder {
         private CreditRequest creditRequest;
 
+        public Builder() {
+            creditRequest = new CreditRequest();
+        }
+
         public Builder setRequestNumber(long requestNumber) {
             creditRequest.setRequestNumber(requestNumber);
             return this;
