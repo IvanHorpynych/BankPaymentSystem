@@ -129,7 +129,6 @@ public class MySqlUserDao implements UserDao {
             MySqlUserDao mySqlUserDao = new MySqlUserDao(dataSource.getConnection());
             for (User user : mySqlUserDao.findAll()) {
                 System.out.println(user);
-                System.out.println(user.getRole());
             }
             int random = (int)(Math.random()*100);
             System.out.println("Find one:");
@@ -156,13 +155,11 @@ public class MySqlUserDao implements UserDao {
             System.out.println("Result:");
             for (User user : mySqlUserDao.findAll()) {
                 System.out.println(user);
-                System.out.println(user.getRole());
             }
             System.out.println("Delete:");
             mySqlUserDao.delete(insertUser.getId());
             for (User user : mySqlUserDao.findAll()) {
                 System.out.println(user);
-                System.out.println(user.getRole());
             }
         } catch (SQLException e) {
             e.printStackTrace();

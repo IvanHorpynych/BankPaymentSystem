@@ -19,34 +19,7 @@ import java.util.Optional;
 
 public class MySqlDebitAccountDao implements DebitAccountDao {
     private final static String SELECT_ALL =
-            "SELECT " +
-                    "dad.id, dad.balance, " +
-                    "dad.annual_rate, dad.last_operation, " +
-                    "dad.min_balance, " +
-                    "type.id AS type_id, type.name AS type_name, " +
-                    "status.id AS status_id, " +
-                    "status.name AS status_name, " +
-                    "user.id AS user_id, user.first_name, " +
-                    "user.last_name, user.email, " +
-                    "user.password, user.phone_number, " +
-                    "role.id AS role_id, role.name AS role_name " +
-                    "FROM account " +
-                    "JOIN user ON user_id = user.id " +
-                    "JOIN role ON role_id = role.id " +
-                    "JOIN account_type AS type ON type_id = type.id " +
-                    "JOIN debit_account_details AS dad ON account.id = dad.id " +
-                    "JOIN status ON account.status_id = status.id " +
-                    "WHERE type_id = (select id " +
-                    "from account_type where name like 'DEBIT') ";
-
-    private final static String AND_ACCOUNT_NUMBER =
-            "and account.id = ? ";
-
-    private final static String AND_USER =
-            "and account.user_id = ? ";
-
-    private final static String AND_STATUS =
-            "and account.status_id = ? ";
+            "SELECT * FROM debit_details ";
 
     private final static String WHERE_ACCOUNT_NUMBER =
             "WHERE id = ? ";
@@ -114,7 +87,7 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
     @Override
     public Optional<DebitAccount> findOne(Long accountNumber) {
         return defaultDao.findOne(
-                SELECT_ALL + AND_ACCOUNT_NUMBER,
+                SELECT_ALL + WHERE_ACCOUNT_NUMBER,
                 accountNumber
         );
     }
@@ -177,7 +150,7 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
        Objects.requireNonNull(user);
 
         return defaultDao.findAll(
-                SELECT_ALL + AND_USER,
+                SELECT_ALL + WHERE_USER,
                 user.getId()
         );
     }
@@ -185,7 +158,7 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
     @Override
     public List<DebitAccount> findByStatus(Status status) {
         return defaultDao.findAll(
-                SELECT_ALL + AND_STATUS,
+                SELECT_ALL + WHERE_STATUS,
                 status.getId()
         );
     }
@@ -316,14 +289,11 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
 
     protected void printAccount(List<DebitAccount> list){
         for (DebitAccount debitAccount : list) {
-            System.out.println("Account Number: "+debitAccount.getAccountNumber()+";");
-            System.out.println("Account Holder: "+debitAccount.getAccountHolder()+"; "+debitAccount.getAccountHolder().getRole()+"; ");
-            System.out.println("Account type: "+debitAccount.getAccountType()+";");
+            System.out.println("Account: "+debitAccount+";");
             System.out.println("Balance: "+debitAccount.getBalance()+";");
             System.out.println("Annual Rate: "+debitAccount.getAnnualRate()+";");
             System.out.println("Last operation: "+debitAccount.getLastOperationDate()+";");
             System.out.println("Min Balance: "+debitAccount.getMinBalance()+";");
-            System.out.println("Status: "+debitAccount.getStatus()+";");
             System.out.println();
         }
     }

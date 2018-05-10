@@ -1,24 +1,28 @@
-/*
+
 package dao.impl.mysql;
 
 import dao.abstraction.RoleDao;
+import dao.connectionsource.PooledConnection;
 import dao.impl.mysql.converter.DtoConverter;
 import dao.impl.mysql.converter.RoleDtoConverter;
 import entity.Role;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-*/
+
 /**
  * Created by JohnUkraine on 5/07/2018.
- *//*
+ */
 
 public class MySqlRoleDao implements RoleDao {
     private final static String SELECT_ALL =
-            "SELECT * FROM role ";
+            "SELECT id AS role_id, name AS role_name " +
+                    "FROM role ";
 
     private final static String INSERT =
             "INSERT INTO role (name) " +
@@ -28,10 +32,13 @@ public class MySqlRoleDao implements RoleDao {
             "UPDATE role SET name = ? ";
 
     private final static String DELETE =
-            "DELETE FROM role " ;
+            "DELETE FROM role ";
 
     private final static String WHERE_ID =
             "WHERE id = ? ";
+
+    private final static String WHERE_NAME =
+            "WHERE name = ? ";
 
 
     private final DefaultDaoImpl<Role> defaultDao;
@@ -60,27 +67,27 @@ public class MySqlRoleDao implements RoleDao {
     }
 
     @Override
-    public Role insert(Role obj) {
-        Objects.requireNonNull(obj,"Role object must be not null");
+    public Role insert(Role role) {
+        Objects.requireNonNull(role, "Role object must be not null");
 
-        int id = (int)defaultDao.executeInsertWithGeneratedPrimaryKey(
+        int id = (int) defaultDao.executeInsertWithGeneratedPrimaryKey(
                 INSERT,
-                obj.getName()
+                role.getName()
         );
 
-        obj.setId(id);
+        role.setId(id);
 
-        return obj;
+        return role;
     }
 
     @Override
-    public void update(Role obj) {
-        Objects.requireNonNull(obj);
+    public void update(Role role) {
+        Objects.requireNonNull(role);
 
         defaultDao.executeUpdate(
                 UPDATE + WHERE_ID,
-                obj.getName(),
-                obj.getId()
+                role.getName(),
+                role.getId()
         );
     }
 
@@ -90,5 +97,54 @@ public class MySqlRoleDao implements RoleDao {
                 DELETE + WHERE_ID,
                 id);
     }
+
+    @Override
+    public Optional<Role> findOneByName(String name) {
+        return defaultDao.findOne(SELECT_ALL + WHERE_NAME, name);
+    }
+
+    public static void main(String[] args) {
+        DataSource dataSource = PooledConnection.getInstance();
+        RoleDao mySqlRoleDao;
+
+        try {
+            mySqlRoleDao = new MySqlRoleDao(dataSource.getConnection());
+            ((MySqlRoleDao) mySqlRoleDao).
+                    printAll(mySqlRoleDao.findAll());
+            System.out.println();
+
+            System.out.println("Find one with id 1:");
+            System.out.println(mySqlRoleDao.findOne(1));
+
+            System.out.println("Find one by name MANAGER:");
+            System.out.println(mySqlRoleDao.findOneByName("MANAGER"));
+
+            System.out.println("Insert test:");
+            Role accountType = mySqlRoleDao.
+                    insert(new Role(0, "TEST"));
+            ((MySqlRoleDao) mySqlRoleDao).
+                    printAll(mySqlRoleDao.findAll());
+
+            System.out.println("Update:");
+            accountType.setName("TEST@222");
+            mySqlRoleDao.update(accountType);
+            ((MySqlRoleDao) mySqlRoleDao).
+                    printAll(mySqlRoleDao.findAll());
+
+            System.out.println("Delete:");
+            mySqlRoleDao.delete(accountType.getId());
+            ((MySqlRoleDao) mySqlRoleDao).
+                    printAll(mySqlRoleDao.findAll());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void printAll(List<Role> list) {
+        System.out.println("Find all:");
+        for (Role type : list) {
+            System.out.println(type);
+        }
+    }
 }
-*/

@@ -15,39 +15,13 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public class MySqlRegularAccountDao implements RegularAccountDao {
     private final static String SELECT_ALL =
-            "SELECT\n" +
-                    "rad.id, rad.balance, " +
-                    "type.id AS type_id, type.name AS type_name, " +
-                    "status.id AS status_id, " +
-                    "status.name AS status_name, " +
-                    "user.id AS user_id, user.first_name, " +
-                    "user.last_name, user.email, " +
-                    "user.password, user.phone_number, " +
-                    "role.id AS role_id, role.name AS role_name " +
-                    "FROM account " +
-                    "JOIN user ON user_id = user.id " +
-                    "JOIN role ON role_id = role.id " +
-                    "JOIN account_type AS type ON type_id = type.id " +
-                    "JOIN regular_account_details AS rad ON account.id = rad.id " +
-                    "JOIN status ON account.status_id = status.id " +
-                    "WHERE type_id = (select id " +
-                    "from account_type where name like 'REGULAR') ";
-
-    private final static String AND_ACCOUNT_NUMBER =
-            "and account.id = ? ";
-
-    private final static String AND_USER =
-            "and account.user_id = ? ";
-
-    private final static String AND_STATUS =
-            "and account.status_id = ? ";
+            "SELECT * FROM regular_details ";
 
     private final static String WHERE_ACCOUNT_NUMBER =
             "WHERE id = ? ";
@@ -109,7 +83,7 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
     @Override
     public Optional<RegularAccount> findOne(Long accountNumber) {
         return defaultDao.findOne(
-                SELECT_ALL + AND_ACCOUNT_NUMBER,
+                SELECT_ALL + WHERE_ACCOUNT_NUMBER,
                 accountNumber
         );
     }
@@ -166,7 +140,7 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
         Objects.requireNonNull(user);
 
         return defaultDao.findAll(
-                SELECT_ALL + AND_USER,
+                SELECT_ALL + WHERE_USER,
                 user.getId()
         );
     }
@@ -174,7 +148,7 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
     @Override
     public List<RegularAccount> findByStatus(Status status) {
         return defaultDao.findAll(
-                SELECT_ALL + AND_STATUS,
+                SELECT_ALL + WHERE_STATUS,
                 status.getId()
         );
     }
@@ -286,11 +260,8 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
 
     protected void printAccount(List<RegularAccount> list){
         for (RegularAccount debitAccount : list) {
-            System.out.println("Account Number: "+debitAccount.getAccountNumber()+";");
-            System.out.println("Account Holder: "+debitAccount.getAccountHolder()+"; "+debitAccount.getAccountHolder().getRole()+"; ");
-            System.out.println("Account type: "+debitAccount.getAccountType()+";");
+            System.out.println("Account : "+debitAccount+";");
             System.out.println("Balance: "+debitAccount.getBalance()+";");
-            System.out.println("Status: "+debitAccount.getStatus()+";");
             System.out.println();
         }
     }

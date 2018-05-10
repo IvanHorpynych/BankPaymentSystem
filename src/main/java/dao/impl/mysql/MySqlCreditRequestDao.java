@@ -1,137 +1,121 @@
-/*
 package dao.impl.mysql;
 
-import dao.abstraction.RegularAccountDao;
-import dao.impl.mysql.DefaultDaoImpl;
-import dao.impl.mysql.converter.CreditAccountDtoConverter;
+import dao.abstraction.CreditAccountDao;
+import dao.abstraction.CreditRequestDao;
+import dao.connectionsource.PooledConnection;
+import dao.impl.mysql.converter.CreditRequestDtoConverter;
 import dao.impl.mysql.converter.DtoConverter;
-import entity.Account;
-import entity.User;
+import entity.*;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class MySqlCreditRequestDao implements RegularAccountDao {
+public class MySqlCreditRequestDao implements CreditRequestDao {
     private final static String SELECT_ALL =
-            "SELECT accounts.account_number, accounts.account_holder, " +
-                    "accounts.balance, accounts.status, " +
-                    "users.user_id, users.user_type, users.first_name, " +
-                    "users.last_name, users.email, users.passhash, " +
-                    "users.phone_number, " +
-                    "roles.role_id, roles.role_name " +
-                    "FROM accounts " +
-                    "JOIN users ON account_holder = user_id " +
-                    "JOIN roles ON user_type = role_id ";
+            "SELECT * FROM credit_request_details ";
 
-    private final static String WHERE_ACCOUNT_NUMBER = "" +
-            "WHERE accounts.account_number = ? ";
+    private final static String WHERE_REQUEST_NUMBER =
+            "WHERE id = ? ";
 
     private final static String WHERE_USER =
-            "WHERE accounts.account_holder = ? ";
+            "WHERE user_id = ? ";
 
     private final static String WHERE_STATUS =
-            "WHERE accounts.status = ? ";
+            "WHERE status_id = ? ";
 
     private final static String INSERT =
-            "INSERT INTO accounts" +
-                    "(account_holder, " +
-                    "balance, status) " +
-                    "VALUES(?, ?, ?) ";
+            "INSERT INTO credit_request " +
+                    "(user_id, interest_rate, status_id, " +
+                    "validity_date, credit_limit) " +
+                    "VALUES(?, ?, ?, ?, ?) ";
 
     private final static String UPDATE =
-            "UPDATE accounts SET " +
-                    "account_holder = ?, balance = ?, " +
-                    "status = ? ";
+            "UPDATE credit_request SET " +
+                    "interest_rate = ?, status_id = ?, " +
+                    "validity_date = ?, credit_limit = ? ";
 
     private final static String UPDATE_STATUS =
-            "UPDATE accounts SET " +
-                    "status = ? ";
-
-    private final static String INCREASE_AMOUNT =
-            "UPDATE accounts Set " +
-                    "balance = balance + ? ";
-
-    private final static String DECREASE_AMOUNT =
-            "UPDATE accounts Set " +
-                    "balance = balance - ? ";
+            "UPDATE credit_request SET " +
+                    "status_id = ? ";
 
     private final static String DELETE =
-            "DELETE FROM accounts ";
+            "DELETE FROM credit_request ";
 
 
-    private final DefaultDaoImpl<Account> defaultDao;
+    private final DefaultDaoImpl<CreditRequest> defaultDao;
 
 
     public MySqlCreditRequestDao(Connection connection) {
-        this(connection, new CreditAccountDtoConverter());
+        this(connection, new CreditRequestDtoConverter());
     }
 
     public MySqlCreditRequestDao(Connection connection,
-                                 DtoConverter<Account> converter) {
+                                 DtoConverter<CreditRequest> converter) {
         this.defaultDao = new DefaultDaoImpl<>(connection, converter);
     }
 
-    public MySqlCreditRequestDao(DefaultDaoImpl<Account> defaultDao) {
+    public MySqlCreditRequestDao(DefaultDaoImpl<CreditRequest> defaultDao) {
         this.defaultDao = defaultDao;
     }
 
     @Override
-    public Optional<Account> findOne(Long accountNumber) {
-        return defaultDao.findOne(
-                SELECT_ALL + WHERE_ACCOUNT_NUMBER,
-                accountNumber
-        );
+    public Optional<CreditRequest> findOne(Long requestNumber) {
+        return defaultDao.findOne(SELECT_ALL + WHERE_REQUEST_NUMBER, requestNumber);
     }
 
     @Override
-    public List<Account> findAll() {
-        return defaultDao.findAll(
-                SELECT_ALL
-        );
+    public List<CreditRequest> findAll() {
+        return defaultDao.findAll(SELECT_ALL);
     }
 
     @Override
-    public Account insert(Account account) {
-        Objects.requireNonNull(account);
+    public CreditRequest insert(CreditRequest obj) {
+        Objects.requireNonNull(obj);
 
-        long accountNumber = defaultDao.executeInsertWithGeneratedPrimaryKey(
+        long requestNumber = defaultDao.executeInsertWithGeneratedPrimaryKey(
                 INSERT,
-                account.getAccountHolder().getId(),
-                account.getBalance(),
-                account.getStatus().toString()
+                obj.getAccountHolder().getId(),
+                obj.getInterestRate(),
+                obj.getStatus().getId(),
+                obj.getValidityDate(),
+                obj.getCreditLimit()
         );
 
-        account.setAccountNumber(accountNumber);
+        obj.setRequestNumber(requestNumber);
 
-        return account;
+        return obj;
     }
 
     @Override
-    public void update(Account account) {
-        Objects.requireNonNull(account);
+    public void update(CreditRequest obj) {
+        Objects.requireNonNull(obj);
 
         defaultDao.executeUpdate(
-                UPDATE + WHERE_ACCOUNT_NUMBER,
-                account.getAccountHolder().getId(),
-                account.getBalance(),
-                account.getStatus().toString(),
-                account.getAccountNumber()
+                UPDATE + WHERE_REQUEST_NUMBER,
+                obj.getInterestRate(),
+                obj.getStatus().getId(),
+                obj.getValidityDate(),
+                obj.getCreditLimit(),
+                obj.getRequestNumber()
         );
     }
 
     @Override
-    public void delete(Long accountNumber) {
+    public void delete(Long requestNumber) {
         defaultDao.executeUpdate(
-                DELETE + WHERE_ACCOUNT_NUMBER,
-                accountNumber
+                DELETE + WHERE_REQUEST_NUMBER,
+                requestNumber
         );
     }
 
     @Override
-    public List<Account> findByUser(User user) {
+    public List<CreditRequest> findByUser(User user) {
         Objects.requireNonNull(user);
 
         return defaultDao.findAll(
@@ -141,35 +125,96 @@ public class MySqlCreditRequestDao implements RegularAccountDao {
     }
 
     @Override
-    public List<Account> findByStatus(Account.Status status) {
+    public List<CreditRequest> findByStatus(Status status) {
+        Objects.requireNonNull(status);
+
         return defaultDao.findAll(
                 SELECT_ALL + WHERE_STATUS,
-                status.toString()
+                status.getId()
         );
     }
 
     @Override
-    public void increaseBalance(Account account, BigDecimal amount) {
-        defaultDao.executeUpdate(
-                INCREASE_AMOUNT + WHERE_ACCOUNT_NUMBER,
-                amount, account.getAccountNumber());
-    }
+    public void updateRequestStatus(CreditRequest request, Status status) {
+        Objects.requireNonNull(request);
 
-    @Override
-    public void decreaseBalance(Account account, BigDecimal amount) {
         defaultDao.executeUpdate(
-                DECREASE_AMOUNT + WHERE_ACCOUNT_NUMBER,
-                amount, account.getAccountNumber()
+                UPDATE_STATUS + WHERE_REQUEST_NUMBER,
+                status.getId(),
+                request.getRequestNumber()
         );
     }
 
-    @Override
-    public void updateAccountStatus(Account account, Account.Status status) {
-        defaultDao.executeUpdate(
-                UPDATE_STATUS + WHERE_ACCOUNT_NUMBER,
-                status.toString(), account.getAccountNumber()
-        );
-    }
+    public static void main(String[] args) {
+        DataSource dataSource = PooledConnection.getInstance();
+        CreditRequestDao mySqlCreditRequestDao;
+        try {
+            System.out.println("Find all:");
+            mySqlCreditRequestDao = new MySqlCreditRequestDao(dataSource.getConnection());
+            for (CreditRequest temp : mySqlCreditRequestDao.findAll()) {
+                System.out.println(temp);
+            }
 
+            System.out.println("Find one:");
+            System.out.println(mySqlCreditRequestDao.findOne(1L));
+
+            System.out.println("Find empty:");
+            System.out.println(mySqlCreditRequestDao.findOne(4L));
+
+            int random = (int) (Math.random() * 100);
+            System.out.println("find dy user:");
+            User user = User.newBuilder().setFirstName("first" + random).
+                    setId(3).
+                    setLastName("last" + random).
+                    setEmail("test" + random + "@com").
+                    setPassword("123").
+                    setPhoneNumber("+123").
+                    setRole(new Role(Role.USER_ROLE_ID, "USER")).
+                    build();
+            System.out.println(mySqlCreditRequestDao.findByUser(user));
+
+            System.out.println("Insert:");
+            CreditRequest creditRequest = mySqlCreditRequestDao.insert(
+                    CreditRequest.newBuilder().
+                            setAccountHolder(user).
+                            setInterestRate(41.12f).
+                            setStatus(new Status(8, "REGECT")).
+                            setValidityDate(new Date()).
+                            setCreditLimit(BigDecimal.TEN).
+                            build()
+            );
+
+            System.out.println("Find all:");
+            for (CreditRequest temp : mySqlCreditRequestDao.findAll()) {
+                System.out.println(temp);
+            }
+
+            System.out.println("update:");
+
+            creditRequest.setStatus(new Status(4, "PENDING"));
+            creditRequest.setInterestRate(12);
+            mySqlCreditRequestDao.update(creditRequest);
+
+            System.out.println("Find one:");
+            System.out.println(mySqlCreditRequestDao.findOne(creditRequest.getRequestNumber()));
+
+            System.out.println("update status:");
+            mySqlCreditRequestDao.updateRequestStatus(creditRequest, new Status(1, "PENDING"));
+
+            System.out.println("Find one:");
+            System.out.println(mySqlCreditRequestDao.findOne(creditRequest.getRequestNumber()));
+
+            System.out.println("delete:");
+            mySqlCreditRequestDao.delete(creditRequest.getRequestNumber());
+
+            System.out.println("Find all:");
+            for (CreditRequest temp : mySqlCreditRequestDao.findAll()) {
+                System.out.println(temp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }
-*/

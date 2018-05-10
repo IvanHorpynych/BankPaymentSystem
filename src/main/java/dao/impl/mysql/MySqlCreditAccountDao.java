@@ -17,35 +17,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class MySqlCreditAccountDao implements CreditAccountDao {
-    private final static String SELECT_ALL_WHERE =
-            "SELECT " +
-                    "cad.id, cad.balance, cad.credit_limit, " +
-                    "cad.interest_rate, cad.last_operation, " +
-                    "cad.accrued_interest, cad.validity_date, " +
-                    "type.id AS type_id, type.name AS type_name, " +
-                    "status.id " +
-                    "status.name " +
-                    "user.id AS user_id, user.first_name, " +
-                    "user.last_name, user.email, " +
-                    "user.password, user.phone_number, " +
-                    "role.id AS role_id, role.name AS role_name " +
-                    "FROM account " +
-                    "JOIN user ON user_id = user.id " +
-                    "JOIN role ON role_id = role.id " +
-                    "JOIN account_type AS type ON type_id = type.id " +
-                    "LEFT JOIN credit_account_details AS cad ON account.id = cad.id " +
-                    "LEFT JOIN status ON account.status_id = status.id " +
-                    "WHERE type_id = (select id " +
-                    "from account_type where name like 'CREDIT') ";
-
-    private final static String AND_ACCOUNT_NUMBER =
-            "and account.id = ? ";
-
-    private final static String AND_USER =
-            "and account.user_id = ? ";
-
-    private final static String AND_STATUS =
-            "and account.status_id = ? ";
+    private final static String SELECT_ALL =
+            "SELECT * FROM credit_details ";
 
     private final static String WHERE_ACCOUNT_NUMBER =
             "WHERE id = ? ";
@@ -111,7 +84,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
     @Override
     public Optional<CreditAccount> findOne(Long accountNumber) {
         return defaultDao.findOne(
-                SELECT_ALL_WHERE + AND_ACCOUNT_NUMBER,
+                SELECT_ALL + WHERE_ACCOUNT_NUMBER,
                 accountNumber
         );
     }
@@ -119,7 +92,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
     @Override
     public List<CreditAccount> findAll() {
         return defaultDao.findAll(
-                SELECT_ALL_WHERE
+                SELECT_ALL
         );
     }
 
@@ -177,7 +150,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
         Objects.requireNonNull(user);
 
         return defaultDao.findAll(
-                SELECT_ALL_WHERE + AND_USER,
+                SELECT_ALL + WHERE_USER,
                 user.getId()
         );
     }
@@ -187,7 +160,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
         Objects.requireNonNull(status);
 
         return defaultDao.findAll(
-                SELECT_ALL_WHERE + AND_STATUS,
+                SELECT_ALL + WHERE_STATUS,
                 status.getId()
         );
 
@@ -304,16 +277,13 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
 
     protected void printAccount(List<CreditAccount> list){
         for (CreditAccount creditAccount : list) {
-            System.out.println("Account Number: "+creditAccount.getAccountNumber()+";");
-            System.out.println("Account Holder: "+creditAccount.getAccountHolder()+"; "+creditAccount.getAccountHolder().getRole()+"; ");
-            System.out.println("Account type: "+creditAccount.getAccountType()+";");
+            System.out.println("Account: "+creditAccount+";");
             System.out.println("Balance: "+creditAccount.getBalance()+";");
             System.out.println("Credit limit: "+creditAccount.getCreditLimit()+";");
             System.out.println("Interest Rate: "+creditAccount.getInterestRate()+";");
             System.out.println("Last operation: "+creditAccount.getLastOperationDate()+";");
             System.out.println("Accrued interest: "+creditAccount.getAccruedInterest()+";");
             System.out.println("Validity date: "+creditAccount.getValidityDate()+";");
-            System.out.println("Status: "+creditAccount.getStatus()+";");
             System.out.println();
         }
     }
