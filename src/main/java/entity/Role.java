@@ -5,7 +5,7 @@ package entity;
  */
 public class Role extends Designation{
 
-    public final static int MANAGER_ROLE_ID = 1;
+    public final static int MANAGER_ROLE_ID = 2;
     public final static int USER_ROLE_ID = 10;
 
     public Role() {};

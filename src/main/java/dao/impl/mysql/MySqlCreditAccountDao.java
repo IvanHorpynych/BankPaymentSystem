@@ -58,6 +58,14 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
             "UPDATE credit_account_details SET " +
                     "balance = balance - ? ";
 
+    private final static String INCREASE_ACCRUED_INTEREST =
+            "UPDATE credit_account_details SET " +
+                    "accrued_interest = accrued_interest + ? ";
+
+    private final static String DECREASE_ACCRUED_INTEREST =
+            "UPDATE credit_account_details SET " +
+                    "accrued_interest = accrued_interest - ? ";
+
     private final static String DELETE =
             "DELETE details, account FROM " +
                     "credit_account_details AS details " +
@@ -196,6 +204,29 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
                 account.getAccountNumber()
         );
     }
+
+    @Override
+    public void increaseAccruedInterest(CreditAccount account, BigDecimal amount) {
+        Objects.requireNonNull(account);
+
+        defaultDao.executeUpdate(
+                INCREASE_ACCRUED_INTEREST + WHERE_ACCOUNT_NUMBER,
+                account,
+                account.getAccountNumber()
+        );
+    }
+
+    @Override
+    public void decreaseAccruedInterest(CreditAccount account, BigDecimal amount) {
+        Objects.requireNonNull(account);
+
+        defaultDao.executeUpdate(
+                DECREASE_ACCRUED_INTEREST + WHERE_ACCOUNT_NUMBER,
+                account,
+                account.getAccountNumber()
+        );
+    }
+
 
     public static void main(String[] args) {
         DataSource dataSource = PooledConnection.getInstance();
