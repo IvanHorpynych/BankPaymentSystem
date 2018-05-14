@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 /**
  * Created by JohnUkraine on 5/13/2018.
  */
-@WebServlet(name = "test", urlPatterns = "/site/*")
+//@WebServlet(name = "test", urlPatterns = "/site/*")
 
 /**
  * Provide a centralized request handling mechanism to
