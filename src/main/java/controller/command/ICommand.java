@@ -1,5 +1,7 @@
 package controller.command;
 
+import controller.Controller;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,7 +10,7 @@ import java.io.IOException;
 /**
  * Specialize interface for command in front controller pattern.
  *
- * @see controller.FrontController
+ * @see Controller
  * @author JohnUkraine
  */
 public interface ICommand {

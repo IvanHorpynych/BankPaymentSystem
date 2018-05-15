@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
  */
 public class ControllerHelper {
     private final static String DELIMITER = ":";
-    private final HomeCommand DEFAULT_COMMAND = new HomeCommand();
+    private final DefaultCommand DEFAULT_COMMAND = new DefaultCommand();
     private Map<String, ICommand> commands = new HashMap<>();
     private static final ResourceBundle bundle = ResourceBundle.
             getBundle(Views.PAGES_BUNDLE);
@@ -26,11 +26,13 @@ public class ControllerHelper {
     }
 
     private void init() {
-        commands.put(buildKey(bundle.getString("home.path"), "home_page"),
+        commands.put(buildKey(bundle.getString("home.path"), null),
                 new HomeCommand());
-        commands.put(buildKey(bundle.getString("login.path"), "login_page"),
+        commands.put(buildKey(bundle.getString("home.path"), "home"),
+                new HomeCommand());
+        commands.put(buildKey(bundle.getString("login.path"), null),
                 new GetLoginCommand());
-        commands.put(buildKey(bundle.getString("signup.path"), "signup_page"),
+        commands.put(buildKey(bundle.getString("signup.path"), "signup"),
                 new GetSignupCommand());
         commands.put(buildKey(bundle.getString("login.path"), "login_post"),
                 new PostLoginCommand());

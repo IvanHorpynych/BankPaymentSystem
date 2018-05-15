@@ -14,16 +14,12 @@ import java.io.IOException;
 import java.util.ResourceBundle;
 
 /**
- * Created by JohnUkraine on 5/13/2018.
- */
-//@WebServlet(name = "test", urlPatterns = "/site/*")
-
-/**
  * Provide a centralized request handling mechanism to
  * handle all types of requests coming to the application.
  *
+ * @author JohnUkraine on 5/13/2018.
  */
-public class FrontController extends HttpServlet {
+public class Controller extends HttpServlet {
     private final static String SUPPORTED_LOCALES = "supportedLocales";
 
 
