@@ -6,10 +6,10 @@
 <fmt:setBundle basename="i18n.lang"/>
 
 
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/site/home">PaymentSystem</a>
+            <a class="navbar-brand fas fa-credit-card" href="${pageContext.request.contextPath}/site/home">&nbspBPS</a>
         </div>
         <ul class="nav navbar-nav">
 
@@ -64,7 +64,7 @@
             </c:if>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-language fa-lg" aria-hidden="true"></i>
+                    <i class="fas fa-globe" aria-hidden="true"></i>
                     ${sessionScope.locale.getLanguage().toUpperCase()}
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -78,12 +78,12 @@
             <c:if test="${empty sessionScope.user}">
                         <li class="active">
                 <a href="${pageContext.request.contextPath}/site/signup">
-                    <span class="glyphicon glyphicon-user"></span><fmt:message key="signup"/>
+                    <fmt:message key="signup"/>
                 </a>
                 </li>
                         <li class="active">
                 <a href="${pageContext.request.contextPath}/site/login">
-                    <span class="glyphicon glyphicon-log-in"></span><fmt:message key="login"/>
+                    <fmt:message key="login"/>
                 </a>
                 </li>
             </c:if>
