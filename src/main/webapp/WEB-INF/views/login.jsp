@@ -11,19 +11,26 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/snippets/navbar.jsp"/>
+<c:if test="${not empty requestScope.errors}">
+    <div class="alert alert-danger">
+        <c:forEach items="${requestScope.errors}" var="error">
+            <strong><fmt:message key="error"/></strong> <fmt:message key="${error}"/><br>
+        </c:forEach>
+    </div>
+</c:if>
 <div class="container">
     <div class="row">
         <div class="col-sm-6 col-md-4 col-md-offset-4">
-            <h1 class="text-center login-title">Sign in to continue to BPS</h1>
+            <h1 class="text-center login-title"><fmt:message key="login"/></h1>
             <div class="account-wall">
                 <img class="profile-img" src="${pageContext.request.contextPath}/resources/someone.png"
                      alt="">
-                <form class="form-signin">
-                    <input type="text" class="form-control" placeholder="Email" required autofocus>
-                    <input type="password" class="form-control" placeholder="Password" required>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">
-                        Sign in</button>
-                    <a href="#" class="pull-right need-help">Need help? </a><span class="clearfix"></span>
+                <form class="form-signin" method="post">
+                    <input type="hidden" name="command" value="login_post"/>
+                    <input type="text" class="form-control" name="email" placeholder="<fmt:message key="enter.email"/>"
+                           value="<c:out value="${requestScope.user.getEmail()}" />" required autofocus>
+                    <input type="password" class="form-control" name="password" placeholder="<fmt:message key="enter.password"/>" required>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="login" /></button>
                 </form>
             </div>
         </div>

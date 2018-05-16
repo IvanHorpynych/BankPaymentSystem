@@ -12,56 +12,6 @@
             <a class="navbar-brand fas fa-credit-card" href="${pageContext.request.contextPath}/site/home">&nbspBPS</a>
         </div>
         <ul class="nav navbar-nav">
-
-            <c:if test="${not empty sessionScope.user and not sessionScope.user.isManager()}">
-                <li class="active">
-                    <a href="${pageContext.request.contextPath}/site/user/accounts">
-                        <fmt:message key="accounts"/>
-                    </a>
-                </li>
-                <li class="active">
-                <li>
-                    <a href="${pageContext.request.contextPath}/site/user/replenish">
-                        <fmt:message key="account.replenish"/>
-                    </a>
-                </li>
-                        <li class="active">
-                        <li>
-                <a href="${pageContext.request.contextPath}/site/user/cards">
-                    <fmt:message key="cards"/>
-                </a>
-                </li>
-                        <li class="active">
-                <a href="${pageContext.request.contextPath}/site/user/create">
-                    <fmt:message key="payment.create"/>
-                </a>
-                </li>
-                        <li class="active">
-                <a href="${pageContext.request.contextPath}/site/user/payments">
-                    <fmt:message key="payment.histrory"/>
-                </a>
-                </li>
-
-            </c:if>
-
-            <c:if test="${not empty sessionScope.user and sessionScope.user.isManager()}">
-                        <li class="active">
-                <a href="${pageContext.request.contextPath}/site/admin/accounts">
-                    <fmt:message key="accounts"/>
-                </a>
-                </li>
-                        <li class="active">
-                <a href="${pageContext.request.contextPath}/site/admin/cards">
-                    <fmt:message key="cards"/>
-                </a>
-                </li>
-
-                        <li class="active">
-                <a href="${pageContext.request.contextPath}/site/admin/payments">
-                    <fmt:message key="payment.histrory"/>
-                </a>
-                </li>
-            </c:if>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     <i class="fas fa-globe" aria-hidden="true"></i>
@@ -73,18 +23,65 @@
                     </c:forEach>
                 </ul>
             </li>
+            <c:if test="${not empty sessionScope.user and not sessionScope.user.isManager()}">
+                <li>
+                    <a href="${pageContext.request.contextPath}/site/user/accounts">
+                        <fmt:message key="accounts"/>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/site/user/replenish">
+                        <fmt:message key="account.replenish"/>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/site/user/cards">
+                        <fmt:message key="cards"/>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/site/user/create">
+                        <fmt:message key="payment.create"/>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/site/user/payments">
+                        <fmt:message key="payment.histrory"/>
+                    </a>
+                </li>
+
+            </c:if>
+
+            <c:if test="${not empty sessionScope.user and sessionScope.user.isManager()}">
+                <li>
+                    <a href="${pageContext.request.contextPath}/site/admin/accounts">
+                        <fmt:message key="accounts"/>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/site/admin/cards">
+                        <fmt:message key="cards"/>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="${pageContext.request.contextPath}/site/admin/payments">
+                        <fmt:message key="payment.histrory"/>
+                    </a>
+                </li>
+            </c:if>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <c:if test="${empty sessionScope.user}">
-                        <li class="active">
-                <a href="${pageContext.request.contextPath}/site/signup">
-                    <fmt:message key="signup"/>
-                </a>
+                <li>
+                    <a href="${pageContext.request.contextPath}/site/signup">
+                        <fmt:message key="signup"/>
+                    </a>
                 </li>
-                        <li class="active">
-                <a href="${pageContext.request.contextPath}/site/login">
-                    <fmt:message key="login"/>
-                </a>
+                <li>
+                    <a href="${pageContext.request.contextPath}/site/login">
+                        <fmt:message key="login"/>
+                    </a>
                 </li>
             </c:if>
             <c:if test="${not empty sessionScope.user}">
@@ -94,8 +91,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="${pageContext.request.contextPath}/site/logout">
-                        <span class="glyphicon glyphicon-log-out"></span><fmt:message key="logout"/>
+                    <a href="${pageContext.request.contextPath}/site/logout?command=logout">
+                       <fmt:message key="logout"/>
                     </a>
                 </li>
             </c:if>

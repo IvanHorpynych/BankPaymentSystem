@@ -9,6 +9,10 @@ public class PasswordValidator extends AbstractValidator<String> {
     private final static int PASSWORD_MIN_LENGTH = 6;
     private final static int PASSWORD_MAX_LENGTH = 50;
 
+    public PasswordValidator() {
+        super(INVALID_PASSWORD);
+    }
+
     @Override
     public boolean isValid(String password) {
         resetErrorStatus();
@@ -21,7 +25,4 @@ public class PasswordValidator extends AbstractValidator<String> {
         return true;
     }
 
-    public PasswordValidator() {
-        super(INVALID_PASSWORD);
-    }
 }

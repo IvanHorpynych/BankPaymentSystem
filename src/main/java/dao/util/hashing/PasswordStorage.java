@@ -7,11 +7,11 @@ import java.security.MessageDigest;
  */
 public class PasswordStorage {
 
-    public static String getSecurePassword(String passwordToHash)
+    public static String getSecurePassword(String password)
     {
         try{
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(passwordToHash.getBytes("UTF-8"));
+            byte[] hash = digest.digest(password.getBytes("UTF-8"));
             StringBuffer hexString = new StringBuffer();
 
             for (int i = 0; i < hash.length; i++) {
@@ -32,5 +32,9 @@ public class PasswordStorage {
         String checkPassHash = getSecurePassword(passwordToCheck);
 
         return passwordHash.equals(checkPassHash);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(PasswordStorage.getSecurePassword("qwerty"));
     }
 }

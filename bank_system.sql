@@ -371,9 +371,9 @@ CREATE VIEW credit_request_details AS
 insert into ROLE (ID, NAME) VALUES (1, 'ADMINISTRATOR'), (2, 'MANAGER'), (10, 'USER');
 
 insert into USER (ROLE_ID, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER, PASSWORD) values
-  (1, 'John', 'Ukraine', 'ivan.horpynych@gmail.com', '+380661715108', '123'),
-  (2, 'Ivan', 'Horpynych-Raduzhenko', 'test@email.com', '+806612345678', '123'),
-  (10, 'John', 'Tester', 'test@test.com', '+123456789123', '123');
+  (1, 'John', 'Ukraine', 'ivan.horpynych@gmail.com', '+380661715108', '65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5'),
+  (2, 'Ivan', 'Horpynych-Raduzhenko', 'test@email.com', '+806612345678', '65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5'),
+  (10, 'John', 'Tester', 'test@test.com', '+123456789123', '65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5');
 
 insert into ACCOUNT_TYPE (ID, NAME) values (4, 'CREDIT'), (8, 'DEBIT'), (16, 'REGULAR');
 
