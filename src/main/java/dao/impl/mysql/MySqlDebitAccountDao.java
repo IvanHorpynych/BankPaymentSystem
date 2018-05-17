@@ -2,17 +2,17 @@
 package dao.impl.mysql;
 
 import dao.abstraction.DebitAccountDao;
+import dao.abstraction.DepositAccountDao;
 import dao.connectionsource.PooledConnection;
-import dao.impl.mysql.converter.DebitAccountDtoConverter;
+import dao.impl.mysql.converter.DepositAccountDtoConverter;
 import dao.impl.mysql.converter.DtoConverter;
-import dao.util.time.TimeConverter;
+import dao.impl.mysql.converter.DebitAccountDtoConverter;
 import entity.*;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,22 +37,16 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
 
     private final static String INSERT_DETAILS =
             "INSERT INTO debit_account_details " +
-                    "(id, balance, last_operation, " +
-                    "min_balance, annual_rate)" +
-                    "VALUES(?, ?, ?, ?, ?) ";
+                    "(id, balance)" +
+                    "VALUES(?, ?) ";
 
     private final static String UPDATE =
             "UPDATE debit_account_details SET " +
-                    "balance = ?, last_operation = ?, " +
-                    "min_balance = ? ";
+                    "balance = ? ";
 
     private final static String UPDATE_STATUS =
             "UPDATE account SET " +
                     "status_id = ? ";
-
-    private final static String UPDATE_MIN_BALANCE =
-            "UPDATE debit_account_details SET " +
-                    "min_balance = ? ";
 
     private final static String INCREASE_BALANCE =
             "UPDATE debit_account_details SET " +
@@ -76,7 +70,7 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
     }
 
     public MySqlDebitAccountDao(Connection connection,
-                                DtoConverter<DebitAccount> converter) {
+                                  DtoConverter<DebitAccount> converter) {
         this.defaultDao = new DefaultDaoImpl<>(connection, converter);
     }
 
@@ -114,12 +108,8 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
 
         defaultDao.executeUpdate(INSERT_DETAILS,
                 account.getAccountNumber(),
-                account.getBalance(),
-                TimeConverter.toTimestamp(account.getLastOperationDate()),
-                account.getMinBalance(),
-                account.getAnnualRate()
+                account.getBalance()
         );
-
         return account;
     }
 
@@ -130,8 +120,6 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
         defaultDao.executeUpdate(
                 UPDATE + WHERE_ACCOUNT_NUMBER,
                 account.getBalance(),
-                TimeConverter.toTimestamp(account.getLastOperationDate()),
-                account.getMinBalance(),
                 account.getAccountNumber()
         );
     }
@@ -147,7 +135,7 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
 
     @Override
     public List<DebitAccount> findByUser(User user) {
-       Objects.requireNonNull(user);
+        Objects.requireNonNull(user);
 
         return defaultDao.findAll(
                 SELECT_ALL + WHERE_USER,
@@ -194,16 +182,6 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
         );
     }
 
-    @Override
-    public void updateMinBalance(DebitAccount account, BigDecimal minBalance) {
-        Objects.requireNonNull(account);
-
-        defaultDao.executeUpdate(
-                UPDATE_MIN_BALANCE + WHERE_ACCOUNT_NUMBER,
-                minBalance,
-                account.getAccountNumber()
-        );
-    }
 
     public static void main(String[] args) {
         DataSource dataSource = PooledConnection.getInstance();
@@ -216,7 +194,7 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
             int random = (int) (Math.random() * 100);
 
             System.out.println("Find one:");
-            System.out.println(mySqlDebitAccountDao.findOne(1L));
+            System.out.println(mySqlDebitAccountDao.findOne(3L));
 
             System.out.println("find dy user:");
             User user = User.newBuilder().setFirstName("first" + random).
@@ -233,11 +211,8 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
             DebitAccount debitAccount = (DebitAccount) mySqlDebitAccountDao.insert(
                     DebitAccount.newBuilder().
                             setAccountHolder(user).
-                            setAccountType(new AccountType(8,"DEBIT")).
+                            setAccountType(new AccountType(16,"DEBIT")).
                             setBalance(BigDecimal.TEN).
-                            setAnnualRate(2.5f).
-                            setLastOperationDate(new Date()).
-                            setMinBalance(BigDecimal.ONE).
                             setStatus(new Status(1,"ACTIVE")).
                             build()
             );
@@ -270,12 +245,6 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
             System.out.println("Find all:");
             ((MySqlDebitAccountDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
 
-            System.out.println("update min balance:");
-            mySqlDebitAccountDao.updateMinBalance(debitAccount,BigDecimal.ZERO);
-
-            System.out.println("Find all:");
-            ((MySqlDebitAccountDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
-
             System.out.println("delete:");
             mySqlDebitAccountDao.delete(debitAccount.getAccountNumber());
 
@@ -289,12 +258,10 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
 
     protected void printAccount(List<DebitAccount> list){
         for (DebitAccount debitAccount : list) {
-            System.out.println("Account: "+debitAccount+";");
+            System.out.println("Account : "+debitAccount+";");
             System.out.println("Balance: "+debitAccount.getBalance()+";");
-            System.out.println("Annual Rate: "+debitAccount.getAnnualRate()+";");
-            System.out.println("Last operation: "+debitAccount.getLastOperationDate()+";");
-            System.out.println("Min Balance: "+debitAccount.getMinBalance()+";");
             System.out.println();
         }
     }
+
 }

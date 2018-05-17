@@ -43,13 +43,13 @@ public class MySqlDaoFactory extends DaoFactory {
     }
 
     @Override
-    public DebitAccountDao getDebitAccountDao(DaoConnection connection) {
-        return new MySqlDebitAccountDao(getOwnSqlConnection(connection));
+    public DepositAccountDao getDepositAccountDao(DaoConnection connection) {
+        return new MySqlDepositAccountDao(getOwnSqlConnection(connection));
     }
 
     @Override
-    public RegularAccountDao getRegularAccountDao(DaoConnection connection) {
-        return new MySqlRegularAccountDao(getOwnSqlConnection(connection));
+    public DebitAccountDao getDebitAccountDao(DaoConnection connection) {
+        return new MySqlDebitAccountDao(getOwnSqlConnection(connection));
     }
 
     @Override

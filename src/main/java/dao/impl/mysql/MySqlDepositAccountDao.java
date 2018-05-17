@@ -1,13 +1,10 @@
 
 package dao.impl.mysql;
 
-import dao.abstraction.DebitAccountDao;
-import dao.abstraction.RegularAccountDao;
+import dao.abstraction.DepositAccountDao;
 import dao.connectionsource.PooledConnection;
-import dao.impl.mysql.converter.CreditAccountDtoConverter;
-import dao.impl.mysql.converter.DebitAccountDtoConverter;
+import dao.impl.mysql.converter.DepositAccountDtoConverter;
 import dao.impl.mysql.converter.DtoConverter;
-import dao.impl.mysql.converter.RegularAccountDtoConverter;
 import dao.util.time.TimeConverter;
 import entity.*;
 
@@ -15,13 +12,14 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class MySqlRegularAccountDao implements RegularAccountDao {
+public class MySqlDepositAccountDao implements DepositAccountDao {
     private final static String SELECT_ALL =
-            "SELECT * FROM regular_details ";
+            "SELECT * FROM deposit_details ";
 
     private final static String WHERE_ACCOUNT_NUMBER =
             "WHERE id = ? ";
@@ -38,50 +36,56 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
                     "VALUES(?, ?, ?) ";
 
     private final static String INSERT_DETAILS =
-            "INSERT INTO regular_account_details " +
-                    "(id, balance)" +
-                    "VALUES(?, ?) ";
+            "INSERT INTO deposit_account_details " +
+                    "(id, balance, last_operation, " +
+                    "min_balance, annual_rate)" +
+                    "VALUES(?, ?, ?, ?, ?) ";
 
     private final static String UPDATE =
-            "UPDATE regular_account_details SET " +
-                    "balance = ? ";
+            "UPDATE deposit_account_details SET " +
+                    "balance = ?, last_operation = ?, " +
+                    "min_balance = ? ";
 
     private final static String UPDATE_STATUS =
             "UPDATE account SET " +
                     "status_id = ? ";
 
+    private final static String UPDATE_MIN_BALANCE =
+            "UPDATE deposit_account_details SET " +
+                    "min_balance = ? ";
+
     private final static String INCREASE_BALANCE =
-            "UPDATE regular_account_details SET " +
+            "UPDATE deposit_account_details SET " +
                     "balance = balance + ? ";
 
     private final static String DECREASE_BALANCE =
-            "UPDATE regular_account_details SET " +
+            "UPDATE deposit_account_details SET " +
                     "balance = balance - ? ";
 
     private final static String DELETE =
             "DELETE details, account FROM " +
-                    "regular_account_details AS details " +
+                    "deposit_account_details AS details " +
                     "JOIN account  USING(id) ";
 
 
-    private final DefaultDaoImpl<RegularAccount> defaultDao;
+    private final DefaultDaoImpl<DepositAccount> defaultDao;
 
 
-    public MySqlRegularAccountDao(Connection connection) {
-        this(connection, new RegularAccountDtoConverter());
+    public MySqlDepositAccountDao(Connection connection) {
+        this(connection, new DepositAccountDtoConverter());
     }
 
-    public MySqlRegularAccountDao(Connection connection,
-                                DtoConverter<RegularAccount> converter) {
+    public MySqlDepositAccountDao(Connection connection,
+                                  DtoConverter<DepositAccount> converter) {
         this.defaultDao = new DefaultDaoImpl<>(connection, converter);
     }
 
-    public MySqlRegularAccountDao(DefaultDaoImpl<RegularAccount> defaultDao) {
+    public MySqlDepositAccountDao(DefaultDaoImpl<DepositAccount> defaultDao) {
         this.defaultDao = defaultDao;
     }
 
     @Override
-    public Optional<RegularAccount> findOne(Long accountNumber) {
+    public Optional<DepositAccount> findOne(Long accountNumber) {
         return defaultDao.findOne(
                 SELECT_ALL + WHERE_ACCOUNT_NUMBER,
                 accountNumber
@@ -89,14 +93,14 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
     }
 
     @Override
-    public List<RegularAccount> findAll() {
+    public List<DepositAccount> findAll() {
         return defaultDao.findAll(
                 SELECT_ALL
         );
     }
 
     @Override
-    public RegularAccount insert(RegularAccount account) {
+    public DepositAccount insert(DepositAccount account) {
         Objects.requireNonNull(account);
 
         long accountNumber = defaultDao.executeInsertWithGeneratedPrimaryKey(
@@ -110,18 +114,24 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
 
         defaultDao.executeUpdate(INSERT_DETAILS,
                 account.getAccountNumber(),
-                account.getBalance()
+                account.getBalance(),
+                TimeConverter.toTimestamp(account.getLastOperationDate()),
+                account.getMinBalance(),
+                account.getAnnualRate()
         );
+
         return account;
     }
 
     @Override
-    public void update(RegularAccount account) {
+    public void update(DepositAccount account) {
         Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(
                 UPDATE + WHERE_ACCOUNT_NUMBER,
                 account.getBalance(),
+                TimeConverter.toTimestamp(account.getLastOperationDate()),
+                account.getMinBalance(),
                 account.getAccountNumber()
         );
     }
@@ -136,7 +146,7 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
 
 
     @Override
-    public List<RegularAccount> findByUser(User user) {
+    public List<DepositAccount> findByUser(User user) {
         Objects.requireNonNull(user);
 
         return defaultDao.findAll(
@@ -146,7 +156,7 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
     }
 
     @Override
-    public List<RegularAccount> findByStatus(Status status) {
+    public List<DepositAccount> findByStatus(Status status) {
         return defaultDao.findAll(
                 SELECT_ALL + WHERE_STATUS,
                 status.getId()
@@ -154,7 +164,7 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
     }
 
     @Override
-    public void increaseBalance(RegularAccount account, BigDecimal amount) {
+    public void increaseBalance(DepositAccount account, BigDecimal amount) {
         Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(
@@ -164,7 +174,7 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
     }
 
     @Override
-    public void decreaseBalance(RegularAccount account, BigDecimal amount) {
+    public void decreaseBalance(DepositAccount account, BigDecimal amount) {
         Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(
@@ -174,7 +184,7 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
     }
 
     @Override
-    public void updateAccountStatus(RegularAccount account, Status status) {
+    public void updateAccountStatus(DepositAccount account, Status status) {
         Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(
@@ -184,19 +194,29 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
         );
     }
 
+    @Override
+    public void updateMinBalance(DepositAccount account, BigDecimal minBalance) {
+        Objects.requireNonNull(account);
+
+        defaultDao.executeUpdate(
+                UPDATE_MIN_BALANCE + WHERE_ACCOUNT_NUMBER,
+                minBalance,
+                account.getAccountNumber()
+        );
+    }
 
     public static void main(String[] args) {
         DataSource dataSource = PooledConnection.getInstance();
-        RegularAccountDao mySqlRegularAccountDao;
+        DepositAccountDao mySqlDepositAccountDao;
         try {
             System.out.println("Find all:");
-            mySqlRegularAccountDao = new MySqlRegularAccountDao(dataSource.getConnection());
-            ((MySqlRegularAccountDao) mySqlRegularAccountDao).printAccount(mySqlRegularAccountDao.findAll());
+            mySqlDepositAccountDao = new MySqlDepositAccountDao(dataSource.getConnection());
+            ((MySqlDepositAccountDao) mySqlDepositAccountDao).printAccount(mySqlDepositAccountDao.findAll());
 
             int random = (int) (Math.random() * 100);
 
             System.out.println("Find one:");
-            System.out.println(mySqlRegularAccountDao.findOne(3L));
+            System.out.println(mySqlDepositAccountDao.findOne(1L));
 
             System.out.println("find dy user:");
             User user = User.newBuilder().setFirstName("first" + random).
@@ -207,63 +227,74 @@ public class MySqlRegularAccountDao implements RegularAccountDao {
                     setPhoneNumber("+123").
                     setRole(new Role(Role.USER_ROLE_ID, "USER")).
                     build();
-            System.out.println(mySqlRegularAccountDao.findByUser(user));
+            System.out.println(mySqlDepositAccountDao.findByUser(user));
 
             System.out.println("Insert:");
-            RegularAccount debitAccount = (RegularAccount) mySqlRegularAccountDao.insert(
-                    RegularAccount.newBuilder().
+            DepositAccount depositAccount = (DepositAccount) mySqlDepositAccountDao.insert(
+                    DepositAccount.newBuilder().
                             setAccountHolder(user).
-                            setAccountType(new AccountType(16,"REGULAR")).
+                            setAccountType(new AccountType(8,"DEBIT")).
                             setBalance(BigDecimal.TEN).
+                            setAnnualRate(2.5f).
+                            setLastOperationDate(new Date()).
+                            setMinBalance(BigDecimal.ONE).
                             setStatus(new Status(1,"ACTIVE")).
                             build()
             );
 
             System.out.println("Find all:");
-            ((MySqlRegularAccountDao) mySqlRegularAccountDao).printAccount(mySqlRegularAccountDao.findAll());
+            ((MySqlDepositAccountDao) mySqlDepositAccountDao).printAccount(mySqlDepositAccountDao.findAll());
 
             System.out.println("update:");
-            debitAccount.setBalance(BigDecimal.valueOf(12345));
-            mySqlRegularAccountDao.update(debitAccount);
+            depositAccount.setBalance(BigDecimal.valueOf(12345));
+            mySqlDepositAccountDao.update(depositAccount);
 
             System.out.println("Find all:");
-            ((MySqlRegularAccountDao) mySqlRegularAccountDao).printAccount(mySqlRegularAccountDao.findAll());
+            ((MySqlDepositAccountDao) mySqlDepositAccountDao).printAccount(mySqlDepositAccountDao.findAll());
 
             System.out.println("Increase:");
-            mySqlRegularAccountDao.increaseBalance(debitAccount, BigDecimal.valueOf(100));
+            mySqlDepositAccountDao.increaseBalance(depositAccount, BigDecimal.valueOf(100));
 
             System.out.println("Find all:");
-            ((MySqlRegularAccountDao) mySqlRegularAccountDao).printAccount(mySqlRegularAccountDao.findAll());
+            ((MySqlDepositAccountDao) mySqlDepositAccountDao).printAccount(mySqlDepositAccountDao.findAll());
 
             System.out.println("decrease:");
-            mySqlRegularAccountDao.decreaseBalance(debitAccount, BigDecimal.valueOf(2000));
+            mySqlDepositAccountDao.decreaseBalance(depositAccount, BigDecimal.valueOf(2000));
 
             System.out.println("Find all:");
-            ((MySqlRegularAccountDao) mySqlRegularAccountDao).printAccount(mySqlRegularAccountDao.findAll());
+            ((MySqlDepositAccountDao) mySqlDepositAccountDao).printAccount(mySqlDepositAccountDao.findAll());
 
             System.out.println("update status:");
-            mySqlRegularAccountDao.updateAccountStatus(debitAccount,new Status(4,"PENDING"));
+            mySqlDepositAccountDao.updateAccountStatus(depositAccount,new Status(4,"PENDING"));
 
             System.out.println("Find all:");
-            ((MySqlRegularAccountDao) mySqlRegularAccountDao).printAccount(mySqlRegularAccountDao.findAll());
+            ((MySqlDepositAccountDao) mySqlDepositAccountDao).printAccount(mySqlDepositAccountDao.findAll());
+
+            System.out.println("update min balance:");
+            mySqlDepositAccountDao.updateMinBalance(depositAccount,BigDecimal.ZERO);
+
+            System.out.println("Find all:");
+            ((MySqlDepositAccountDao) mySqlDepositAccountDao).printAccount(mySqlDepositAccountDao.findAll());
 
             System.out.println("delete:");
-            mySqlRegularAccountDao.delete(debitAccount.getAccountNumber());
+            mySqlDepositAccountDao.delete(depositAccount.getAccountNumber());
 
             System.out.println("Find all:");
-            ((MySqlRegularAccountDao) mySqlRegularAccountDao).printAccount(mySqlRegularAccountDao.findAll());
+            ((MySqlDepositAccountDao) mySqlDepositAccountDao).printAccount(mySqlDepositAccountDao.findAll());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
 
-    protected void printAccount(List<RegularAccount> list){
-        for (RegularAccount debitAccount : list) {
-            System.out.println("Account : "+debitAccount+";");
-            System.out.println("Balance: "+debitAccount.getBalance()+";");
+    protected void printAccount(List<DepositAccount> list){
+        for (DepositAccount depositAccount : list) {
+            System.out.println("Account: "+ depositAccount +";");
+            System.out.println("Balance: "+ depositAccount.getBalance()+";");
+            System.out.println("Annual Rate: "+ depositAccount.getAnnualRate()+";");
+            System.out.println("Last operation: "+ depositAccount.getLastOperationDate()+";");
+            System.out.println("Min Balance: "+ depositAccount.getMinBalance()+";");
             System.out.println();
         }
     }
-
 }

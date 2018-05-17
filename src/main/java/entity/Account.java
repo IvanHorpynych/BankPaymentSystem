@@ -12,8 +12,8 @@ public abstract class Account {
     public final static BigDecimal DEFAULT_BALANCE = BigDecimal.ZERO;
     public final static long DEFAULT_NUMBER = 0L;
 
-    public final static String DEFAULT_TYPE = "REGULAR";
-    private final static int DEFAULT_TYPE_ID = AccountType.REGULAR_TYPE_ID;
+    public final static String DEFAULT_TYPE = "DEBIT";
+    private final static int DEFAULT_TYPE_ID = AccountType.DEBIT_TYPE_ID;
 
     public final static String DEFAULT_STATUS = "ACTIVE";
     private final static int DEFAULT_STATUS_ID = Status.ACTIVE_STATUS_ID;

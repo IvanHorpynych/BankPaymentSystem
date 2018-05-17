@@ -15,6 +15,7 @@ public class PaymentDtoConverter implements DtoConverter<Payment> {
     private final static String ID_FIELD = "id";
     private final static String AMOUNT_FIELD = "amount";
     private final static String OPERATION_DATE_FIELD = "operation_date";
+    private final static String CARD_NUMBER_FROM = "card_number_from";
 
     private DtoConverter<? extends Account> accountConverter;
     private String accountTablePrefix;
@@ -60,6 +61,8 @@ public class PaymentDtoConverter implements DtoConverter<Payment> {
                 setDate(TimeConverter.toDate(
                         resultSet.getTimestamp(
                                 tablePrefix + OPERATION_DATE_FIELD))).
+                setCardNumberFrom(resultSet.getLong(
+                        tablePrefix + CARD_NUMBER_FROM)).
                 build();
 
         return payment;

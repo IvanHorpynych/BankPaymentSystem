@@ -24,4 +24,12 @@ public interface PaymentDao extends GenericDao<Payment, Long> {
      */
     List<Payment> findByUser(User user);
 
+    /**
+     * Retrieves all payments associated with certain user.
+     *
+     * @param cardNumber card number to retrieve payments
+     * @return list of retrieved payments
+     */
+    List<Payment> findByCardNumber(long cardNumber);
+
 }

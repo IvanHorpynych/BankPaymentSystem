@@ -1,6 +1,6 @@
 package dao.impl.mysql.converter;
 
-import dao.util.time.TimeConverter;
+
 import entity.*;
 
 import java.sql.ResultSet;
@@ -12,23 +12,19 @@ import java.sql.SQLException;
 public class DebitAccountDtoConverter implements DtoConverter<DebitAccount>{
     private final static String ACCOUNT_NUMBER_FIELD = "id";
     private final static String BALANCE_FIELD = "balance";
-    private final static String MIN_BALANCE_FIELD = "min_balance";
-    private final static String LAST_OPERATION_DATE_FIELD = "last_operation";
-    private final static String ANNUAL_RATE_FIELD = "annual_rate";
 
     private final DtoConverter<User> userConverter;
     private final DtoConverter<AccountType> accountTypeConverter;
     private final DtoConverter<Status> statusConverter;
     private String accountOrder;
-
     public DebitAccountDtoConverter() {
         this(new UserDtoConverter(), new AccountTypeDtoConverter(),
                 new StatusDtoConverter());
     }
 
     public DebitAccountDtoConverter(DtoConverter<User> userConverter,
-                                     DtoConverter<AccountType> accountTypeConverter,
-                                     DtoConverter<Status> statusConverter) {
+                                    DtoConverter<AccountType> accountTypeConverter,
+                                    DtoConverter<Status> statusConverter) {
         this.userConverter = userConverter;
         this.accountTypeConverter = accountTypeConverter;
         this.statusConverter = statusConverter;
@@ -53,11 +49,6 @@ public class DebitAccountDtoConverter implements DtoConverter<DebitAccount>{
                 setAccountHolder(accountHolder).
                 setAccountType(accountType).
                 setBalance(resultSet.getBigDecimal(tablePrefix+BALANCE_FIELD)).
-                setMinBalance(resultSet.getBigDecimal(tablePrefix+MIN_BALANCE_FIELD)).
-                setLastOperationDate(TimeConverter.
-                        toDate(resultSet.getTimestamp(
-                                tablePrefix+LAST_OPERATION_DATE_FIELD))).
-                setAnnualRate(resultSet.getFloat(tablePrefix+ANNUAL_RATE_FIELD)).
                 setStatus(status).
                 build();
 

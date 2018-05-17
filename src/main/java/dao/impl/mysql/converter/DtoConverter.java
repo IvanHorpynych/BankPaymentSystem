@@ -18,8 +18,8 @@ import java.util.List;
 public interface DtoConverter <T> {
     String EMPTY_STRING = "";
     String CREDIT_TABLE_PREFIX = "credit_";
+    String DEPOSIT_TABLE_PREFIX = "deposit_";
     String DEBIT_TABLE_PREFIX = "debit_";
-    String REGULAR_TABLE_PREFIX = "regular_";
     String FIRST_ACCOUNT_ORDER_TABLE_PREFIX = "acc1_";
     String SECOND_ACCOUNT_ORDER_TABLE_PREFIX = "acc2_";
     /**
@@ -76,20 +76,20 @@ public interface DtoConverter <T> {
     default DtoConverter<? extends Account> accountDtoSelection(int typeId) {
         if (typeId == AccountType.CREDIT_TYPE_ID)
             return new CreditAccountDtoConverter();
+        else if (typeId == AccountType.DEPOSIT_TYPE_ID)
+            return new DepositAccountDtoConverter();
         else if (typeId == AccountType.DEBIT_TYPE_ID)
             return new DebitAccountDtoConverter();
-        else if (typeId == AccountType.REGULAR_TYPE_ID)
-            return new RegularAccountDtoConverter();
         return null;
     }
 
     default String accountTablePrefixSelection(int typeId){
         if (typeId == AccountType.CREDIT_TYPE_ID)
             return CREDIT_TABLE_PREFIX;
+        else if (typeId == AccountType.DEPOSIT_TYPE_ID)
+            return DEPOSIT_TABLE_PREFIX;
         else if (typeId == AccountType.DEBIT_TYPE_ID)
             return DEBIT_TABLE_PREFIX;
-        else if (typeId == AccountType.REGULAR_TYPE_ID)
-            return REGULAR_TABLE_PREFIX;
         return null;
     }
 

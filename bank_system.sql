@@ -88,9 +88,9 @@ create table CREDIT_ACCOUNT_DETAILS
 );
 
 /*==============================================================*/
-/* Table: DEBIT_ACCOUNT_DETAILS                                 */
+/* Table: DEPOSIT_ACCOUNT_DETAILS                                 */
 /*==============================================================*/
-create table DEBIT_ACCOUNT_DETAILS
+create table DEPOSIT_ACCOUNT_DETAILS
 (
   ID                   bigint unsigned not null AUTO_INCREMENT,
   BALANCE              DECIMAL(13,4) not null,
@@ -98,19 +98,19 @@ create table DEBIT_ACCOUNT_DETAILS
   MIN_BALANCE          DECIMAL(13,4) not null,
   ANNUAL_RATE          real not null,
   primary key (ID),
-  constraint DAD_FK_ACCOUNT_ID foreign key (ID) references ACCOUNT (ID) on delete restrict on update restrict
+  constraint DPAD_FK_ACCOUNT_ID foreign key (ID) references ACCOUNT (ID) on delete restrict on update restrict
 );
 
 
 /*==============================================================*/
-/* Table: REGULAR_ACCOUNT_DETAILS                               */
+/* Table: DEBIT_ACCOUNT_DETAILS                               */
 /*==============================================================*/
-create table REGULAR_ACCOUNT_DETAILS
+create table DEBIT_ACCOUNT_DETAILS
 (
   ID             bigint unsigned not null AUTO_INCREMENT,
   BALANCE        DECIMAL(13, 4)  not null,
   primary key (ID),
-  constraint RAD_FK_ACCOUNT_ID foreign key (ID) references ACCOUNT (ID) on delete restrict on update restrict
+  constraint DBAD_FK_ACCOUNT_ID foreign key (ID) references ACCOUNT (ID) on delete restrict on update restrict
 );
 
 
@@ -154,18 +154,20 @@ create table PAYMENT
   ID                   bigint unsigned not null AUTO_INCREMENT,
   AMOUNT               DECIMAL(13,4) not null,
   ACCOUNT_FROM         bigint unsigned not null,
-  ACCOUNT_TO            bigint unsigned not null,
+  CARD_NUMBER_FROM     bigint(16) unsigned,
+  ACCOUNT_TO           bigint unsigned not null,
   OPERATION_DATE       timestamp not null,
   primary key (ID),
   constraint FK_ACCOUNT_ID_FROM foreign key (ACCOUNT_FROM) references ACCOUNT(ID) on delete restrict on update restrict,
-  constraint FK_ACCOUNT_ID_TO foreign key (ACCOUNT_TO) references ACCOUNT(ID) on delete restrict on update restrict
+  constraint FK_ACCOUNT_ID_TO foreign key (ACCOUNT_TO) references ACCOUNT(ID) on delete restrict on update restrict,
+  constraint FK_CARD_FROM foreign key (CARD_NUMBER_FROM) references CARD(CARD_NUMBER) on delete cascade on update restrict
 );
 
 /*==============================================================*/
 /* VIEWS                                                        */
 /*==============================================================*/
 CREATE VIEW payment_details AS SELECT
-                                 payment.id, payment.amount,
+                                 payment.id, payment.amount, payment.card_number_from,
                                  payment.account_from, payment.account_to, payment.operation_date,
                                  acc1_user.id AS acc1_user_id, acc1_user.first_name AS acc1_first_name,
                                  acc1_user.last_name AS acc1_last_name, acc1_user.email AS acc1_email,
@@ -181,13 +183,13 @@ CREATE VIEW payment_details AS SELECT
                                  acc1_cad.last_operation AS acc1_credit_last_operation,
                                  acc1_cad.accrued_interest AS acc1_credit_accrued_interest,
                                  acc1_cad.validity_date AS acc1_credit_validity_date,
-                                 acc1_dad.id AS acc1_debit_id,
-                                 acc1_dad.balance AS acc1_debit_balance,
-                                 acc1_dad.annual_rate AS acc1_debit_annual_rate,
-                                 acc1_dad.last_operation AS acc1_debit_last_operation,
-                                 acc1_dad.min_balance AS acc1_debit_min_balance,
-                                 acc1_rad.id AS acc1_regular_id,
-                                 acc1_rad.balance AS acc1_regular_balance,
+                                 acc1_dpad.id AS acc1_deposit_id,
+                                 acc1_dpad.balance AS acc1_deposit_balance,
+                                 acc1_dpad.annual_rate AS acc1_deposit_annual_rate,
+                                 acc1_dpad.last_operation AS acc1_deposit_last_operation,
+                                 acc1_dpad.min_balance AS acc1_deposit_min_balance,
+                                 acc1_dbad.id AS acc1_debit_id,
+                                 acc1_dbad.balance AS acc1_debit_balance,
 
                                  acc2_user.id AS acc2_user_id, acc2_user.first_name AS acc2_first_name,
                                  acc2_user.last_name AS acc2_last_name, acc2_user.email AS acc2_email,
@@ -203,13 +205,13 @@ CREATE VIEW payment_details AS SELECT
                                  acc2_cad.last_operation AS acc2_credit_last_operation,
                                  acc2_cad.accrued_interest AS acc2_credit_accrued_interest,
                                  acc2_cad.validity_date AS acc2_credit_validity_date,
-                                 acc2_dad.id AS acc2_debit_id,
-                                 acc2_dad.balance AS acc2_debit_balance,
-                                 acc2_dad.annual_rate AS acc2_debit_annual_rate,
-                                 acc2_dad.last_operation AS acc2_debit_last_operation,
-                                 acc2_dad.min_balance AS acc2_debit_min_balance,
-                                 acc2_rad.id AS acc2_regular_id,
-                                 acc2_rad.balance AS acc2_regular_balance
+                                 acc2_dpad.id AS acc2_deposit_id,
+                                 acc2_dpad.balance AS acc2_deposit_balance,
+                                 acc2_dpad.annual_rate AS acc2_deposit_annual_rate,
+                                 acc2_dpad.last_operation AS acc2_deposit_last_operation,
+                                 acc2_dpad.min_balance AS acc2_deposit_min_balance,
+                                 acc2_dbad.id AS acc2_debit_id,
+                                 acc2_dbad.balance AS acc2_debit_balance
                                FROM payment
                                  JOIN account AS acc1_account ON account_from = acc1_account.id
                                  JOIN user AS acc1_user ON acc1_account.user_id = acc1_user.id
@@ -217,10 +219,10 @@ CREATE VIEW payment_details AS SELECT
                                  JOIN account_type AS acc1_type ON acc1_account.type_id = acc1_type.id
                                  LEFT JOIN credit_account_details AS acc1_cad
                                    ON acc1_account.id = acc1_cad.id
-                                 LEFT JOIN debit_account_details AS acc1_dad
-                                   ON acc1_account.id = acc1_dad.id
-                                 LEFT JOIN regular_account_details AS acc1_rad
-                                   ON acc1_account.id = acc1_rad.id
+                                 LEFT JOIN deposit_account_details AS acc1_dpad
+                                   ON acc1_account.id = acc1_dpad.id
+                                 LEFT JOIN debit_account_details AS acc1_dbad
+                                   ON acc1_account.id = acc1_dbad.id
                                  LEFT JOIN status AS acc1_status
                                    ON acc1_account.status_id  =acc1_status.id
 
@@ -230,53 +232,47 @@ CREATE VIEW payment_details AS SELECT
                                  JOIN account_type AS acc2_type ON acc2_account.type_id = acc2_type.id
                                  LEFT JOIN credit_account_details AS acc2_cad
                                    ON acc2_account.id = acc2_cad.id
-                                 LEFT JOIN debit_account_details AS acc2_dad
-                                   ON acc2_account.id = acc2_dad.id
-                                 LEFT JOIN regular_account_details AS acc2_rad
-                                   ON acc2_account.id = acc2_rad.id
+                                 LEFT JOIN deposit_account_details AS acc2_dpad
+                                   ON acc2_account.id = acc2_dpad.id
+                                 LEFT JOIN debit_account_details AS acc2_dbad
+                                   ON acc2_account.id = acc2_dbad.id
                                  LEFT JOIN status AS acc2_status
                                    ON acc2_account.status_id  =acc2_status.id;
 
 /*==============================================================*/
 
-CREATE VIEW card_details AS SELECT
-                              card_number,
-                              pin, cvv, expire_date, type,
-                                                 user.id AS user_id, user.first_name,
-                              user.last_name, user.email,
-                              user.phone_number, user.password,
-                              user.role_id,
-                                                 role.name AS role_name,
-                              account.id,
-                              account.status_id, status.name AS status_name,
-                                                 type.id AS type_id, type.name AS type_name,
-                                                 cad.id AS credit_id,
-                                                 cad.balance AS credit_balance,
-                                                 cad.credit_limit AS credit_credit_limit,
-                                                 cad.interest_rate AS credit_interest_rate,
-                                                 cad.last_operation AS credit_last_operation,
-                                                 cad.accrued_interest AS credit_accrued_interest,
-                                                 cad.validity_date AS credit_validity_date,
-                                                 dad.id AS debit_id,
-                                                 dad.balance AS debit_balance,
-                                                 dad.annual_rate AS debit_annual_rate,
-                                                 dad.last_operation AS debit_last_operation,
-                                                 dad.min_balance AS debit_min_balance,
-                                                 rad.id AS regular_id,
-                                                 rad.balance AS regular_balance
-                            FROM card
-                              JOIN account ON account_id = account.id
-                              JOIN user ON account.user_id = user.id
-                              JOIN role ON user.role_id = role.id
-                              JOIN account_type AS type ON account.type_id = type.id
-                              LEFT JOIN credit_account_details AS cad
-                                ON account.id = cad.id
-                              LEFT JOIN debit_account_details AS dad
-                                ON account.id = dad.id
-                              LEFT JOIN regular_account_details AS rad
-                                ON account.id = rad.id
-                              LEFT JOIN status
-                                ON account.status_id  =status.id;
+CREATE VIEW card_details AS
+  SELECT
+    card_number,
+    pin,
+    cvv,
+    expire_date,
+    type,
+    user.id      AS user_id,
+    user.first_name,
+    user.last_name,
+    user.email,
+    user.phone_number,
+    user.password,
+    user.role_id,
+    role.name    AS role_name,
+    account.id,
+    account.status_id,
+    status.name  AS status_name,
+    type.id      AS type_id,
+    type.name    AS type_name,
+    dbad.id      AS debit_id,
+    dbad.balance AS debit_balance
+  FROM card
+    JOIN account ON account_id = account.id
+    JOIN user ON account.user_id = user.id
+    JOIN role ON user.role_id = role.id
+    JOIN account_type AS type ON account.type_id = type.id
+    LEFT JOIN debit_account_details AS dbad
+      ON account.id = dbad.id
+    LEFT JOIN status
+      ON account.status_id = status.id
+  where type.id = 16;
 
 /*==============================================================*/
 
@@ -302,45 +298,62 @@ CREATE VIEW credit_details AS SELECT
 
 /*==============================================================*/
 
-CREATE VIEW debit_details AS SELECT
-                               dad.id, dad.balance,
-                               dad.annual_rate, dad.last_operation,
-                               dad.min_balance,
-                               type.id AS type_id, type.name AS type_name,
-                               status.id AS status_id,
-                               status.name AS status_name,
-                               user.id AS user_id, user.first_name,
-                               user.last_name, user.email,
-                               user.password, user.phone_number,
-                               role.id AS role_id, role.name AS role_name
-                             FROM account
-                               JOIN user ON user_id = user.id
-                               JOIN role ON role_id = role.id
-                               JOIN account_type AS type ON type_id = type.id
-                               JOIN debit_account_details AS dad ON account.id = dad.id
-                               JOIN status ON account.status_id = status.id
-                             WHERE type_id = (select id
-                                              from account_type where name like 'DEBIT');
+CREATE VIEW deposit_details AS
+  SELECT
+    dpad.id,
+    dpad.balance,
+    dpad.annual_rate,
+    dpad.last_operation,
+    dpad.min_balance,
+    type.id     AS type_id,
+    type.name   AS type_name,
+    status.id   AS status_id,
+    status.name AS status_name,
+    user.id     AS user_id,
+    user.first_name,
+    user.last_name,
+    user.email,
+    user.password,
+    user.phone_number,
+    role.id     AS role_id,
+    role.name   AS role_name
+  FROM account
+    JOIN user ON user_id = user.id
+    JOIN role ON role_id = role.id
+    JOIN account_type AS type ON type_id = type.id
+    JOIN deposit_account_details AS dpad ON account.id = dpad.id
+    JOIN status ON account.status_id = status.id
+  WHERE type_id = (select id
+                   from account_type
+                   where name like 'DEPOSIT');
 
 /*==============================================================*/
 
-CREATE VIEW regular_details AS SELECT
-                                 rad.id, rad.balance,
-                                 type.id AS type_id, type.name AS type_name,
-                                 status.id AS status_id,
-                                 status.name AS status_name,
-                                 user.id AS user_id, user.first_name,
-                                 user.last_name, user.email,
-                                 user.password, user.phone_number,
-                                 role.id AS role_id, role.name AS role_name
-                               FROM account
-                                 JOIN user ON user_id = user.id
-                                 JOIN role ON role_id = role.id
-                                 JOIN account_type AS type ON type_id = type.id
-                                 JOIN regular_account_details AS rad ON account.id = rad.id
-                                 JOIN status ON account.status_id = status.id
-                               WHERE type_id = (select id
-                                                from account_type where name like 'REGULAR');
+CREATE VIEW debit_details AS
+  SELECT
+    dbad.id,
+    dbad.balance,
+    type.id     AS type_id,
+    type.name   AS type_name,
+    status.id   AS status_id,
+    status.name AS status_name,
+    user.id     AS user_id,
+    user.first_name,
+    user.last_name,
+    user.email,
+    user.password,
+    user.phone_number,
+    role.id     AS role_id,
+    role.name   AS role_name
+  FROM account
+    JOIN user ON user_id = user.id
+    JOIN role ON role_id = role.id
+    JOIN account_type AS type ON type_id = type.id
+    JOIN debit_account_details AS dbad ON account.id = dbad.id
+    JOIN status ON account.status_id = status.id
+  WHERE type_id = (select id
+                   from account_type
+                   where name like 'DEBIT');
 
 /*==============================================================*/
 
@@ -375,48 +388,45 @@ insert into USER (ROLE_ID, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER, PASSWORD)
   (2, 'Ivan', 'Horpynych-Raduzhenko', 'test@email.com', '+806612345678', '65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5'),
   (10, 'John', 'Tester', 'test@test.com', '+123456789123', '65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5');
 
-insert into ACCOUNT_TYPE (ID, NAME) values (4, 'CREDIT'), (8, 'DEBIT'), (16, 'REGULAR');
+insert into ACCOUNT_TYPE (ID, NAME) values (4, 'CREDIT'), (8, 'DEPOSIT'), (16, 'DEBIT');
 
 insert into STATUS (ID, NAME) values (1, 'ACTIVE'), (4, 'PENDING'), (8, 'REJECT'), (16, 'BLOCKED');
 
 start transaction;
 insert into ACCOUNT (USER_ID, TYPE_ID, STATUS_ID) values ((select ID
-                                                from USER
-                                                where (select id
-                                                       from role
-                                                       where NAME = 'USER') = ROLE_ID), (select ID
-                                                                                         from ACCOUNT_TYPE
-                                                                                         where NAME = 'DEBIT'), (select ID from STATUS where NAME = 'ACTIVE'));
-insert into DEBIT_ACCOUNT_DETAILS (ID, BALANCE, LAST_OPERATION, MIN_BALANCE, ANNUAL_RATE) values (last_insert_id(),2200,now(),1000, 8.2);
+                                                           from USER
+                                                           where (select id
+                                                                  from role
+                                                                  where NAME = 'USER') = ROLE_ID), (select ID
+                                                                                                    from ACCOUNT_TYPE
+                                                                                                    where NAME = 'DEPOSIT'), (select ID from STATUS where NAME = 'ACTIVE'));
+insert into DEPOSIT_ACCOUNT_DETAILS (ID, BALANCE, LAST_OPERATION, MIN_BALANCE, ANNUAL_RATE) values (last_insert_id(),2200,now(),1000, 8.2);
 
-insert into CARD (ACCOUNT_ID, PIN, CVV, EXPIRE_DATE, TYPE) values (last_insert_id(),1234,444,'2019-1-01','VISA');
 
 commit;
 
 
 start transaction;
 insert into ACCOUNT (USER_ID, TYPE_ID, STATUS_ID) values ((select ID
-                                                from USER
-                                                where (select id
-                                                       from role
-                                                       where NAME = 'USER') = ROLE_ID), (select ID
-                                                                                         from ACCOUNT_TYPE
-                                                                                         where NAME = 'CREDIT'), (select ID from STATUS where NAME = 'ACTIVE'));
+                                                           from USER
+                                                           where (select id
+                                                                  from role
+                                                                  where NAME = 'USER') = ROLE_ID), (select ID
+                                                                                                    from ACCOUNT_TYPE
+                                                                                                    where NAME = 'CREDIT'), (select ID from STATUS where NAME = 'ACTIVE'));
 insert into CREDIT_ACCOUNT_DETAILS (ID, BALANCE, CREDIT_LIMIT, INTEREST_RATE, LAST_OPERATION, ACCRUED_INTEREST, VALIDITY_DATE) values (last_insert_id(),-100,2500,12.5,now(),123,'2019-1-01');
 
-insert into CARD (ACCOUNT_ID, CARD_NUMBER, PIN, CVV, EXPIRE_DATE, TYPE) values (last_insert_id(),2222222222222222,1234,555,'2019-1-01', 'VISA');
-
 commit;
 
 start transaction;
 insert into ACCOUNT (USER_ID, TYPE_ID, STATUS_ID) values ((select ID
-                                                from USER
-                                                where (select id
-                                                       from role
-                                                       where NAME = 'USER') = ROLE_ID), (select ID
-                                                                                         from ACCOUNT_TYPE
-                                                                                         where NAME = 'REGULAR'), (select ID from STATUS where NAME = 'ACTIVE'));
-insert into REGULAR_ACCOUNT_DETAILS (ID, BALANCE) values (last_insert_id(),150);
+                                                           from USER
+                                                           where (select id
+                                                                  from role
+                                                                  where NAME = 'USER') = ROLE_ID), (select ID
+                                                                                                    from ACCOUNT_TYPE
+                                                                                                    where NAME = 'DEBIT'), (select ID from STATUS where NAME = 'ACTIVE'));
+insert into DEBIT_ACCOUNT_DETAILS (ID, BALANCE) values (last_insert_id(),150);
 
 insert into CARD (ACCOUNT_ID, PIN, CVV, EXPIRE_DATE, TYPE) values (last_insert_id(),1234,666,'2019-1-01', 'MASTERCARD');
 

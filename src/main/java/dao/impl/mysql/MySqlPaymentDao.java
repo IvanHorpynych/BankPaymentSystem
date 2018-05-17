@@ -32,6 +32,9 @@ public class MySqlPaymentDao implements PaymentDao {
             "WHERE acc1_user_id OR " +
                     "acc2_user_id = ?" ;
 
+    private final static String WHERE_CARD_NUMBER =
+            "WHERE card_number_from = ?" ;
+
     private final static String INSERT =
             "INSERT INTO payment (" +
                     "amount, account_from, " +
@@ -135,6 +138,12 @@ public class MySqlPaymentDao implements PaymentDao {
                 SELECT_ALL + WHERE_USER,
                 user.getId()
         );
+    }
+
+    @Override
+    public List<Payment> findByCardNumber(long cardNumber) {
+       return defaultDao.findAll(SELECT_ALL+
+                 WHERE_CARD_NUMBER, cardNumber);
     }
 
     public static void main(String[] args) {

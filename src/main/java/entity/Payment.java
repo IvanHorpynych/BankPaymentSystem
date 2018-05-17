@@ -2,6 +2,7 @@ package entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * Created by JohnUkraine on 5/06/2018.
@@ -13,6 +14,7 @@ public class Payment {
     private Account accountFrom;
     private Account accountTo;
     private Date date;
+    private long cardNumberFrom;
 
     public static class Builder {
         private final Payment payment;
@@ -43,6 +45,10 @@ public class Payment {
 
         public Builder setDate(Date date) {
             payment.setDate(date);
+            return this;
+        }
+        public Builder setCardNumberFrom(Long cardNumber) {
+            payment.setCardNumberFrom(cardNumber);
             return this;
         }
 
@@ -95,12 +101,21 @@ public class Payment {
         this.date = date;
     }
 
+    public long getCardNumberFrom() {
+        return cardNumberFrom;
+    }
+
+    public void setCardNumberFrom(long cardNumberFrom) {
+        this.cardNumberFrom = cardNumberFrom;
+    }
+
     @Override
     public String toString() {
         return "Payment{" +
                 "id=" + id +
                 ", amount=" + amount  +
                 ", accountFrom=" + accountFrom  +
+                ", cardNumberFrom=" + cardNumberFrom  +
                 ", accountTo=" + accountTo  +
                 '}';
     }
