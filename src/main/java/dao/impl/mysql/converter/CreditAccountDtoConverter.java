@@ -53,24 +53,24 @@ public class CreditAccountDtoConverter implements DtoConverter<CreditAccount> {
                 accountOrder);
 
         return CreditAccount.newBuilder().
-                setAccountNumber(resultSet.
+                addAccountNumber(resultSet.
                         getLong(tablePrefix + ACCOUNT_NUMBER_FIELD)).
-                setAccountHolder(accountHolder).
-                setAccountType(accountType).
-                setBalance(resultSet.getBigDecimal(tablePrefix + BALANCE_FIELD)).
-                setCreditLimit(resultSet.
+                addAccountHolder(accountHolder).
+                addAccountType(accountType).
+                addBalance(resultSet.getBigDecimal(tablePrefix + BALANCE_FIELD)).
+                addCreditLimit(resultSet.
                         getBigDecimal(tablePrefix + CREDIT_LIMIT_FIELD)).
-                setInterestRate(resultSet.
+                addInterestRate(resultSet.
                         getFloat(tablePrefix + INTEREST_RATE_FIELD)).
-                setLastOperationDate(TimeConverter.
+                addLastOperationDate(TimeConverter.
                         toDate(resultSet.getTimestamp(
                                 tablePrefix + VALIDITY_DATE_FIELD))).
-                setAccruedInterest(resultSet.
+                addAccruedInterest(resultSet.
                         getBigDecimal(tablePrefix + ACCRUED_INTEREST_FIELD)).
-                setValidityDate(TimeConverter.
+                addValidityDate(TimeConverter.
                         toDate(resultSet.getTimestamp(
                                 tablePrefix + LAST_OPERATION_DATE_FIELD))).
-                setStatus(status).
+                addStatus(status).
                 build();
 
     }

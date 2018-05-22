@@ -2,7 +2,7 @@
 package dao.impl.mysql;
 
 import dao.abstraction.RoleDao;
-import dao.connectionsource.PooledConnection;
+import dao.datasource.PooledConnection;
 import dao.impl.mysql.converter.DtoConverter;
 import dao.impl.mysql.converter.RoleDtoConverter;
 import entity.Role;

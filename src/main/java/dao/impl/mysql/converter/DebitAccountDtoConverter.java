@@ -44,12 +44,12 @@ public class DebitAccountDtoConverter implements DtoConverter<DebitAccount>{
                 accountOrder);
 
         DebitAccount debitAccount = DebitAccount.newBuilder().
-                setAccountNumber(resultSet.
+                addAccountNumber(resultSet.
                         getLong(tablePrefix+ACCOUNT_NUMBER_FIELD)).
-                setAccountHolder(accountHolder).
-                setAccountType(accountType).
-                setBalance(resultSet.getBigDecimal(tablePrefix+BALANCE_FIELD)).
-                setStatus(status).
+                addAccountHolder(accountHolder).
+                addAccountType(accountType).
+                addBalance(resultSet.getBigDecimal(tablePrefix+BALANCE_FIELD)).
+                addStatus(status).
                 build();
 
         return debitAccount;

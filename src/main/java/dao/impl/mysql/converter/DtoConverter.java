@@ -73,26 +73,6 @@ public interface DtoConverter <T> {
      */
     T convertToObject(ResultSet resultSet, String tablePrefix) throws SQLException;
 
-    default DtoConverter<? extends Account> accountDtoSelection(int typeId) {
-        if (typeId == AccountType.CREDIT_TYPE_ID)
-            return new CreditAccountDtoConverter();
-        else if (typeId == AccountType.DEPOSIT_TYPE_ID)
-            return new DepositAccountDtoConverter();
-        else if (typeId == AccountType.DEBIT_TYPE_ID)
-            return new DebitAccountDtoConverter();
-        return null;
-    }
-
-    default String accountTablePrefixSelection(int typeId){
-        if (typeId == AccountType.CREDIT_TYPE_ID)
-            return CREDIT_TABLE_PREFIX;
-        else if (typeId == AccountType.DEPOSIT_TYPE_ID)
-            return DEPOSIT_TABLE_PREFIX;
-        else if (typeId == AccountType.DEBIT_TYPE_ID)
-            return DEBIT_TABLE_PREFIX;
-        return null;
-    }
-
     default String accountOrderIdentifier(String tablePrefix){
         if(tablePrefix.contains(FIRST_ACCOUNT_ORDER_TABLE_PREFIX))
             return FIRST_ACCOUNT_ORDER_TABLE_PREFIX;

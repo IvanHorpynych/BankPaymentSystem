@@ -2,7 +2,7 @@
 package dao.impl.mysql;
 
 import dao.abstraction.AccountTypeDao;
-import dao.connectionsource.PooledConnection;
+import dao.datasource.PooledConnection;
 import dao.impl.mysql.converter.AccountTypeDtoConverter;
 import dao.impl.mysql.converter.DtoConverter;
 import entity.AccountType;

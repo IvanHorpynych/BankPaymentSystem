@@ -1,7 +1,7 @@
 package dao.impl.mysql;
 
 import dao.abstraction.CreditAccountDao;
-import dao.connectionsource.PooledConnection;
+import dao.datasource.PooledConnection;
 import dao.impl.mysql.converter.CreditAccountDtoConverter;
 import dao.impl.mysql.converter.DtoConverter;
 import dao.util.time.TimeConverter;
@@ -242,28 +242,29 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
             System.out.println(mySqlCreditAccountDao.findOne(2L));
 
             System.out.println("find dy user:");
-            User user = User.newBuilder().setFirstName("first" + random).
-                    setId(3).
-                    setLastName("last" + random).
-                    setEmail("test" + random + "@com").
-                    setPassword("123").
-                    setPhoneNumber("+123").
-                    setRole(new Role(Role.USER_ROLE_ID, "USER")).
+            User user = User.newBuilder().addFirstName("first" + random).
+                    addId(3).
+                    addLastName("last" + random).
+                    addEmail("test" + random + "@com").
+                    addPassword("123").
+                    addPhoneNumber("+123").
+                    addRole(new Role(Role.RoleIdentifier.
+                            USER_ROLE.getId(), "USER")).
                     build();
             System.out.println(mySqlCreditAccountDao.findByUser(user));
 
             System.out.println("Insert:");
             CreditAccount creditAccount = (CreditAccount) mySqlCreditAccountDao.insert(
                     CreditAccount.newBuilder().
-                            setAccountHolder(user).
-                            setAccountType(new AccountType(4,"CREDIT")).
-                            setBalance(BigDecimal.ONE).
-                            setCreditLimit(BigDecimal.TEN).
-                            setInterestRate(2L).
-                            setLastOperationDate(new Date()).
-                            setAccruedInterest(BigDecimal.ZERO).
-                            setValidityDate(new Date()).
-                            setStatus(new Status(1,"ACTIVE")).
+                            addAccountHolder(user).
+                            addAccountType(new AccountType(4,"CREDIT")).
+                            addBalance(BigDecimal.ONE).
+                            addCreditLimit(BigDecimal.TEN).
+                            addInterestRate(2L).
+                            addLastOperationDate(new Date()).
+                            addAccruedInterest(BigDecimal.ZERO).
+                            addValidityDate(new Date()).
+                            addStatus(new Status(1,"ACTIVE")).
                             build()
             );
 

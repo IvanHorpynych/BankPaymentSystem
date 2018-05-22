@@ -6,9 +6,19 @@ package entity;
 
 public class AccountType extends Designation {
 
-    public final static int CREDIT_TYPE_ID = 4;
-    public final static int DEPOSIT_TYPE_ID = 8;
-    public final static int DEBIT_TYPE_ID = 16;
+    public enum TypeIdentifier{
+
+        CREDIT_TYPE (4), DEPOSIT_TYPE (8), DEBIT_TYPE(16);
+
+        private final int id;
+        private TypeIdentifier(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
 
     public AccountType() {};
 

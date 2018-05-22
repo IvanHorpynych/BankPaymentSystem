@@ -48,17 +48,17 @@ public class DepositAccountDtoConverter implements DtoConverter<DepositAccount>{
                 accountOrder);
 
         DepositAccount depositAccount = DepositAccount.newBuilder().
-                setAccountNumber(resultSet.
+                addAccountNumber(resultSet.
                         getLong(tablePrefix+ACCOUNT_NUMBER_FIELD)).
-                setAccountHolder(accountHolder).
-                setAccountType(accountType).
-                setBalance(resultSet.getBigDecimal(tablePrefix+BALANCE_FIELD)).
-                setMinBalance(resultSet.getBigDecimal(tablePrefix+MIN_BALANCE_FIELD)).
-                setLastOperationDate(TimeConverter.
+                addAccountHolder(accountHolder).
+                addAccountType(accountType).
+                addBalance(resultSet.getBigDecimal(tablePrefix+BALANCE_FIELD)).
+                addMinBalance(resultSet.getBigDecimal(tablePrefix+MIN_BALANCE_FIELD)).
+                addLastOperationDate(TimeConverter.
                         toDate(resultSet.getTimestamp(
                                 tablePrefix+LAST_OPERATION_DATE_FIELD))).
-                setAnnualRate(resultSet.getFloat(tablePrefix+ANNUAL_RATE_FIELD)).
-                setStatus(status).
+                addAnnualRate(resultSet.getFloat(tablePrefix+ANNUAL_RATE_FIELD)).
+                addStatus(status).
                 build();
 
         return depositAccount;

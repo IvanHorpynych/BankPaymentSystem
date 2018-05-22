@@ -2,7 +2,7 @@
 package dao.impl.mysql;
 
 import dao.abstraction.CardDao;
-import dao.connectionsource.PooledConnection;
+import dao.datasource.PooledConnection;
 import dao.impl.mysql.converter.CardDtoConverter;
 import dao.impl.mysql.converter.DtoConverter;
 import dao.util.time.TimeConverter;
@@ -158,26 +158,22 @@ public class MySqlCardDao implements CardDao {
     public static void main(String[] args) {
         DataSource dataSource = PooledConnection.getInstance();
         CardDao mySqlCardDao;
-        User user = User.newBuilder().setFirstName("first").
-                setId(3).
-                setLastName("last").
-                setEmail("test@com").
-                setPassword("123").
-                setPhoneNumber("+123").
-                setRole(new Role(Role.USER_ROLE_ID, "USER")).
+        User user = User.newBuilder().addFirstName("first").
+                addId(3).
+                addLastName("last").
+                addEmail("test@com").
+                addPassword("123").
+                addPhoneNumber("+123").
+                addRole(new Role(Role.RoleIdentifier.
+                        USER_ROLE.getId(), "USER")).
                 build();
 
-        CreditAccount creditAccount = CreditAccount.newBuilder().
-                setAccountNumber(2).
-                setAccountHolder(user).
-                setAccountType(new AccountType(4, "CREDIT")).
-                setBalance(BigDecimal.ONE).
-                setCreditLimit(BigDecimal.TEN).
-                setInterestRate(2L).
-                setLastOperationDate(new Date()).
-                setAccruedInterest(BigDecimal.ZERO).
-                setValidityDate(new Date()).
-                setStatus(new Status(1, "ACTIVE")).
+        DebitAccount debitAccount = DebitAccount.newBuilder().
+                addAccountNumber(3).
+                addAccountHolder(user).
+                addAccountType(new AccountType(16, "DEBIT")).
+                addBalance(BigDecimal.ONE).
+                addStatus(new Status(1, "ACTIVE")).
                 build();
         try {
             System.out.println("Find all:");
@@ -187,24 +183,24 @@ public class MySqlCardDao implements CardDao {
             int random = (int) (Math.random() * 100);
 
             System.out.println("Find one:");
-            System.out.println(mySqlCardDao.findOne(2222222222222222L));
+            System.out.println(mySqlCardDao.findOne(1000000000000000L));
 
             System.out.println("find dy user:");
             System.out.println(mySqlCardDao.findByUser(user));
 
             System.out.println("Find by account");
-            for (Card card : mySqlCardDao.findByAccount(creditAccount)) {
+            for (Card card : mySqlCardDao.findByAccount(debitAccount)) {
                 System.out.println(card);
             }
 
             System.out.println("Insert:");
             Card card = ((MySqlCardDao) mySqlCardDao).insert(
                     Card.newBuilder().
-                            setAccount(creditAccount).
-                            setPin(1111).
-                            setCvv(444).
-                            setExpireDate(new Date()).
-                            setType(Card.CardType.MASTERCARD).
+                            addAccount(debitAccount).
+                            addPin(1111).
+                            addCvv(444).
+                            addExpireDate(new Date()).
+                            addType(Card.CardType.MASTERCARD).
                             build()
             );
             List<Card> temp = new ArrayList<>();
@@ -214,7 +210,7 @@ public class MySqlCardDao implements CardDao {
             ((MySqlCardDao) mySqlCardDao).printCard(temp);
 
             System.out.println("Find by account");
-            for (Card temp1 : mySqlCardDao.findByAccount(creditAccount)) {
+            for (Card temp1 : mySqlCardDao.findByAccount(debitAccount)) {
                 System.out.println(temp1);
             }
 
@@ -232,9 +228,9 @@ public class MySqlCardDao implements CardDao {
             System.out.println("Find by user and status:");
             ((MySqlCardDao) mySqlCardDao).printCard(mySqlCardDao.findByUserAndStatus(user, new Status(1,"ACTIVE")));
             System.out.println("Find by user and type:");
-            ((MySqlCardDao) mySqlCardDao).printCard(mySqlCardDao.findByUserAndType(user, new AccountType(16,"REGULAR")));
+            ((MySqlCardDao) mySqlCardDao).printCard(mySqlCardDao.findByUserAndType(user, new AccountType(16,"DEBIT")));
             System.out.println("Find by user and status and type:");
-            ((MySqlCardDao) mySqlCardDao).printCard(mySqlCardDao.findByUserAndTypeAndStatus(user,new AccountType(8,"DEBIT"), new Status(1,"ACTIVE")));
+            ((MySqlCardDao) mySqlCardDao).printCard(mySqlCardDao.findByUserAndTypeAndStatus(user,new AccountType(16,"DEBIT"), new Status(2,"PENDING")));
             System.out.println("Delete:");
             mySqlCardDao.delete(card.getCardNumber());
             ((MySqlCardDao) mySqlCardDao).printCard(mySqlCardDao.findAll());

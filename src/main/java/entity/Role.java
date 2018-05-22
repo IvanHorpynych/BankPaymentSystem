@@ -5,8 +5,20 @@ package entity;
  */
 public class Role extends Designation{
 
-    public final static int MANAGER_ROLE_ID = 2;
-    public final static int USER_ROLE_ID = 10;
+    public enum RoleIdentifier{
+
+        MANAGER_ROLE (2), USER_ROLE (10);
+
+        private final int id;
+        private RoleIdentifier(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+
 
     public Role() {};
 

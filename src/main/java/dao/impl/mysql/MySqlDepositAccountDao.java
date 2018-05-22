@@ -2,7 +2,7 @@
 package dao.impl.mysql;
 
 import dao.abstraction.DepositAccountDao;
-import dao.connectionsource.PooledConnection;
+import dao.datasource.PooledConnection;
 import dao.impl.mysql.converter.DepositAccountDtoConverter;
 import dao.impl.mysql.converter.DtoConverter;
 import dao.util.time.TimeConverter;
@@ -219,26 +219,27 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
             System.out.println(mySqlDepositAccountDao.findOne(1L));
 
             System.out.println("find dy user:");
-            User user = User.newBuilder().setFirstName("first" + random).
-                    setId(3).
-                    setLastName("last" + random).
-                    setEmail("test" + random + "@com").
-                    setPassword("123").
-                    setPhoneNumber("+123").
-                    setRole(new Role(Role.USER_ROLE_ID, "USER")).
+            User user = User.newBuilder().addFirstName("first" + random).
+                    addId(3).
+                    addLastName("last" + random).
+                    addEmail("test" + random + "@com").
+                    addPassword("123").
+                    addPhoneNumber("+123").
+                    addRole(new Role(Role.RoleIdentifier.
+                            USER_ROLE.getId(), "USER")).
                     build();
             System.out.println(mySqlDepositAccountDao.findByUser(user));
 
             System.out.println("Insert:");
             DepositAccount depositAccount = (DepositAccount) mySqlDepositAccountDao.insert(
                     DepositAccount.newBuilder().
-                            setAccountHolder(user).
-                            setAccountType(new AccountType(8,"DEBIT")).
-                            setBalance(BigDecimal.TEN).
-                            setAnnualRate(2.5f).
-                            setLastOperationDate(new Date()).
-                            setMinBalance(BigDecimal.ONE).
-                            setStatus(new Status(1,"ACTIVE")).
+                            addAccountHolder(user).
+                            addAccountType(new AccountType(8,"DEBIT")).
+                            addBalance(BigDecimal.TEN).
+                            addAnnualRate(2.5f).
+                            addLastOperationDate(new Date()).
+                            addMinBalance(BigDecimal.ONE).
+                            addStatus(new Status(1,"ACTIVE")).
                             build()
             );
 

@@ -39,19 +39,19 @@ public class UserDtoConverter implements DtoConverter<User>{
                 accountOrder);
 
         User user = User.newBuilder()
-                .setId(resultSet.getInt(
+                .addId(resultSet.getInt(
                         tablePrefix + ID_FIELD))
-                .setRole(role)
-                .setFirstName(resultSet.getString(
+                .addRole(role)
+                .addFirstName(resultSet.getString(
                         tablePrefix + FIRST_NAME_FIELD))
-                .setLastName(resultSet.getString(
+                .addLastName(resultSet.getString(
                         tablePrefix + LAST_NAME_FIELD))
-                .setEmail(resultSet.getString(
+                .addEmail(resultSet.getString(
                         tablePrefix + EMAIL_FIELD))
-                .setPassword(resultSet.getString(
+                .addPassword(resultSet.getString(
                         tablePrefix + PASSWORD_FIELD
                 ))
-                .setPhoneNumber(resultSet.getString(
+                .addPhoneNumber(resultSet.getString(
                         tablePrefix + PHONE_NUMBER_FIELD
                 ))
                 .build();

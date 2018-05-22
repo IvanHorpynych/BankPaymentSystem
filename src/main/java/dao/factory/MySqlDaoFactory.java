@@ -1,7 +1,7 @@
 package dao.factory;
 
 import dao.abstraction.*;
-import dao.connectionsource.PooledConnection;
+import dao.datasource.PooledConnection;
 import dao.exception.DaoException;
 import dao.factory.connection.DaoConnection;
 import dao.factory.connection.MySqlConnection;

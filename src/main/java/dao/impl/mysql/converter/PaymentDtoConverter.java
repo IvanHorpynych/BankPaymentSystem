@@ -2,6 +2,7 @@ package dao.impl.mysql.converter;
 
 import dao.util.time.TimeConverter;
 import entity.Account;
+import entity.AccountType;
 import entity.Payment;
 
 import java.sql.ResultSet;
@@ -52,19 +53,46 @@ public class PaymentDtoConverter implements DtoConverter<Payment> {
 
 
         Payment payment = Payment.newBuilder().
-                setId(resultSet.getLong(
+                addId(resultSet.getLong(
                         tablePrefix + ID_FIELD)).
-                setAmount(resultSet.getBigDecimal(
+                addAmount(resultSet.getBigDecimal(
                         tablePrefix + AMOUNT_FIELD)).
-                setAccountFrom(accountFrom).
-                setAccountTo(accountTo).
-                setDate(TimeConverter.toDate(
+                addAccountFrom(accountFrom).
+                addAccountTo(accountTo).
+                addDate(TimeConverter.toDate(
                         resultSet.getTimestamp(
                                 tablePrefix + OPERATION_DATE_FIELD))).
-                setCardNumberFrom(resultSet.getLong(
+                addCardNumberFrom(resultSet.getLong(
                         tablePrefix + CARD_NUMBER_FROM)).
                 build();
 
         return payment;
     }
+
+    DtoConverter<? extends Account> accountDtoSelection(int typeId) {
+        if (typeId == AccountType.TypeIdentifier.
+                CREDIT_TYPE.getId())
+            return new CreditAccountDtoConverter();
+        else if (typeId == AccountType.TypeIdentifier.
+                DEPOSIT_TYPE.getId())
+            return new DepositAccountDtoConverter();
+        else if (typeId == AccountType.TypeIdentifier.
+                DEBIT_TYPE.getId())
+            return new DebitAccountDtoConverter();
+        return null;
+    }
+
+    String accountTablePrefixSelection(int typeId){
+        if (typeId == AccountType.TypeIdentifier.
+                CREDIT_TYPE.getId())
+            return CREDIT_TABLE_PREFIX;
+        else if (typeId ==  AccountType.TypeIdentifier.
+                DEPOSIT_TYPE.getId())
+            return DEPOSIT_TABLE_PREFIX;
+        else if (typeId == AccountType.TypeIdentifier.
+                DEBIT_TYPE.getId())
+            return DEBIT_TABLE_PREFIX;
+        return null;
+    }
+
 }

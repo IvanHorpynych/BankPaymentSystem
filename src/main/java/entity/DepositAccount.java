@@ -9,7 +9,8 @@ import java.util.Date;
 
 public class DepositAccount extends Account{
     public final static String DEFAULT_TYPE = "DEBIT";
-    private final static int DEFAULT_TYPE_ID = AccountType.DEBIT_TYPE_ID;
+    private final static int DEFAULT_TYPE_ID = AccountType.TypeIdentifier.
+            DEBIT_TYPE.getId();
 
     private BigDecimal minBalance;
     private float annualRate;
@@ -26,33 +27,33 @@ public class DepositAccount extends Account{
             depositAccount = new DepositAccount();
         }
 
-        public DepositAccount.Builder setAccountType(AccountType accountType) {
+        public DepositAccount.Builder addAccountType(AccountType accountType) {
             depositAccount.setAccountType(accountType);
             return this;
         }
 
-        public DepositAccount.Builder setDefaultAccountType() {
+        public DepositAccount.Builder addDefaultAccountType() {
             depositAccount.setAccountType(new AccountType(DEFAULT_TYPE_ID,
                     DEFAULT_TYPE));
             return this;
         }
 
-        public DepositAccount.Builder setMinBalance(BigDecimal minBalance) {
+        public DepositAccount.Builder addMinBalance(BigDecimal minBalance) {
             depositAccount.setMinBalance(minBalance);
             return this;
         }
 
-        public DepositAccount.Builder setDefaultMinBalance() {
+        public DepositAccount.Builder addDefaultMinBalance() {
             depositAccount.setMinBalance(DEFAULT_BALANCE);
             return this;
         }
 
-        public DepositAccount.Builder setAnnualRate(float annualRate) {
+        public DepositAccount.Builder addAnnualRate(float annualRate) {
             depositAccount.setAnnualRate(annualRate);
             return this;
         }
 
-        public DepositAccount.Builder setLastOperationDate(Date date) {
+        public DepositAccount.Builder addLastOperationDate(Date date) {
             depositAccount.setLastOperationDate(date);
             return this;
         }

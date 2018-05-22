@@ -12,7 +12,8 @@ public class CreditRequest {
     public final static BigDecimal DEFAULT_BALANCE = BigDecimal.ZERO;
 
     public final static String DEFAULT_STATUS = "PENDING";
-    private final static int DEFAULT_STATUS_ID = Status.PENDING_STATUS_ID;
+    private final static int DEFAULT_STATUS_ID = Status.StatusIdentifier.
+            PENDING_STATUS.getId();
 
     public final static Date DEFAULT_DATE = new Date();
 
@@ -35,38 +36,38 @@ public class CreditRequest {
             creditRequest = new CreditRequest();
         }
 
-        public Builder setRequestNumber(long requestNumber) {
+        public Builder addRequestNumber(long requestNumber) {
             creditRequest.setRequestNumber(requestNumber);
             return this;
         }
 
-        public Builder setAccountHolder(User accountHolder) {
+        public Builder addAccountHolder(User accountHolder) {
             creditRequest.setAccountHolder(accountHolder);
             return this;
         }
 
-        public Builder setInterestRate(float interestRate) {
+        public Builder addInterestRate(float interestRate) {
             creditRequest.setInterestRate(interestRate);
             return this;
         }
 
-        public Builder setCreditLimit(BigDecimal creditLimit) {
+        public Builder addCreditLimit(BigDecimal creditLimit) {
             creditRequest.setCreditLimit(creditLimit);
             return this;
         }
 
-        public Builder setStatus(Status status) {
+        public Builder addStatus(Status status) {
             creditRequest.setStatus(status);
             return this;
         }
 
-        public Builder setDefaultStatus() {
+        public Builder addDefaultStatus() {
             creditRequest.setStatus(new Status(DEFAULT_STATUS_ID,
                     DEFAULT_STATUS));
             return this;
         }
 
-        public CreditRequest.Builder setValidityDate(Date date) {
+        public CreditRequest.Builder addValidityDate(Date date) {
             creditRequest.setValidityDate(date);
             return this;
         }

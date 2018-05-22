@@ -1,7 +1,7 @@
 package dao.impl.mysql;
 
 import dao.abstraction.UserDao;
-import dao.connectionsource.PooledConnection;
+import dao.datasource.PooledConnection;
 import dao.impl.mysql.converter.DtoConverter;
 import dao.impl.mysql.converter.UserDtoConverter;
 import entity.Role;
@@ -136,12 +136,13 @@ public class MySqlUserDao implements UserDao {
             System.out.println("find one dy email:");
             System.out.println(mySqlUserDao.findOneByEmail("test@test.com"));
             System.out.println("Insert:");
-            User insertUser = mySqlUserDao.insert(User.newBuilder().setFirstName("first"+random).
-                    setLastName("last"+random).
-                    setEmail("test"+random+"@com").
-                    setPassword("123").
-                    setPhoneNumber("+123").
-                    setRole(new Role(Role.USER_ROLE_ID,"USER")).
+            User insertUser = mySqlUserDao.insert(User.newBuilder().addFirstName("first"+random).
+                    addLastName("last"+random).
+                    addEmail("test"+random+"@com").
+                    addPassword("123").
+                    addPhoneNumber("+123").
+                    addRole(new Role(Role.RoleIdentifier.
+                            USER_ROLE.getId(),"USER")).
                     build()
             );
             System.out.println(insertUser);

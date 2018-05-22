@@ -13,10 +13,12 @@ public abstract class Account {
     public final static long DEFAULT_NUMBER = 0L;
 
     public final static String DEFAULT_TYPE = "DEBIT";
-    private final static int DEFAULT_TYPE_ID = AccountType.DEBIT_TYPE_ID;
+    private final static int DEFAULT_TYPE_ID = AccountType.TypeIdentifier.
+            DEBIT_TYPE.getId();
 
     public final static String DEFAULT_STATUS = "ACTIVE";
-    private final static int DEFAULT_STATUS_ID = Status.ACTIVE_STATUS_ID;
+    private final static int DEFAULT_STATUS_ID = Status.StatusIdentifier.
+            ACTIVE_STATUS.getId();
 
     public final static Date DEFAULT_DATE = new Date();
 
@@ -44,43 +46,43 @@ public abstract class Account {
         protected abstract A getAccount();
         public abstract Account build();
 
-        public T setAccountNumber(long accountNumber) {
+        public T addAccountNumber(long accountNumber) {
             getAccount().setAccountNumber(accountNumber);
             return getThis();
         }
 
-        public T setAccountHolder(User accountHolder) {
+        public T addAccountHolder(User accountHolder) {
             getAccount().setAccountHolder(accountHolder);
             return getThis();
         }
 
-        public T setAccountType(AccountType accountType) {
+        public T addAccountType(AccountType accountType) {
             getAccount().setAccountType(accountType);
             return getThis();
         }
 
-        public T setDefaultAccountType() {
+        public T addDefaultAccountType() {
             getAccount().setAccountType(new AccountType(DEFAULT_TYPE_ID,
                     DEFAULT_TYPE));
             return getThis();
         }
 
-        public T setBalance(BigDecimal balance) {
+        public T addBalance(BigDecimal balance) {
             getAccount().setBalance(balance);
             return getThis();
         }
 
-        public T setDefaultBalance() {
+        public T addDefaultBalance() {
             getAccount().setBalance(DEFAULT_BALANCE);
             return getThis();
         }
 
-        public T setStatus(Status status) {
+        public T addStatus(Status status) {
             getAccount().setStatus(status);
             return getThis();
         }
 
-        public T setDefaultStatus() {
+        public T addDefaultStatus() {
             getAccount().setStatus(new Status(DEFAULT_STATUS_ID,
                     DEFAULT_STATUS));
             return getThis();

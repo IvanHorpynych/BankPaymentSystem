@@ -29,32 +29,32 @@ public class Card {
             card = new Card();
         }
 
-        public Builder setCardNumber(long cardNumber) {
+        public Builder addCardNumber(long cardNumber) {
             card.setCardNumber(cardNumber);
             return this;
         }
 
-        public Builder setAccount(Account account) {
+        public Builder addAccount(Account account) {
             card.setAccount(account);
             return this;
         }
 
-        public Builder setPin(int pin) {
+        public Builder addPin(int pin) {
             card.setPin(pin);
             return this;
         }
 
-        public Builder setCvv(int cvv) {
+        public Builder addCvv(int cvv) {
             card.setCvv(cvv);
             return this;
         }
 
-        public Builder setExpireDate(Date date) {
+        public Builder addExpireDate(Date date) {
             card.setExpireDate(date);
             return this;
         }
 
-        public Builder setType(CardType type) {
+        public Builder addType(CardType type) {
             card.setType(type);
             return this;
         }

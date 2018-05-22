@@ -38,16 +38,16 @@ public class CreditRequestDtoConverter implements DtoConverter<CreditRequest>{
        Status status = statusConverter.convertToObject(resultSet);
 
        CreditRequest creditRequest =CreditRequest.newBuilder().
-               setRequestNumber(resultSet.
+               addRequestNumber(resultSet.
                        getLong(tablePrefix+REQUEST_NUMBER_FIELD)).
-               setAccountHolder(accountHolder).
-               setInterestRate(resultSet.
+               addAccountHolder(accountHolder).
+               addInterestRate(resultSet.
                        getFloat(tablePrefix+INTEREST_RATE_FIELD)).
-               setStatus(status).
-               setValidityDate(TimeConverter.
+               addStatus(status).
+               addValidityDate(TimeConverter.
                        toDate(resultSet.getTimestamp(
                                tablePrefix+VALIDITY_DATE_FIELD))).
-               setCreditLimit(resultSet.
+               addCreditLimit(resultSet.
                        getBigDecimal(tablePrefix+CREDIT_LIMIT_FIELD)).
                build();
 

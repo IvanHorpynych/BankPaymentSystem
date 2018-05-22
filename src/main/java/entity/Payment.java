@@ -23,31 +23,31 @@ public class Payment {
             payment = new Payment();
         }
 
-        public Builder setId(long id) {
+        public Builder addId(long id) {
             payment.setId(id);
             return this;
         }
 
-        public Builder setAmount(BigDecimal amount) {
+        public Builder addAmount(BigDecimal amount) {
             payment.setAmount(amount);
             return this;
         }
 
-        public Builder setAccountFrom(Account accountFrom) {
+        public Builder addAccountFrom(Account accountFrom) {
             payment.setAccountFrom(accountFrom);
             return this;
         }
 
-        public Builder setAccountTo(Account accountTo) {
+        public Builder addAccountTo(Account accountTo) {
             payment.setAccountTo(accountTo);
             return this;
         }
 
-        public Builder setDate(Date date) {
+        public Builder addDate(Date date) {
             payment.setDate(date);
             return this;
         }
-        public Builder setCardNumberFrom(Long cardNumber) {
+        public Builder addCardNumberFrom(Long cardNumber) {
             payment.setCardNumberFrom(cardNumber);
             return this;
         }

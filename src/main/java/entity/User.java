@@ -15,7 +15,8 @@ public class User {
 
     private final static String DEFAULT_ROLE_NAME = "USER";
 
-    private final static int DEFAULT_ROLE_ID = Role.USER_ROLE_ID;
+    private final static int DEFAULT_ROLE_ID = Role.RoleIdentifier.
+            USER_ROLE.getId();
 
     public static class Builder{
         private final User user;
@@ -24,37 +25,37 @@ public class User {
             user = new User();
         }
 
-        public Builder setId(int id) {
+        public Builder addId(int id) {
             user.setId(id);
             return this;
         }
 
-        public Builder setFirstName(String firstName) {
+        public Builder addFirstName(String firstName) {
             user.setFirstName(firstName);
             return this;
         }
 
-        public Builder setLastName(String lastName) {
+        public Builder addLastName(String lastName) {
             user.setLastName(lastName);
             return this;
         }
 
-        public Builder setEmail(String email) {
+        public Builder addEmail(String email) {
             user.setEmail(email);
             return this;
         }
 
-        public Builder setPhoneNumber(String phoneNumber) {
+        public Builder addPhoneNumber(String phoneNumber) {
             user.setPhoneNumber(phoneNumber);
             return this;
         }
 
-        public Builder setPassword(String password) {
+        public Builder addPassword(String password) {
             user.setPassword(password);
             return this;
         }
 
-        public Builder setRole(Role role) {
+        public Builder addRole(Role role) {
             user.setRole(role);
             return this;
         }
@@ -125,7 +126,7 @@ public class User {
     }
 
     public boolean isManager() {
-        return role.getId() == Role.MANAGER_ROLE_ID;
+        return role.getId() == Role.RoleIdentifier.MANAGER_ROLE.getId();
     }
 
     public void setDefaultRole() {
@@ -152,7 +153,7 @@ public class User {
 
         User user = (User) o;
 
-        return id == user.id;
+        return (email.equals(user.email));
     }
 
     @Override

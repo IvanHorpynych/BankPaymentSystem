@@ -1,8 +1,7 @@
 package dao.impl.mysql;
 
-import dao.abstraction.CardDao;
 import dao.abstraction.PaymentDao;
-import dao.connectionsource.PooledConnection;
+import dao.datasource.PooledConnection;
 import dao.impl.mysql.converter.DtoConverter;
 import dao.impl.mysql.converter.PaymentDtoConverter;
 import dao.util.time.TimeConverter;
@@ -149,39 +148,40 @@ public class MySqlPaymentDao implements PaymentDao {
     public static void main(String[] args) {
         DataSource dataSource = PooledConnection.getInstance();
         PaymentDao mySqlPaymentDao;
-        User user = User.newBuilder().setFirstName("first").
-                setId(3).
-                setLastName("last").
-                setEmail("test@com").
-                setPassword("123").
-                setPhoneNumber("+123").
-                setRole(new Role(Role.USER_ROLE_ID, "USER")).
+        User user = User.newBuilder().addFirstName("first").
+                addId(3).
+                addLastName("last").
+                addEmail("test@com").
+                addPassword("123").
+                addPhoneNumber("+123").
+                addRole(new Role(Role.RoleIdentifier.
+                        USER_ROLE.getId(), "USER")).
                 build();
 
         CreditAccount creditAccount1 = CreditAccount.newBuilder().
-                setAccountNumber(3).
-                setAccountHolder(user).
-                setAccountType(new AccountType(4, "CREDIT")).
-                setBalance(BigDecimal.ONE).
-                setCreditLimit(BigDecimal.TEN).
-                setInterestRate(2L).
-                setLastOperationDate(new Date()).
-                setAccruedInterest(BigDecimal.ZERO).
-                setValidityDate(new Date()).
-                setStatus(new Status(1, "ACTIVE")).
+                addAccountNumber(3).
+                addAccountHolder(user).
+                addAccountType(new AccountType(4, "CREDIT")).
+                addBalance(BigDecimal.ONE).
+                addCreditLimit(BigDecimal.TEN).
+                addInterestRate(2L).
+                addLastOperationDate(new Date()).
+                addAccruedInterest(BigDecimal.ZERO).
+                addValidityDate(new Date()).
+                addStatus(new Status(1, "ACTIVE")).
                 build();
 
         CreditAccount creditAccount2 = CreditAccount.newBuilder().
-                setAccountNumber(1).
-                setAccountHolder(user).
-                setAccountType(new AccountType(4, "CREDIT")).
-                setBalance(BigDecimal.ONE).
-                setCreditLimit(BigDecimal.TEN).
-                setInterestRate(2L).
-                setLastOperationDate(new Date()).
-                setAccruedInterest(BigDecimal.ZERO).
-                setValidityDate(new Date()).
-                setStatus(new Status(1, "ACTIVE")).
+                addAccountNumber(1).
+                addAccountHolder(user).
+                addAccountType(new AccountType(4, "CREDIT")).
+                addBalance(BigDecimal.ONE).
+                addCreditLimit(BigDecimal.TEN).
+                addInterestRate(2L).
+                addLastOperationDate(new Date()).
+                addAccruedInterest(BigDecimal.ZERO).
+                addValidityDate(new Date()).
+                addStatus(new Status(1, "ACTIVE")).
                 build();
 
         try {
@@ -206,10 +206,10 @@ public class MySqlPaymentDao implements PaymentDao {
             System.out.println("Insert:");
             Payment payment =  mySqlPaymentDao.insert(
                     Payment.newBuilder().
-                            setAccountFrom(creditAccount1).
-                            setAccountTo(creditAccount2).
-                            setAmount(BigDecimal.TEN).
-                            setDate(new Date()).
+                            addAccountFrom(creditAccount1).
+                            addAccountTo(creditAccount2).
+                            addAmount(BigDecimal.TEN).
+                            addDate(new Date()).
                             build()
             );
             System.out.println("Find one:");

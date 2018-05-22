@@ -7,10 +7,21 @@ package entity;
 
 public class Status extends Designation {
 
-    public final static int ACTIVE_STATUS_ID = 1;
-    public final static int PENDING_STATUS_ID = 4;
-    public final static int REJECT_STATUS_ID = 8;
-    public final static int BLOCKED_STATUS_ID = 16;
+    public enum StatusIdentifier{
+
+        ACTIVE_STATUS(1), PENDING_STATUS(4),
+        REJECT_STATUS(8), BLOCKED_STATUS(16);
+
+        private final int id;
+
+        private StatusIdentifier(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
 
 
     public Status() {};

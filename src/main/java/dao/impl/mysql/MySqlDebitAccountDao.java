@@ -2,9 +2,7 @@
 package dao.impl.mysql;
 
 import dao.abstraction.DebitAccountDao;
-import dao.abstraction.DepositAccountDao;
-import dao.connectionsource.PooledConnection;
-import dao.impl.mysql.converter.DepositAccountDtoConverter;
+import dao.datasource.PooledConnection;
 import dao.impl.mysql.converter.DtoConverter;
 import dao.impl.mysql.converter.DebitAccountDtoConverter;
 import entity.*;
@@ -197,23 +195,24 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
             System.out.println(mySqlDebitAccountDao.findOne(3L));
 
             System.out.println("find dy user:");
-            User user = User.newBuilder().setFirstName("first" + random).
-                    setId(3).
-                    setLastName("last" + random).
-                    setEmail("test" + random + "@com").
-                    setPassword("123").
-                    setPhoneNumber("+123").
-                    setRole(new Role(Role.USER_ROLE_ID, "USER")).
+            User user = User.newBuilder().addFirstName("first" + random).
+                    addId(3).
+                    addLastName("last" + random).
+                    addEmail("test" + random + "@com").
+                    addPassword("123").
+                    addPhoneNumber("+123").
+                    addRole(new Role(Role.RoleIdentifier.
+                            USER_ROLE.getId(), "USER")).
                     build();
             System.out.println(mySqlDebitAccountDao.findByUser(user));
 
             System.out.println("Insert:");
             DebitAccount debitAccount = (DebitAccount) mySqlDebitAccountDao.insert(
                     DebitAccount.newBuilder().
-                            setAccountHolder(user).
-                            setAccountType(new AccountType(16,"DEBIT")).
-                            setBalance(BigDecimal.TEN).
-                            setStatus(new Status(1,"ACTIVE")).
+                            addAccountHolder(user).
+                            addAccountType(new AccountType(16,"DEBIT")).
+                            addBalance(BigDecimal.TEN).
+                            addStatus(new Status(1,"ACTIVE")).
                             build()
             );
 

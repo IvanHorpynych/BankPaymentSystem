@@ -8,8 +8,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class CreditAccount extends Account{
-    public final static String DEFAULT_TYPE = "CREDIT";
-    private final static int DEFAULT_TYPE_ID = AccountType.CREDIT_TYPE_ID;
+    public final static String DEFAULT_TYPE = "DEBIT";
+    private final static int DEFAULT_TYPE_ID = AccountType.TypeIdentifier.
+            DEBIT_TYPE.getId();
 
     private BigDecimal creditLimit;
     private float interestRate;
@@ -28,39 +29,39 @@ public class CreditAccount extends Account{
             creditAccount = new CreditAccount();
         }
 
-        public CreditAccount.Builder setAccountType(AccountType accountType) {
+        public CreditAccount.Builder addAccountType(AccountType accountType) {
             creditAccount.setAccountType(accountType);
             return this;
         }
 
-        public CreditAccount.Builder setDefaultAccountType() {
+        public CreditAccount.Builder addDefaultAccountType() {
             creditAccount.setAccountType(new AccountType(DEFAULT_TYPE_ID,
                     DEFAULT_TYPE));
             return this;
         }
 
-        public CreditAccount.Builder setCreditLimit(BigDecimal creditLimit) {
+        public CreditAccount.Builder addCreditLimit(BigDecimal creditLimit) {
             creditAccount.setCreditLimit(creditLimit);
             return this;
         }
 
-        public CreditAccount.Builder setInterestRate(float interestRate) {
+        public CreditAccount.Builder addInterestRate(float interestRate) {
             creditAccount.setInterestRate(interestRate);
             return this;
         }
 
-        public CreditAccount.Builder setLastOperationDate(Date date) {
+        public CreditAccount.Builder addLastOperationDate(Date date) {
             creditAccount.setLastOperationDate(date);
             return this;
         }
 
 
-        public CreditAccount.Builder setAccruedInterest(BigDecimal accruedInterest) {
+        public CreditAccount.Builder addAccruedInterest(BigDecimal accruedInterest) {
             creditAccount.setAccruedInterest(accruedInterest);
             return this;
         }
 
-        public CreditAccount.Builder setValidityDate(Date date) {
+        public CreditAccount.Builder addValidityDate(Date date) {
             creditAccount.setValidityDate(date);
             return this;
         }

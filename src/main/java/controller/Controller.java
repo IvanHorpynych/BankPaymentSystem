@@ -2,8 +2,10 @@ package controller;
 
 import controller.command.ICommand;
 import controller.i18n.SupportedLocale;
+import controller.util.constants.Attributes;
 import controller.util.constants.PagesPaths;
 import controller.util.constants.Views;
+import entity.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
@@ -31,6 +34,8 @@ public class Controller extends HttpServlet {
         controllerHelper = ControllerHelper.Singleton.getInstance();
         getServletContext().setAttribute(SUPPORTED_LOCALES,
                 SupportedLocale.getSupportedLanguages());
+        getServletContext().setAttribute(Attributes.USER_LIST,
+                new ArrayList<User>());
     }
 
     @Override

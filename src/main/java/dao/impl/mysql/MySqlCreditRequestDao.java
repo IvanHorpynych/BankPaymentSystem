@@ -1,8 +1,7 @@
 package dao.impl.mysql;
 
-import dao.abstraction.CreditAccountDao;
 import dao.abstraction.CreditRequestDao;
-import dao.connectionsource.PooledConnection;
+import dao.datasource.PooledConnection;
 import dao.impl.mysql.converter.CreditRequestDtoConverter;
 import dao.impl.mysql.converter.DtoConverter;
 import entity.*;
@@ -163,24 +162,25 @@ public class MySqlCreditRequestDao implements CreditRequestDao {
 
             int random = (int) (Math.random() * 100);
             System.out.println("find dy user:");
-            User user = User.newBuilder().setFirstName("first" + random).
-                    setId(3).
-                    setLastName("last" + random).
-                    setEmail("test" + random + "@com").
-                    setPassword("123").
-                    setPhoneNumber("+123").
-                    setRole(new Role(Role.USER_ROLE_ID, "USER")).
+            User user = User.newBuilder().addFirstName("first" + random).
+                    addId(3).
+                    addLastName("last" + random).
+                    addEmail("test" + random + "@com").
+                    addPassword("123").
+                    addPhoneNumber("+123").
+                    addRole(new Role(Role.RoleIdentifier.
+                            USER_ROLE.getId(), "USER")).
                     build();
             System.out.println(mySqlCreditRequestDao.findByUser(user));
 
             System.out.println("Insert:");
             CreditRequest creditRequest = mySqlCreditRequestDao.insert(
                     CreditRequest.newBuilder().
-                            setAccountHolder(user).
-                            setInterestRate(41.12f).
-                            setStatus(new Status(8, "REGECT")).
-                            setValidityDate(new Date()).
-                            setCreditLimit(BigDecimal.TEN).
+                            addAccountHolder(user).
+                            addInterestRate(41.12f).
+                            addStatus(new Status(8, "REGECT")).
+                            addValidityDate(new Date()).
+                            addCreditLimit(BigDecimal.TEN).
                             build()
             );
 
