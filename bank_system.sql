@@ -272,7 +272,9 @@ CREATE VIEW card_details AS
       ON account.id = dbad.id
     LEFT JOIN status
       ON account.status_id = status.id
-  where type.id = 16;
+  where type.id = (select id
+                   from account_type
+                   where name like 'DEBIT');
 
 /*==============================================================*/
 
