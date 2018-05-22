@@ -43,6 +43,10 @@
         <filter-class>controller.filter.AuthorizationFilter</filter-class>
     </filter>
 
+    <listener>
+        <listener-class>controller.listener.UniquenessCheckSessionListener</listener-class>
+    </listener>
+
     <filter-mapping>
         <filter-name>AuthorizationFilter</filter-name>
         <url-pattern>/site/user/*</url-pattern>

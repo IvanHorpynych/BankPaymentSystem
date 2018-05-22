@@ -27,6 +27,7 @@ public class PostLoginCommand implements ICommand {
     private final static String EMAIL_PARAM = "email";
     private final static String PASSWORD_PARAM = "password";
     private final static String INVALID_CREDENTIALS = "invalid.credentials";
+    private final static String ACTIVE_ACCOUNT_IS_EXIST = "active.account.exist";
 
     private final UserService userService = ServiceFactory.getUserService();
 
@@ -42,11 +43,13 @@ public class PostLoginCommand implements ICommand {
         User userDto = getDataFromRequest(request);
 
         List<String> errors = validateData(userDto);
+        errors.addAll(
+                validateUniquenessActiveUser(request.getSession(),userDto));
 
         if(errors.isEmpty()) {
             User user = loadUserFromDatabase(userDto.getEmail());
+            addUserToContext(request.getSession(),user);
             addUserToSession(request.getSession(), user);
-
             Util.redirectTo(request, response, PagesPaths.HOME_PATH);
 
             return REDIRECTED;
@@ -59,8 +62,8 @@ public class PostLoginCommand implements ICommand {
 
     private User getDataFromRequest(HttpServletRequest request) {
         return User.newBuilder()
-                .setEmail(request.getParameter(EMAIL_PARAM))
-                .setPassword(request.getParameter(PASSWORD_PARAM))
+                .addEmail(request.getParameter(EMAIL_PARAM))
+                .addPassword(request.getParameter(PASSWORD_PARAM))
                 .build();
     }
 
@@ -81,6 +84,16 @@ public class PostLoginCommand implements ICommand {
         return errors;
     }
 
+    public List<String> validateUniquenessActiveUser(HttpSession session, User user){
+        List<String> errors = new ArrayList<>();
+        @SuppressWarnings("unchecked")
+        List<User> activeUserList = (List<User>) session.getServletContext().
+                getAttribute(Attributes.USER_LIST);
+        if (activeUserList.contains(user))
+            errors.add(ACTIVE_ACCOUNT_IS_EXIST);
+        return errors;
+    }
+
     private User loadUserFromDatabase(String email) {
         Optional<User> userOptional = userService.findByEmail(email);
         return userOptional.orElseThrow(IllegalStateException::new);
@@ -89,6 +102,14 @@ public class PostLoginCommand implements ICommand {
     private void addUserToSession(HttpSession session, User user)
             throws IOException {
         session.setAttribute(Attributes.USER, user);
+    }
+
+    private void addUserToContext(HttpSession session, User user)
+            throws IOException {
+        @SuppressWarnings("unchecked")
+        List<User> activeUserList = (List<User>) session.getServletContext().
+                        getAttribute(Attributes.USER_LIST);
+        activeUserList.add(user);
     }
 
     private void addInvalidDataToRequest(HttpServletRequest request,

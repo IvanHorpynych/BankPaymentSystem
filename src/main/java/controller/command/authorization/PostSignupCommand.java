@@ -75,11 +75,11 @@ public class PostSignupCommand implements ICommand {
 
     private User getDataFromRequest(HttpServletRequest request) {
         return User.newBuilder()
-                .setEmail(request.getParameter(EMAIL_PARAM))
-                .setPassword(request.getParameter(PASSWORD_PARAM))
-                .setFirstName(request.getParameter(FIRSTNAME_PARAM))
-                .setLastName(request.getParameter(LASTNAME_PARAM))
-                .setPhoneNumber(request.getParameter(PHONE_PARAM))
+                .addEmail(request.getParameter(EMAIL_PARAM))
+                .addPassword(request.getParameter(PASSWORD_PARAM))
+                .addFirstName(request.getParameter(FIRSTNAME_PARAM))
+                .addLastName(request.getParameter(LASTNAME_PARAM))
+                .addPhoneNumber(request.getParameter(PHONE_PARAM))
                 .build();
     }
 

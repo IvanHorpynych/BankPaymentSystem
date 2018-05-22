@@ -14,4 +14,6 @@ public interface Attributes {
     String CARDS = "cards";
     String PAYMENTS = "payments";
 
+    String USER_LIST  ="activeUserList";
+
 }
