@@ -11,10 +11,10 @@ public interface PaymentDao extends GenericDao<Payment, Long> {
     /**
      * Retrieves all payments associated with certain account.
      *
-     * @param account account to retrieve payments
+     * @param accountNumber account number to retrieve payments
      * @return list of retrieved payments
      */
-    List<Payment> findByAccount(Account account);
+    List<Payment> findByAccount(Long accountNumber);
 
     /**
      * Retrieves all payments associated with certain user.

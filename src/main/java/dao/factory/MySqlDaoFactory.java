@@ -6,10 +6,13 @@ import dao.exception.DaoException;
 import dao.factory.connection.DaoConnection;
 import dao.factory.connection.MySqlConnection;
 import dao.impl.mysql.*;
+import entity.Account;
+import entity.AccountType;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class MySqlDaoFactory extends DaoFactory {
     private final static String NULLABLE_CONNECTION =
@@ -36,6 +39,7 @@ public class MySqlDaoFactory extends DaoFactory {
     public UserDao getUserDao(DaoConnection connection) {
         return new MySqlUserDao(getOwnSqlConnection(connection));
     }
+
 
     @Override
     public CreditAccountDao getCreditAccountDao(DaoConnection connection) {
@@ -77,6 +81,19 @@ public class MySqlDaoFactory extends DaoFactory {
         return new MySqlCreditRequestDao(getOwnSqlConnection(connection));
     }
 
+    @Override
+    public AccountDao getAccountDao(DaoConnection connection, AccountType accountType) {
+        if (accountType.getId() == AccountType.TypeIdentifier.
+                CREDIT_TYPE.getId())
+            return getCreditAccountDao(connection);
+        else if (accountType.getId() ==  AccountType.TypeIdentifier.
+                DEPOSIT_TYPE.getId())
+            return getDepositAccountDao(connection);
+        else if (accountType.getId() == AccountType.TypeIdentifier.
+                DEBIT_TYPE.getId())
+            return getDebitAccountDao(connection);
+        return null;
+    }
 
     private Connection getOwnSqlConnection(DaoConnection connection) {
         checkDaoConnection(connection);

@@ -18,21 +18,21 @@ import java.util.*;
  */
 public class MySqlPaymentDao implements PaymentDao {
     private final static String SELECT_ALL =
-            "SELECT * FROM payment_details " ;
+            "SELECT * FROM payment_details ";
 
     private final static String WHERE_ID =
             "WHERE id = ? ";
 
     private final static String WHERE_ACCOUNT =
-            "WHERE account_from OR " +
-                    "account_to = ? ";
+            "WHERE (account_from  = ?) OR " +
+                    "(account_to = ?)";
 
     private final static String WHERE_USER =
-            "WHERE acc1_user_id OR " +
-                    "acc2_user_id = ?" ;
+            "WHERE (acc1_user_id = ?) OR " +
+                    "(acc2_user_id = ?)";
 
     private final static String WHERE_CARD_NUMBER =
-            "WHERE card_number_from = ?" ;
+            "WHERE card_number_from = ?";
 
     private final static String INSERT =
             "INSERT INTO payment (" +
@@ -65,7 +65,6 @@ public class MySqlPaymentDao implements PaymentDao {
     }
 
 
-
     @Override
     public Optional<Payment> findOne(Long id) {
         return defaultDao.findOne(
@@ -85,14 +84,14 @@ public class MySqlPaymentDao implements PaymentDao {
     public Payment insert(Payment obj) {
         Objects.requireNonNull(obj);
 
-        int id = (int)defaultDao.
+        int id = (int) defaultDao.
                 executeInsertWithGeneratedPrimaryKey(
-                INSERT,
+                        INSERT,
                         obj.getAmount(),
                         obj.getAccountFrom().getAccountNumber(),
                         obj.getAccountTo().getAccountNumber(),
                         TimeConverter.toTimestamp(obj.getDate())
-        );
+                );
 
         obj.setId(id);
 
@@ -120,12 +119,13 @@ public class MySqlPaymentDao implements PaymentDao {
     }
 
     @Override
-    public List<Payment> findByAccount(Account account) {
-        Objects.requireNonNull(account);
+    public List<Payment> findByAccount(Long accountNumber) {
+        Objects.requireNonNull(accountNumber);
 
         return defaultDao.findAll(
                 SELECT_ALL + WHERE_ACCOUNT,
-                account.getAccountNumber()
+                accountNumber,
+                accountNumber
         );
     }
 
@@ -135,14 +135,15 @@ public class MySqlPaymentDao implements PaymentDao {
 
         return defaultDao.findAll(
                 SELECT_ALL + WHERE_USER,
+                user.getId(),
                 user.getId()
         );
     }
 
     @Override
     public List<Payment> findByCardNumber(long cardNumber) {
-       return defaultDao.findAll(SELECT_ALL+
-                 WHERE_CARD_NUMBER, cardNumber);
+        return defaultDao.findAll(SELECT_ALL +
+                WHERE_CARD_NUMBER, cardNumber);
     }
 
     public static void main(String[] args) {
@@ -199,12 +200,12 @@ public class MySqlPaymentDao implements PaymentDao {
             System.out.println(mySqlPaymentDao.findByUser(user));
 
             System.out.println("Find by account");
-            for (Payment payment : mySqlPaymentDao.findByAccount(creditAccount1)) {
+            for (Payment payment : mySqlPaymentDao.findByAccount(creditAccount1.getAccountNumber())) {
                 System.out.println(payment);
             }
 
             System.out.println("Insert:");
-            Payment payment =  mySqlPaymentDao.insert(
+            Payment payment = mySqlPaymentDao.insert(
                     Payment.newBuilder().
                             addAccountFrom(creditAccount1).
                             addAccountTo(creditAccount2).

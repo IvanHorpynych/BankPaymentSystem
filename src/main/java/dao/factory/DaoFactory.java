@@ -3,6 +3,7 @@ package dao.factory;
 import dao.abstraction.*;
 import dao.exception.DaoException;
 import dao.factory.connection.DaoConnection;
+import entity.AccountType;
 import entity.DebitAccount;
 import org.apache.log4j.Logger;
 
@@ -47,6 +48,9 @@ public abstract class DaoFactory {
     public abstract RoleDao getRoleDao(DaoConnection connection);
 
     public abstract UserDao getUserDao(DaoConnection connection);
+
+    public abstract AccountDao getAccountDao(DaoConnection connection,
+                                                   AccountType accountType);
 
     public abstract CreditAccountDao getCreditAccountDao(DaoConnection connection);
 

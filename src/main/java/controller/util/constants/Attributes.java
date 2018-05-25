@@ -15,6 +15,8 @@ public interface Attributes {
     String DEPOSIT_ACCOUNTS = "depositAccounts";
     String CARDS = "cards";
     String PAYMENTS = "payments";
+    String ACCOUNT = "account";
+    String DESIRED_ACCOUNT = "desiredAccount";
 
     String USER_LIST  ="activeUserList";
 

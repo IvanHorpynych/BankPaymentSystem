@@ -41,26 +41,26 @@
     <div class="row col-md-4">
         <c:choose>
             <c:when test="${not empty requestScope.depositAccounts}">
-                <c:forEach var="depositAccounts" items="${requestScope.depositAccounts}">
+                <c:forEach var="depositAccount" items="${requestScope.depositAccounts}">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item"><b><fmt:message key="account.number"/></b>:
-                            <c:out value="${depositAccounts.getAccountNumber()}"/></li>
+                            <c:out value="${depositAccount.getAccountNumber()}"/></li>
                         <li class="list-group-item"><b><fmt:message key="account.balance"/></b>:
-                            <c:out value="${depositAccounts.getBalance()}"/>
+                            <c:out value="${depositAccount.getBalance()}"/>
                             <fmt:message key="currency"/>
                         </li>
                         <li class="list-group-item"><b><fmt:message key="deposit.min.month.balance"/></b>:
-                            <c:out value="${depositAccounts.getMinBalance()}"/>
+                            <c:out value="${depositAccount.getMinBalance()}"/>
                         </li>
                         <li class="list-group-item"><b><fmt:message key="deposit.annual.rate"/></b>:
-                            <c:out value="${depositAccounts.getAnnualRate()}"/>
+                            <c:out value="${depositAccount.getAnnualRate()}"/>
                         </li>
                         <li class="list-group-item"><b><fmt:message key="account.status"/></b>:
-                            <c:out value="${depositAccounts.getStatus().getName()}"/>
+                            <c:out value="${depositAccount.getStatus().getName()}"/>
                         </li>
                         <li class="list-group-item">
                             <div class="btn-group group-style">
-                                <c:if test="${depositAccounts.isActive()}">
+                                <c:if test="${depositAccount.isActive()}">
                                     <form action="your_url" method="post" class="col-xs-8 main-btn">
                                         <input type="hidden" name="command" value="login_post"/>
                                         <button type="submit" class="btn btn-info"><fmt:message key="deposit.withdraw"/></button>
@@ -73,13 +73,14 @@
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <form action="your_url" method="post">
-                                            <input type="hidden" name="command" value="login_post"/>
+                                        <form action="${pageContext.request.contextPath}/site/user/payments" method="get">
+                                            <input type="hidden" name="command" value="accountPayments"/>
+                                            <input type="hidden" name="account" value="${depositAccount.getAccountNumber()}"/>
                                             <button type="submit" class="btn-link"><fmt:message key="payment.histrory"/></button>
                                         </form>
                                     </li>
                                     <li class="divider"></li>
-                                    <c:if test="${depositAccounts.isActive() and not sessionScope.user.isManager()}">
+                                    <c:if test="${depositAccount.isActive() and not sessionScope.user.isManager()}">
                                         <li>
                                             <form action="your_url" method="post">
                                                 <input type="hidden" name="command" value="login_post"/>
@@ -87,7 +88,7 @@
                                             </form>
                                         </li>
                                     </c:if>
-                                    <c:if test="${depositAccounts.isActive() and sessionScope.user.isManager()}">
+                                    <c:if test="${depositAccount.isActive() and sessionScope.user.isManager()}">
                                         <li>
                                             <form action="your_url" method="post">
                                                 <input type="hidden" name="command" value="login_post"/>
@@ -95,7 +96,7 @@
                                             </form>
                                         </li>
                                     </c:if>
-                                    <c:if test="${depositAccounts.isBlocked() and sessionScope.user.isManager()}">
+                                    <c:if test="${depositAccount.isBlocked() and sessionScope.user.isManager()}">
                                         <li>
                                             <form action="your_url" method="post">
                                                 <input type="hidden" name="command" value="login_post"/>

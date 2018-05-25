@@ -30,7 +30,7 @@ public interface AccountDao<T extends Account> extends GenericDao<T, Long>{
      * @param account account to increase
      * @param amount amount of increasing
      */
-    void increaseBalance(T account, BigDecimal amount);
+    void increaseBalance(Account account, BigDecimal amount);
 
     /**
      * decrease balance of certain amount.
@@ -38,7 +38,7 @@ public interface AccountDao<T extends Account> extends GenericDao<T, Long>{
      * @param account account to decrease
      * @param amount amount of decreasing
      */
-    void decreaseBalance(T account, BigDecimal amount);
+    void decreaseBalance(Account account, BigDecimal amount);
 
     /**
      * Updates certain account status.

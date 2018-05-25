@@ -41,20 +41,20 @@
     <div class="row col-md-4">
         <c:choose>
             <c:when test="${not empty requestScope.debitAccounts}">
-                <c:forEach var="debitAccounts" items="${requestScope.debitAccounts}">
+                <c:forEach var="debitAccount" items="${requestScope.debitAccounts}">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item"><b><fmt:message key="account.number"/></b>:
-                            <c:out value="${debitAccounts.getAccountNumber()}"/></li>
+                            <c:out value="${debitAccount.getAccountNumber()}"/></li>
                         <li class="list-group-item"><b><fmt:message key="account.balance"/></b>:
-                            <c:out value="${debitAccounts.getBalance()}"/>
+                            <c:out value="${debitAccount.getBalance()}"/>
                             <fmt:message key="currency"/>
                         </li>
                         <li class="list-group-item"><b><fmt:message key="account.status"/></b>:
-                            <c:out value="${debitAccounts.getStatus().getName()}"/>
+                            <c:out value="${debitAccount.getStatus().getName()}"/>
                         </li>
                         <li class="list-group-item">
                             <div class="btn-group group-style">
-                                <c:if test="${debitAccounts.isActive() and sessionScope.user.isManager()}">
+                                <c:if test="${debitAccount.isActive() and sessionScope.user.isManager()}">
                                     <form action="your_url" method="post" class="col-xs-8 main-btn">
                                         <input type="hidden" name="command" value="login_post"/>
                                         <button type="submit" class="btn btn-info"><fmt:message key="replenish"/></button>
@@ -67,14 +67,14 @@
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <form action="your_url" method="post">
-                                            <input type="hidden" name="command" value="login_post"/>
-                                            <button type="submit" class="btn-link"><fmt:message
-                                                    key="payment.histrory"/></button>
+                                        <form action="${pageContext.request.contextPath}/site/user/payments" method="get">
+                                            <input type="hidden" name="command" value="accountPayments"/>
+                                            <input type="hidden" name="account" value="${debitAccount.getAccountNumber()}"/>
+                                            <button type="submit" class="btn-link"><fmt:message key="payment.histrory"/></button>
                                         </form>
                                     </li>
                                     <li class="divider"></li>
-                                    <c:if test="${debitAccounts.isActive() and not sessionScope.user.isManager()}">
+                                    <c:if test="${debitAccount.isActive() and not sessionScope.user.isManager()}">
                                         <li>
                                             <form action="your_url" method="post">
                                                 <input type="hidden" name="command" value="login_post"/>
@@ -83,7 +83,7 @@
                                             </form>
                                         </li>
                                     </c:if>
-                                    <c:if test="${debitAccounts.isActive() and sessionScope.user.isManager()}">
+                                    <c:if test="${debitAccount.isActive() and sessionScope.user.isManager()}">
                                         <li>
                                             <form action="your_url" method="post">
                                                 <input type="hidden" name="command" value="login_post"/>
@@ -92,7 +92,7 @@
                                             </form>
                                         </li>
                                     </c:if>
-                                    <c:if test="${debitAccounts.isBlocked() and sessionScope.user.isManager()}">
+                                    <c:if test="${debitAccount.isBlocked() and sessionScope.user.isManager()}">
                                         <li>
                                             <form action="your_url" method="post">
                                                 <input type="hidden" name="command" value="login_post"/>

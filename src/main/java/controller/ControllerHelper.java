@@ -4,10 +4,7 @@ import controller.command.DefaultCommand;
 import controller.command.HomeCommand;
 import controller.command.ICommand;
 import controller.command.authorization.*;
-import controller.command.user.GetCardsCommand;
-import controller.command.user.GetCreditAccountsCommand;
-import controller.command.user.GetDebitAccountsCommand;
-import controller.command.user.GetDepositAccountsCommand;
+import controller.command.user.*;
 import controller.util.constants.PagesPaths;
 import controller.util.constants.Views;
 
@@ -52,6 +49,10 @@ public class ControllerHelper {
                 new GetDepositAccountsCommand());
         commands.put(buildKey(bundle.getString("user.card.path"), null),
                 new GetCardsCommand());
+        commands.put(buildKey(bundle.getString("user.payment.path"), "accountPayments"),
+                new GetPaymentsByAccountCommand());
+        commands.put(buildKey(bundle.getString("user.payment.path"), null),
+                new GetPaymentsByUserCommand());
 
     }
 

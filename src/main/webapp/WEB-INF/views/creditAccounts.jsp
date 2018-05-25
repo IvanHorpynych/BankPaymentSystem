@@ -41,31 +41,31 @@
     <div class="row col-md-4">
         <c:choose>
             <c:when test="${not empty requestScope.creditAccounts}">
-                <c:forEach var="creditAccounts" items="${requestScope.creditAccounts}">
+                <c:forEach var="creditAccount" items="${requestScope.creditAccounts}">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item"><b><fmt:message key="account.number"/></b>:
-                            <c:out value="${creditAccounts.getAccountNumber()}"/></li>
+                            <c:out value="${creditAccount.getAccountNumber()}"/></li>
                         <li class="list-group-item"><b><fmt:message key="account.balance"/></b>:
-                            <c:out value="${creditAccounts.getBalance()}"/>
+                            <c:out value="${creditAccount.getBalance()}"/>
                             <fmt:message key="currency"/>
                         </li>
                         <li class="list-group-item"><b><fmt:message key="credit.limit"/></b>:
-                            <c:out value="${creditAccounts.getCreditLimit()}"/>
+                            <c:out value="${creditAccount.getCreditLimit()}"/>
                             <fmt:message key="currency"/>
                         </li>
                         <li class="list-group-item"><b><fmt:message key="interest.rate"/></b>:
-                            <c:out value="${creditAccounts.getInterestRate()}"/>%
+                            <c:out value="${creditAccount.getInterestRate()}"/>%
                         </li>
                         <li class="list-group-item"><b><fmt:message key="accrued.interest"/></b>:
-                            <c:out value="${creditAccounts.getAccruedInterest()}"/>
+                            <c:out value="${creditAccount.getAccruedInterest()}"/>
                             <fmt:message key="currency"/>
                         </li>
                         <li class="list-group-item"><b><fmt:message key="account.status"/></b>:
-                            <c:out value="${creditAccounts.getStatus().getName()}"/>
+                            <c:out value="${creditAccount.getStatus().getName()}"/>
                         </li>
                         <li class="list-group-item">
                             <div class="btn-group group-style">
-                                <c:if test="${creditAccounts.isActive()}">
+                                <c:if test="${creditAccount.isActive()}">
                                 <form action="your_url" method="post" class="col-xs-8 main-btn">
                                     <input type="hidden" name="command" value="login_post"/>
                                     <button type="submit" class="btn btn-info"><fmt:message key="credit.take.loan"/></button>
@@ -78,13 +78,14 @@
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <form action="your_url" method="post">
-                                            <input type="hidden" name="command" value="login_post"/>
+                                        <form action="${pageContext.request.contextPath}/site/user/payments" method="get">
+                                            <input type="hidden" name="command" value="accountPayments"/>
+                                            <input type="hidden" name="account" value="${creditAccount.getAccountNumber()}"/>
                                             <button type="submit" class="btn-link"><fmt:message key="payment.histrory"/></button>
                                         </form>
                                     </li>
                                     <li class="divider"></li>
-                                    <c:if test="${creditAccounts.isActive() and not sessionScope.user.isManager()}">
+                                    <c:if test="${creditAccount.isActive() and not sessionScope.user.isManager()}">
                                         <li>
                                             <form action="your_url" method="post">
                                                 <input type="hidden" name="command" value="login_post"/>
@@ -92,7 +93,7 @@
                                             </form>
                                         </li>
                                     </c:if>
-                                    <c:if test="${creditAccounts.isActive() and sessionScope.user.isManager()}">
+                                    <c:if test="${creditAccount.isActive() and sessionScope.user.isManager()}">
                                         <li>
                                             <form action="your_url" method="post">
                                                 <input type="hidden" name="command" value="login_post"/>
@@ -100,7 +101,7 @@
                                             </form>
                                         </li>
                                     </c:if>
-                                    <c:if test="${creditAccounts.isBlocked() and sessionScope.user.isManager()}">
+                                    <c:if test="${creditAccount.isBlocked() and sessionScope.user.isManager()}">
                                         <li>
                                             <form action="your_url" method="post">
                                                 <input type="hidden" name="command" value="login_post"/>

@@ -43,15 +43,16 @@ public class ServiceFactory {
         return CardService.getInstance();
     }
 
+    public static PaymentService getPaymentService() {
+        return PaymentService.getInstance();
+    }
     /*public static DebitAccountService getAccountService() {
         return DebitAccountService.getInstance();
     }
 
 
 
-    public static PaymentService getPaymentService() {
-        return PaymentService.getInstance();
-    }*/
+    */
 
 
 }
