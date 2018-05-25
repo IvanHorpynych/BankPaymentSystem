@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by Zulu Warrior on 6/5/2017.
+ * Created by JohnUkraine on 25/5/2018.
  */
 public class GetCardsCommand implements ICommand {
     private final CardService cardService = ServiceFactory.getCardService();
