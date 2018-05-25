@@ -32,18 +32,18 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
 
     private final static String INSERT =
             "INSERT INTO account " +
-                    "(user_id, type_id, status_id) " +
-                    "VALUES(?, ?, ?) ";
+                    "(user_id, type_id, status_id, balance) " +
+                    "VALUES(?, ?, ?, ?) ";
 
     private final static String INSERT_DETAILS =
             "INSERT INTO deposit_account_details " +
-                    "(id, balance, last_operation, " +
+                    "(id, last_operation, " +
                     "min_balance, annual_rate)" +
-                    "VALUES(?, ?, ?, ?, ?) ";
+                    "VALUES(?, ?, ?, ?) ";
 
     private final static String UPDATE =
             "UPDATE deposit_account_details SET " +
-                    "balance = ?, last_operation = ?, " +
+                    "last_operation = ?, " +
                     "min_balance = ? ";
 
     private final static String UPDATE_STATUS =
@@ -55,11 +55,11 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
                     "min_balance = ? ";
 
     private final static String INCREASE_BALANCE =
-            "UPDATE deposit_account_details SET " +
+            "UPDATE account SET " +
                     "balance = balance + ? ";
 
     private final static String DECREASE_BALANCE =
-            "UPDATE deposit_account_details SET " +
+            "UPDATE account SET " +
                     "balance = balance - ? ";
 
     private final static String DELETE =
@@ -107,14 +107,14 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
                 INSERT,
                 account.getAccountHolder().getId(),
                 account.getAccountType().getId(),
-                account.getStatus().getId()
+                account.getStatus().getId(),
+                account.getBalance()
         );
 
         account.setAccountNumber(accountNumber);
 
         defaultDao.executeUpdate(INSERT_DETAILS,
                 account.getAccountNumber(),
-                account.getBalance(),
                 TimeConverter.toTimestamp(account.getLastOperationDate()),
                 account.getMinBalance(),
                 account.getAnnualRate()
@@ -129,7 +129,6 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
 
         defaultDao.executeUpdate(
                 UPDATE + WHERE_ACCOUNT_NUMBER,
-                account.getBalance(),
                 TimeConverter.toTimestamp(account.getLastOperationDate()),
                 account.getMinBalance(),
                 account.getAccountNumber()
@@ -247,7 +246,7 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
             ((MySqlDepositAccountDao) mySqlDepositAccountDao).printAccount(mySqlDepositAccountDao.findAll());
 
             System.out.println("update:");
-            depositAccount.setBalance(BigDecimal.valueOf(12345));
+            depositAccount.setMinBalance(BigDecimal.ZERO);
             mySqlDepositAccountDao.update(depositAccount);
 
             System.out.println("Find all:");
@@ -272,7 +271,7 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
             ((MySqlDepositAccountDao) mySqlDepositAccountDao).printAccount(mySqlDepositAccountDao.findAll());
 
             System.out.println("update min balance:");
-            mySqlDepositAccountDao.updateMinBalance(depositAccount,BigDecimal.ZERO);
+            mySqlDepositAccountDao.updateMinBalance(depositAccount,BigDecimal.TEN);
 
             System.out.println("Find all:");
             ((MySqlDepositAccountDao) mySqlDepositAccountDao).printAccount(mySqlDepositAccountDao.findAll());

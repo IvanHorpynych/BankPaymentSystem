@@ -31,19 +31,19 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
 
     private final static String INSERT =
             "INSERT INTO account " +
-                    "(user_id, type_id, status_id) " +
-                    "VALUES(?, ?, ?) ";
+                    "(user_id, type_id, status_id, balance) " +
+                    "VALUES(?, ?, ?, ?) ";
 
     private final static String INSERT_DETAILS =
             "INSERT INTO credit_account_details " +
-                    "(id, balance, credit_limit, interest_rate, " +
+                    "(id, credit_limit, interest_rate, " +
                     "last_operation, accrued_interest, " +
                     "validity_date) " +
-                    "VALUES(?, ?, ?, ?, ?, ?, ?) ";
+                    "VALUES(?, ?, ?, ?, ?, ?) ";
 
     private final static String UPDATE =
             "UPDATE credit_account_details SET " +
-                    "balance = ?, last_operation = ?, " +
+                    "last_operation = ?, " +
                     "accrued_interest = ?, validity_date = ? ";
 
     private final static String UPDATE_STATUS =
@@ -51,11 +51,11 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
                     "status_id = ? ";
 
     private final static String INCREASE_BALANCE =
-            "UPDATE credit_account_details SET " +
+            "UPDATE account SET " +
                     "balance = balance + ? ";
 
     private final static String DECREASE_BALANCE =
-            "UPDATE credit_account_details SET " +
+            "UPDATE account SET " +
                     "balance = balance - ? ";
 
     private final static String INCREASE_ACCRUED_INTEREST =
@@ -112,14 +112,14 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
                 INSERT,
                 account.getAccountHolder().getId(),
                 account.getAccountType().getId(),
-                account.getStatus().getId()
+                account.getStatus().getId(),
+                account.getBalance()
         );
 
         account.setAccountNumber(accountNumber);
 
         defaultDao.executeUpdate(INSERT_DETAILS,
                 account.getAccountNumber(),
-                account.getBalance(),
                 account.getCreditLimit(),
                 account.getInterestRate(),
                 TimeConverter.toTimestamp(account.getLastOperationDate()),
@@ -136,7 +136,6 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
 
         defaultDao.executeUpdate(
                 UPDATE + WHERE_ACCOUNT_NUMBER,
-                account.getBalance(),
                 TimeConverter.toTimestamp(account.getLastOperationDate()),
                 account.getAccruedInterest(),
                 TimeConverter.toTimestamp(account.getValidityDate()),

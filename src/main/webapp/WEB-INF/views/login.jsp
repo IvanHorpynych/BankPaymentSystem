@@ -23,8 +23,7 @@
         <div class="col-sm-6 col-md-4 col-md-offset-4">
             <h1 class="text-center login-title"><fmt:message key="login"/></h1>
             <div class="account-wall">
-                <img class="profile-img" src="${pageContext.request.contextPath}/resources/someone.png"
-                     alt="">
+                <img class="profile-img" src="${pageContext.request.contextPath}/resources/someone.png" alt="">
                 <form class="form-signin" method="post">
                     <input type="hidden" name="command" value="login_post"/>
                     <input type="text" class="form-control" name="email" placeholder="<fmt:message key="enter.email"/>"

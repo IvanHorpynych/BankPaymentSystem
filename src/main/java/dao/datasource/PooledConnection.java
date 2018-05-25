@@ -17,7 +17,7 @@ public class PooledConnection {
     private static final String DB_PASSWORD = "password";
 
     private static class Singleton{
-        static final DataSource INSTANCE = initDataSource();
+        private static final DataSource INSTANCE = initDataSource();
     }
 
     public static DataSource getInstance(){

@@ -1,5 +1,7 @@
 package service;
 
+import entity.CreditAccount;
+
 /**
  * Intermediate layer between command layer and dao layer.
  * Implements operations of finding, creating, deleting entities.
@@ -25,13 +27,27 @@ public class ServiceFactory {
         return UserService.getInstance();
     }
 
-    /*public static DebitAccountService getAccountService() {
+    public static CreditAccountService getCreditAccountService() {
+        return CreditAccountService.getInstance();
+    }
+
+    public static DebitAccountService getDebitAccountService() {
         return DebitAccountService.getInstance();
+    }
+
+    public static DepositAccountService getDepositAccountService() {
+        return DepositAccountService.getInstance();
     }
 
     public static CardService getCardService() {
         return CardService.getInstance();
     }
+
+    /*public static DebitAccountService getAccountService() {
+        return DebitAccountService.getInstance();
+    }
+
+
 
     public static PaymentService getPaymentService() {
         return PaymentService.getInstance();

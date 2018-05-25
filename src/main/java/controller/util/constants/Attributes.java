@@ -10,7 +10,9 @@ public interface Attributes {
     String ERRORS = "errors";
     String MESSAGES = "messages";
 
-    String ACCOUNTS = "accounts";
+    String CREDIT_ACCOUNTS = "creditAccounts";
+    String DEBIT_ACCOUNTS = "debitAccounts";
+    String DEPOSIT_ACCOUNTS = "depositAccounts";
     String CARDS = "cards";
     String PAYMENTS = "payments";
 

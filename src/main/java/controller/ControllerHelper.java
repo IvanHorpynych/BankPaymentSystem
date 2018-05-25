@@ -4,6 +4,10 @@ import controller.command.DefaultCommand;
 import controller.command.HomeCommand;
 import controller.command.ICommand;
 import controller.command.authorization.*;
+import controller.command.user.GetCardsCommand;
+import controller.command.user.GetCreditAccountsCommand;
+import controller.command.user.GetDebitAccountsCommand;
+import controller.command.user.GetDepositAccountsCommand;
 import controller.util.constants.PagesPaths;
 import controller.util.constants.Views;
 
@@ -32,7 +36,7 @@ public class ControllerHelper {
                 new HomeCommand());
         commands.put(buildKey(bundle.getString("login.path"), null),
                 new GetLoginCommand());
-        commands.put(buildKey(bundle.getString("signup.path"), "signup"),
+        commands.put(buildKey(bundle.getString("signup.path"), null),
                 new GetSignupCommand());
         commands.put(buildKey(bundle.getString("login.path"), "login_post"),
                 new PostLoginCommand());
@@ -40,6 +44,14 @@ public class ControllerHelper {
                 new PostSignupCommand());
         commands.put(buildKey(bundle.getString("logout.path"), "logout"),
                 new LogoutCommand());
+        commands.put(buildKey(bundle.getString("user.credit.account.path"), null),
+                new GetCreditAccountsCommand());
+        commands.put(buildKey(bundle.getString("user.debit.account.path"), null),
+                new GetDebitAccountsCommand());
+        commands.put(buildKey(bundle.getString("user.deposit.account.path"), null),
+                new GetDepositAccountsCommand());
+        commands.put(buildKey(bundle.getString("user.card.path"), null),
+                new GetCardsCommand());
 
     }
 

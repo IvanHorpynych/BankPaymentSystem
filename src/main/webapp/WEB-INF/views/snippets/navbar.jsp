@@ -1,10 +1,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="customTag" uri="/WEB-INF/customTags/selectedPageTag" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <fmt:setLocale value='${sessionScope.locale}'/>
 <fmt:setBundle basename="i18n.lang"/>
 
+<c:set var="creditAccountsPage" scope="page" value="/WEB-INF/views/creditAccounts.jsp"/>
+<c:set var="debitAccountsPage" scope="page" value="/WEB-INF/views/debitAccounts.jsp"/>
+<c:set var="depositAccountsPage" scope="page" value="/WEB-INF/views/depositAccounts.jsp"/>
+<c:set var="cardsPage" scope="page" value="/WEB-INF/views/cards.jsp"/>
+<c:set var="createPage" scope="page" value="/WEB-INF/views/createPayment.jsp"/>
+<c:set var="paymentsPage" scope="page" value="/WEB-INF/views/payments.jsp"/>
+<c:set var="loginPage" scope="page" value="/WEB-INF/views/login.jsp"/>
+<c:set var="signUpPage" scope="page" value="/WEB-INF/views/signup.jsp"/>
+<c:set var="replenishPage" scope="page" value="/WEB-INF/views/replenish.jsp"/>
+
+<c:set var="currPage" scope="page">
+    <customTag:currPage/>
+</c:set>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
@@ -24,27 +38,77 @@
                 </ul>
             </li>
             <c:if test="${not empty sessionScope.user and not sessionScope.user.isManager()}">
-                <li>
-                    <a href="${pageContext.request.contextPath}/site/user/accounts">
+                <c:choose>
+                    <c:when test="${creditAccountsPage.equals(currPage) or
+                    debitAccountsPage.equals(currPage) or
+                    depositAccountsPage.equals(currPage)}">
+                        <li class="dropdown active">
+                    </c:when>
+                    <c:otherwise>
+                        <li class="dropdown">
+                    </c:otherwise>
+                </c:choose>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <fmt:message key="accounts"/>
-                    </a>
-                </li>
-                <li>
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                            <li><a href="${pageContext.request.contextPath}/site/user/debit_accounts">
+                                <fmt:message key="debit.accounts"/>
+                            </a></li>
+                            <li><a href="${pageContext.request.contextPath}/site/user/deposit_accounts">
+                                <fmt:message key="deposit.accounts"/>
+                            </a></li>
+                            <li><a href="${pageContext.request.contextPath}/site/user/credit_accounts">
+                                <fmt:message key="credit.accounts"/>
+                            </a></li>
+                    </ul>
+                <c:choose>
+                    <c:when test="${replenishPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
                     <a href="${pageContext.request.contextPath}/site/user/replenish">
                         <fmt:message key="account.replenish"/>
                     </a>
                 </li>
-                <li>
+
+                <c:choose>
+                    <c:when test="${cardsPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
                     <a href="${pageContext.request.contextPath}/site/user/cards">
                         <fmt:message key="cards"/>
                     </a>
                 </li>
-                <li>
+
+                <c:choose>
+                    <c:when test="${createPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
                     <a href="${pageContext.request.contextPath}/site/user/create">
                         <fmt:message key="payment.create"/>
                     </a>
                 </li>
-                <li>
+
+                <c:choose>
+                    <c:when test="${paymentsPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
                     <a href="${pageContext.request.contextPath}/site/user/payments">
                         <fmt:message key="payment.histrory"/>
                     </a>
@@ -53,18 +117,40 @@
             </c:if>
 
             <c:if test="${not empty sessionScope.user and sessionScope.user.isManager()}">
-                <li>
+                <c:choose>
+                    <c:when test="${accountsPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
                     <a href="${pageContext.request.contextPath}/site/admin/accounts">
                         <fmt:message key="accounts"/>
                     </a>
                 </li>
-                <li>
+
+                <c:choose>
+                    <c:when test="${cardsPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
                     <a href="${pageContext.request.contextPath}/site/admin/cards">
                         <fmt:message key="cards"/>
                     </a>
                 </li>
 
-                <li>
+                <c:choose>
+                    <c:when test="${paymentsPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
                     <a href="${pageContext.request.contextPath}/site/admin/payments">
                         <fmt:message key="payment.histrory"/>
                     </a>
@@ -73,12 +159,26 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <c:if test="${empty sessionScope.user}">
-                <li>
+                <c:choose>
+                    <c:when test="${signUpPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
                     <a href="${pageContext.request.contextPath}/site/signup">
                         <fmt:message key="signup"/>
                     </a>
                 </li>
-                <li>
+                <c:choose>
+                    <c:when test="${loginPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
                     <a href="${pageContext.request.contextPath}/site/login">
                         <fmt:message key="login"/>
                     </a>

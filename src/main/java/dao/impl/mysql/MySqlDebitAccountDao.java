@@ -30,16 +30,12 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
 
     private final static String INSERT =
             "INSERT INTO account " +
-                    "(user_id, type_id, status_id) " +
-                    "VALUES(?, ?, ?) ";
+                    "(user_id, type_id, status_id, balance) " +
+                    "VALUES(?, ?, ?, ?) ";
 
-    private final static String INSERT_DETAILS =
-            "INSERT INTO debit_account_details " +
-                    "(id, balance)" +
-                    "VALUES(?, ?) ";
 
     private final static String UPDATE =
-            "UPDATE debit_account_details SET " +
+            "UPDATE account SET " +
                     "balance = ? ";
 
     private final static String UPDATE_STATUS =
@@ -47,17 +43,15 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
                     "status_id = ? ";
 
     private final static String INCREASE_BALANCE =
-            "UPDATE debit_account_details SET " +
+            "UPDATE account SET " +
                     "balance = balance + ? ";
 
     private final static String DECREASE_BALANCE =
-            "UPDATE debit_account_details SET " +
+            "UPDATE account SET " +
                     "balance = balance - ? ";
 
     private final static String DELETE =
-            "DELETE details, account FROM " +
-                    "debit_account_details AS details " +
-                    "JOIN account  USING(id) ";
+            "DELETE FROM account ";
 
 
     private final DefaultDaoImpl<DebitAccount> defaultDao;
@@ -99,15 +93,12 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
                 INSERT,
                 account.getAccountHolder().getId(),
                 account.getAccountType().getId(),
-                account.getStatus().getId()
+                account.getStatus().getId(),
+                account.getBalance()
         );
 
         account.setAccountNumber(accountNumber);
 
-        defaultDao.executeUpdate(INSERT_DETAILS,
-                account.getAccountNumber(),
-                account.getBalance()
-        );
         return account;
     }
 

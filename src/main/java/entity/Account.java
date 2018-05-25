@@ -131,6 +131,14 @@ public abstract class Account {
         this.status = status;
     }
 
+    public boolean isActive(){
+        return status.getId() == Status.StatusIdentifier.ACTIVE_STATUS.getId();
+    }
+
+    public boolean isBlocked(){
+        return status.getId() == Status.StatusIdentifier.BLOCKED_STATUS.getId();
+    }
+
     @Override
     public String toString() {
         return "Account{" +
@@ -138,6 +146,7 @@ public abstract class Account {
                 ", user=" + accountHolder +
                 ", type=" + accountType +
                 ", status=" + status +
+                ", balance=" + balance +
                 '}';
     }
 

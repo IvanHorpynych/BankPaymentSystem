@@ -33,19 +33,23 @@ public class MySqlCardDao implements CardDao {
             "WHERE user_id = ? ";
 
     private final static String AND_STATUS =
-            " and status_id = ?";
+            " and card_status_id = ?";
 
     private final static String AND_TYPE =
             " and type_id = ?";
 
     private final static String INSERT =
             "INSERT INTO card" +
-                    "(account_id, pin, cvv, expire_date, type)" +
-                    "VALUES (?, ?, ?, ?, ?) ";
+                    "(account_id, pin, cvv, expire_date, type, status_id)" +
+                    "VALUES (?, ?, ?, ?, ?, ?) ";
 
     private final static String UPDATE =
             "UPDATE card SET " +
                     "pin = ?, cvv = ?, expire_date = ?, type = ? ";
+
+    private final static String UPDATE_STATUS =
+            "UPDATE card SET " +
+                    "status_id = ? ";
 
     private final static String DELETE =
             "DELETE FROM card ";
@@ -91,7 +95,8 @@ public class MySqlCardDao implements CardDao {
                 obj.getPin(),
                 obj.getCvv(),
                 TimeConverter.toTimestamp(obj.getExpireDate()),
-                obj.getType().toString()
+                obj.getType().toString(),
+                obj.getStatus().getId()
         ));
 
         return obj;
@@ -132,12 +137,6 @@ public class MySqlCardDao implements CardDao {
                 account.getAccountNumber());
     }
 
-    @Override
-    public List<Card> findByUserAndType(User user, AccountType accountType) {
-        return defaultDao.
-                findAll(SELECT_ALL + WHERE_USER + AND_TYPE,
-                        user.getId(), accountType.getId());
-    }
 
     @Override
     public List<Card> findByUserAndStatus(User user, Status status) {
@@ -146,13 +145,6 @@ public class MySqlCardDao implements CardDao {
                         user.getId(), status.getId());
     }
 
-    @Override
-    public List<Card> findByUserAndTypeAndStatus(User user, AccountType accountType,
-                                                 Status status) {
-        return defaultDao.findAll(SELECT_ALL + WHERE_USER + AND_TYPE + AND_STATUS,
-                user.getId(), accountType.getId(), status.getId()
-        );
-    }
 
 
     public static void main(String[] args) {
@@ -201,6 +193,7 @@ public class MySqlCardDao implements CardDao {
                             addCvv(444).
                             addExpireDate(new Date()).
                             addType(Card.CardType.MASTERCARD).
+                            addStatus(new Status(1,"ACTIVE")).
                             build()
             );
             List<Card> temp = new ArrayList<>();
@@ -227,10 +220,7 @@ public class MySqlCardDao implements CardDao {
 
             System.out.println("Find by user and status:");
             ((MySqlCardDao) mySqlCardDao).printCard(mySqlCardDao.findByUserAndStatus(user, new Status(1,"ACTIVE")));
-            System.out.println("Find by user and type:");
-            ((MySqlCardDao) mySqlCardDao).printCard(mySqlCardDao.findByUserAndType(user, new AccountType(16,"DEBIT")));
-            System.out.println("Find by user and status and type:");
-            ((MySqlCardDao) mySqlCardDao).printCard(mySqlCardDao.findByUserAndTypeAndStatus(user,new AccountType(16,"DEBIT"), new Status(2,"PENDING")));
+
             System.out.println("Delete:");
             mySqlCardDao.delete(card.getCardNumber());
             ((MySqlCardDao) mySqlCardDao).printCard(mySqlCardDao.findAll());

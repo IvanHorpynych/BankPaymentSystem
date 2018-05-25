@@ -12,14 +12,17 @@ import java.util.Objects;
  */
 public class CardDtoConverter implements DtoConverter<Card> {
 
+    private String CARD_TABLE_PREFIX = "card_";
     private DtoConverter<DebitAccount> accountConverter;
+    private DtoConverter<Status> statusConverter;
 
     public CardDtoConverter() {
-        this( new DebitAccountDtoConverter());
+        this( new DebitAccountDtoConverter(), new StatusDtoConverter());
     }
 
-    public CardDtoConverter(DtoConverter<DebitAccount> accountConverter) {
+    public CardDtoConverter(DtoConverter<DebitAccount> accountConverter, DtoConverter<Status> statusDtoConverter) {
         this.accountConverter = accountConverter;
+        this.statusConverter = statusDtoConverter;
     }
 
     @Override
@@ -29,6 +32,8 @@ public class CardDtoConverter implements DtoConverter<Card> {
         Objects.requireNonNull(accountConverter, "AccountConverter object must be not null");
         Account cardAccount = accountConverter.
                 convertToObject(resultSet,DEBIT_TABLE_PREFIX);
+
+        Status cardStatus = statusConverter.convertToObject(resultSet,CARD_TABLE_PREFIX);
 
 
         Card card = Card.newBuilder().
@@ -45,6 +50,7 @@ public class CardDtoConverter implements DtoConverter<Card> {
                 addType(Card.CardType.valueOf(
                         resultSet.getString(
                                 tablePrefix + "type"))).
+                addStatus(cardStatus).
                 build();
 
         return card;

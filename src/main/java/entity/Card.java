@@ -13,6 +13,9 @@ public class Card {
     VISA, MASTERCARD
 }
     public final static long DEFAULT_NUMBER = 0L;
+    public final static String DEFAULT_STATUS = "ACTIVE";
+    private final static int DEFAULT_STATUS_ID = Status.StatusIdentifier.
+            ACTIVE_STATUS.getId();
 
     private long cardNumber;
     private Account account;
@@ -20,6 +23,7 @@ public class Card {
     private int cvv;
     private Date expireDate;
     private CardType type;
+    private Status status;
 
 
     public static class Builder{
@@ -56,6 +60,17 @@ public class Card {
 
         public Builder addType(CardType type) {
             card.setType(type);
+            return this;
+        }
+
+        public Builder addStatus(Status status) {
+            card.setStatus(status);
+            return this;
+        }
+
+        public Builder addDefaultStatus() {
+            card.setStatus(new Status(DEFAULT_STATUS_ID,
+                    DEFAULT_STATUS));
             return this;
         }
 
@@ -117,6 +132,22 @@ public class Card {
         this.type = type;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public boolean isActive(){
+        return status.getId() == Status.StatusIdentifier.ACTIVE_STATUS.getId();
+    }
+
+    public boolean isBlocked(){
+        return status.getId() == Status.StatusIdentifier.BLOCKED_STATUS.getId();
+    }
+
     @Override
     public String toString() {
         return "Card{" +
@@ -126,6 +157,7 @@ public class Card {
                 ", cvv=" + cvv +
                 ", expireDate=" + expireDate +
                 ", type=" + type.toString() +
+                ", status=" + status +
                 '}';
     }
 

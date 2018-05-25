@@ -29,7 +29,7 @@ public class PostSignupCommand implements ICommand {
     private final static String PASSWORD_PARAM = "password";
     private final static String FIRSTNAME_PARAM = "firstname";
     private final static String LASTNAME_PARAM = "lastname";
-    private final static String PHONE_PARAM = "phone";
+    private final static String PHONE_PARAM = "phoneNumber";
 
     private final static String INVALID_FIRSTNAME_KEY = "invalid.firstname";
     private final static String INVALID_LASTNAME_KEY = "invalid.lastname";
@@ -54,17 +54,15 @@ public class PostSignupCommand implements ICommand {
         User userDto = getDataFromRequest(request);
         List<String> errors = validateData(userDto);
 
-        /*if(errors.isEmpty()) {
+        if(errors.isEmpty()) {
             User createdUser = userService.createUser(userDto);
-            Account userAccount = createNewAccount(createdUser);
-            createNewCard(userAccount, createdUser);
 
             addUserToSession(request.getSession(), createdUser);
 
             Util.redirectTo(request, response, PagesPaths.HOME_PATH);
 
             return REDIRECTED;
-        }*/
+        }
 
         addInvalidDataToRequest(request, userDto, errors);
 
@@ -82,33 +80,6 @@ public class PostSignupCommand implements ICommand {
                 .addPhoneNumber(request.getParameter(PHONE_PARAM))
                 .build();
     }
-
-    /*private Account createNewAccount(User user) {
-        Account tempAccount = new Account(Account.DEFAULT_NUMBER,
-                user,
-                Account.DEFAULT_BALANCE,
-                Account.DEFAULT_STATUS);
-
-        Account userAccount = accountService.createAccount(tempAccount);
-
-        return userAccount;
-    }
-
-    private Card createNewCard(Account account, User user) {
-        Card tempCard = Card.newBuilder()
-                .setCardNumber(Card.DEFAULT_NUMBER)
-                .setAccount(account)
-                .setCardHolder(user)
-                .setCvv(CardPassGenerator.getRandomCvv())
-                .setPin(CardPassGenerator.getRandomPin())
-                .setExpireDate(new Date())
-                .setType(Card.CardType.VISA)
-                .build();
-
-        Card createdCard = cardService.createCard(tempCard);
-
-        return createdCard;
-    }*/
 
     private List<String> validateData(User user) {
         List<String> errors = new ArrayList<>();
@@ -141,4 +112,32 @@ public class PostSignupCommand implements ICommand {
             throws IOException {
         session.setAttribute(Attributes.USER, user);
     }
+
+
+    /*private Account createNewAccount(User user) {
+        Account tempAccount = new Account(Account.DEFAULT_NUMBER,
+                user,
+                Account.DEFAULT_BALANCE,
+                Account.DEFAULT_STATUS);
+
+        Account userAccount = accountService.createAccount(tempAccount);
+
+        return userAccount;
+    }
+
+    private Card createNewCard(Account account, User user) {
+        Card tempCard = Card.newBuilder()
+                .setCardNumber(Card.DEFAULT_NUMBER)
+                .setAccount(account)
+                .setCardHolder(user)
+                .setCvv(CardPassGenerator.getRandomCvv())
+                .setPin(CardPassGenerator.getRandomPin())
+                .setExpireDate(new Date())
+                .setType(Card.CardType.VISA)
+                .build();
+
+        Card createdCard = cardService.createCard(tempCard);
+
+        return createdCard;
+    }*/
 }
