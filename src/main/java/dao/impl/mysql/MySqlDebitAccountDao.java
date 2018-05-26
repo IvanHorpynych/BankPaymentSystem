@@ -1,11 +1,9 @@
 
 package dao.impl.mysql;
 
-import dao.abstraction.AccountDao;
+import dao.abstraction.GenericAccountDao;
 import dao.abstraction.DebitAccountDao;
 import dao.datasource.PooledConnection;
-import dao.impl.mysql.converter.AccountDtoConverter;
-import dao.impl.mysql.converter.DtoConverter;
 import entity.*;
 
 import javax.sql.DataSource;
@@ -13,11 +11,9 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 
-public class MySqlDebitAccountDao extends MySqlAccountDao implements DebitAccountDao{
+public class MySqlDebitAccountDao extends MySqlAccountsDao implements DebitAccountDao{
 
 
     private final static String MAIN_QUERY =
@@ -33,7 +29,7 @@ public class MySqlDebitAccountDao extends MySqlAccountDao implements DebitAccoun
 
     public static void main(String[] args) {
         DataSource dataSource = PooledConnection.getInstance();
-        AccountDao mySqlDebitAccountDao;
+        GenericAccountDao mySqlDebitAccountDao;
         try {
             System.out.println("Find all:");
             mySqlDebitAccountDao = new MySqlDebitAccountDao(dataSource.getConnection());

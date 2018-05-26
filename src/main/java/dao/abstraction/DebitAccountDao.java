@@ -6,6 +6,6 @@ import entity.Account;
  * Interface for serching debit account.
  *
  */
-public interface DebitAccountDao extends AccountDao<Account> {
+public interface DebitAccountDao extends GenericAccountDao<Account> {
 
 }

@@ -7,7 +7,7 @@ import controller.util.constants.PagesPaths;
 import controller.util.constants.Views;
 import entity.Account;
 import entity.User;
-import service.AccountService;
+import service.AccountsService;
 import service.ServiceFactory;
 
 import javax.servlet.ServletException;
@@ -28,7 +28,7 @@ public class BlockAccountCommand implements ICommand {
     private final static String ACCOUNT_PARAM = "account";
     private final static String ACCOUNT_BLOCKED = "account.successfully.blocked";
 
-    private final AccountService accountService = ServiceFactory.getAccountService();
+    private final AccountsService accountService = ServiceFactory.getAccountService();
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response)

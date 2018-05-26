@@ -1,10 +1,8 @@
 package service;
 
-import dao.abstraction.AccountDao;
 import dao.abstraction.CreditAccountDao;
 import dao.factory.DaoFactory;
 import dao.factory.connection.DaoConnection;
-import entity.Account;
 import entity.CreditAccount;
 import entity.Status;
 import entity.User;

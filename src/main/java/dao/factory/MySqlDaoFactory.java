@@ -55,8 +55,8 @@ public class MySqlDaoFactory extends DaoFactory {
     }
 
     @Override
-    public AccountDao getAccountDao(DaoConnection connection) {
-        return new MySqlAccountDao(getOwnSqlConnection(connection));
+    public AccountsDao getAccountsDao(DaoConnection connection) {
+        return new MySqlAccountsDao(getOwnSqlConnection(connection));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class MySqlDaoFactory extends DaoFactory {
     }
 
     @Override
-    public AccountDao getAccountDao(DaoConnection connection, AccountType accountType) {
+    public GenericAccountDao getAccountDao(DaoConnection connection, AccountType accountType) {
         if (accountType.getId() == AccountType.TypeIdentifier.
                 CREDIT_TYPE.getId())
             return getCreditAccountDao(connection);

@@ -1,8 +1,7 @@
 
 package dao.impl.mysql;
 
-import dao.abstraction.AccountDao;
-import dao.abstraction.DebitAccountDao;
+import dao.abstraction.AccountsDao;
 import dao.datasource.PooledConnection;
 import dao.impl.mysql.converter.DtoConverter;
 import dao.impl.mysql.converter.AccountDtoConverter;
@@ -17,7 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 
-public class MySqlAccountDao implements AccountDao<Account> {
+public class MySqlAccountsDao implements AccountsDao {
 
 
     private String SELECT_ALL;
@@ -63,21 +62,21 @@ public class MySqlAccountDao implements AccountDao<Account> {
     private  DefaultDaoImpl<Account> defaultDao;
 
 
-    public MySqlAccountDao(Connection connection) {
+    public MySqlAccountsDao(Connection connection) {
         this(connection, new AccountDtoConverter(), MAIN_QUERY);
     }
 
-    public MySqlAccountDao(Connection connection, String query) {
+    public MySqlAccountsDao(Connection connection, String query) {
         this(connection, new AccountDtoConverter(), query);
     }
 
-    public MySqlAccountDao(Connection connection,
-                           DtoConverter<Account> converter, String query) {
+    public MySqlAccountsDao(Connection connection,
+                            DtoConverter<Account> converter, String query) {
         this.defaultDao = new DefaultDaoImpl<>(connection, converter);
         this.SELECT_ALL = query;
     }
 
-    public MySqlAccountDao(DefaultDaoImpl<Account> defaultDao) {
+    public MySqlAccountsDao(DefaultDaoImpl<Account> defaultDao) {
         this.defaultDao = defaultDao;
     }
 
@@ -185,11 +184,11 @@ public class MySqlAccountDao implements AccountDao<Account> {
 
     public static void main(String[] args) {
         DataSource dataSource = PooledConnection.getInstance();
-        AccountDao mySqlDebitAccountDao;
+        AccountsDao mySqlDebitAccountDao;
         try {
             System.out.println("Find all:");
-            mySqlDebitAccountDao = new MySqlAccountDao(dataSource.getConnection());
-            ((MySqlAccountDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
+            mySqlDebitAccountDao = new MySqlAccountsDao(dataSource.getConnection());
+            ((MySqlAccountsDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
 
             int random = (int) (Math.random() * 100);
 
@@ -219,38 +218,38 @@ public class MySqlAccountDao implements AccountDao<Account> {
             );
 
             System.out.println("Find all:");
-            ((MySqlAccountDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
+            ((MySqlAccountsDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
 
             System.out.println("update:");
             debitAccount.setBalance(BigDecimal.valueOf(12345));
             mySqlDebitAccountDao.update(debitAccount);
 
             System.out.println("Find all:");
-            ((MySqlAccountDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
+            ((MySqlAccountsDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
 
             System.out.println("Increase:");
             mySqlDebitAccountDao.increaseBalance(debitAccount, BigDecimal.valueOf(100));
 
             System.out.println("Find all:");
-            ((MySqlAccountDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
+            ((MySqlAccountsDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
 
             System.out.println("decrease:");
             mySqlDebitAccountDao.decreaseBalance(debitAccount, BigDecimal.valueOf(2000));
 
             System.out.println("Find all:");
-            ((MySqlAccountDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
+            ((MySqlAccountsDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
 
             System.out.println("update status:");
             mySqlDebitAccountDao.updateAccountStatus(debitAccount,new Status(4,"PENDING"));
 
             System.out.println("Find all:");
-            ((MySqlAccountDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
+            ((MySqlAccountsDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
 
             System.out.println("delete:");
             mySqlDebitAccountDao.delete(debitAccount.getAccountNumber());
 
             System.out.println("Find all:");
-            ((MySqlAccountDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
+            ((MySqlAccountsDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
         } catch (SQLException e) {
             e.printStackTrace();
         }

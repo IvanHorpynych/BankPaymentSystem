@@ -57,6 +57,8 @@ public class ControllerHelper {
                 new GetPaymentsByCardCommand());
         commands.put(buildKey(bundle.getString("user.replenish"), "credit_replenish"),
                 new GetReplenishCommand());
+        commands.put(buildKey(bundle.getString("user.replenish"), "replenish_do"),
+                new PostReplenishCommand());
 
     }
 

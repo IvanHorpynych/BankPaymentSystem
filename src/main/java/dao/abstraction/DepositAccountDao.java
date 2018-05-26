@@ -4,7 +4,7 @@ import entity.DepositAccount;
 
 import java.math.BigDecimal;
 
-public interface DepositAccountDao extends AccountDao<DepositAccount> {
+public interface DepositAccountDao extends GenericAccountDao<DepositAccount> {
 
     /**
      * Updates certain debit account minimum balance.

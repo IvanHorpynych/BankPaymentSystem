@@ -6,8 +6,10 @@ import controller.util.constants.Attributes;
 import controller.util.constants.Views;
 import controller.util.validator.AmountValidator;
 import entity.Account;
+import entity.AccountType;
 import entity.Payment;
 import entity.User;
+import service.AccountsService;
 import service.PaymentService;
 import service.ServiceFactory;
 
@@ -23,10 +25,11 @@ import java.util.List;
 /**
  * Created by JohnUkraine on 26/5/2018.
  */
-/*public class PostReplenishCommand implements ICommand {
+public class PostReplenishCommand implements ICommand {
     private final static String TRANSACTION_COMPLETE = "replenish.complete";
+    private final static String NOT_ENOUGH_MONEY = "account.insufficient.funds";
 
-    private final AccountService accountService = ServiceFactory.getAccountService();
+    private final AccountsService accountsService = ServiceFactory.getAccountsService();
     private final PaymentService paymentService = ServiceFactory.getPaymentService();
 
 
@@ -35,6 +38,7 @@ import java.util.List;
             throws ServletException, IOException {
 
         List<String> errors = validateDataFromRequest(request);
+        validateAccountBalance(request,errors);
 
         if (errors.isEmpty()) {
             Payment payment = createPayment(request);
@@ -45,14 +49,14 @@ import java.util.List;
 
             addMessageDataToRequest(request, Attributes.MESSAGES, messages);
 
-            addAccountsListToRequest(request);
+            //addAccountsListToRequest(request);
 
             return Views.REPLENISH_VIEW;
         }
 
         addMessageDataToRequest(request, Attributes.ERRORS, errors);
 
-        addAccountsListToRequest(request);
+        //addAccountsListToRequest(request);
 
         return Views.REPLENISH_VIEW;
     }
@@ -61,32 +65,50 @@ import java.util.List;
         List<String> errors = new ArrayList<>();
 
         Util.validateField(new AmountValidator(),
-                request.getParameter(AMOUNT_PARAM), errors);
+                request.getParameter(Attributes.AMOUNT), errors);
 
         return errors;
     }
 
+    private void validateAccountBalance(HttpServletRequest request, List<String> errors) {
+        Account senderAccount = accountsService.findAccountByNumber(
+                Long.valueOf(getCleanAccountNumber(request,Attributes.SENDER_ACCOUNT))).get();
+        BigDecimal paymentAmount = new BigDecimal(request.getParameter(Attributes.AMOUNT));
+
+        BigDecimal accountBalance = senderAccount.getBalance();
+
+        if (accountBalance.compareTo(paymentAmount) < 0) {
+            errors.add(NOT_ENOUGH_MONEY);
+        }
+    }
+
     private Payment createPayment(HttpServletRequest request) {
-        Account atmAccount = accountService.findAccountByNumber(ATM_ACCOUNT_PARAM).get();
-        Account accountRecipient = accountService.findAccountByNumber(
-                Long.valueOf(request.getParameter(ACCOUNT_PARAM))).get();
-        BigDecimal amount = new BigDecimal(request.getParameter(AMOUNT_PARAM));
+        Account senderAccount = accountsService.findAccountByNumber(
+                Long.valueOf(getCleanAccountNumber(request,Attributes.SENDER_ACCOUNT))).get();
+        Account refillableAccount = accountsService.findAccountByNumber(
+                Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT))).get();
+        BigDecimal amount = new BigDecimal(request.getParameter(Attributes.AMOUNT));
 
         Payment payment = Payment.newBuilder()
-                .setAccountFrom(atmAccount)
-                .setAccountTo(accountRecipient)
-                .setAmount(amount)
-                .setDate(new Date())
+                .addAccountFrom(senderAccount)
+                .addAccountTo(refillableAccount)
+                .addAmount(amount)
+                .addDate(new Date())
                 .build();
 
         return payment;
     }
 
-    private void addAccountsListToRequest(HttpServletRequest request) {
-        User user = (User) request.getSession().getAttribute(Attributes.USER);
-        List<Account> accounts = accountService.findAllByUser(user);
-        request.setAttribute(Attributes.ACCOUNTS, accounts);
+    private String getCleanAccountNumber(HttpServletRequest request, String attribute){
+       return request.getParameter(attribute)
+                .substring(0,request.getParameter(attribute).indexOf('(')-1);
     }
+
+    /*private void addAccountsListToRequest(HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Attributes.USER);
+        List<Account> accounts = accountsService.findAllByUser(user);
+        request.setAttribute(Attributes.ACCOUNTS, accounts);
+    }*/
 
     private void addMessageDataToRequest(HttpServletRequest request,
                                          String attribute,
@@ -94,4 +116,3 @@ import java.util.List;
         request.setAttribute(attribute, messages);
     }
 }
-*/

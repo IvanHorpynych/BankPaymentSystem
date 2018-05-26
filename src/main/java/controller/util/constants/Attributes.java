@@ -20,6 +20,8 @@ public interface Attributes {
     String CARD_NUMBER = "cardNumber";
     String DESIRED_ACCOUNT = "desiredAccount";
     String REFILLABLE_ACCOUNT = "refillableAccount";
+    String SENDER_ACCOUNT = "senderAccount";
+    String AMOUNT = "amount";
 
     String USER_LIST  ="activeUserList";
 

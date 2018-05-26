@@ -7,7 +7,7 @@ import entity.User;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface AccountDao<T extends Account> extends GenericDao<T, Long>{
+public interface GenericAccountDao<T extends Account> extends GenericDao<T, Long>{
     /**
      * Retrieves all accounts associated with certain user.
      *

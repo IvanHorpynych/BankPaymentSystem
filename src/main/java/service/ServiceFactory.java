@@ -46,6 +46,10 @@ public class ServiceFactory {
     public static PaymentService getPaymentService() {
         return PaymentService.getInstance();
     }
+
+    public static AccountsService getAccountsService() {
+        return AccountsService.getInstance();
+    }
     /*public static DebitAccountService getAccountService() {
         return DebitAccountService.getInstance();
     }

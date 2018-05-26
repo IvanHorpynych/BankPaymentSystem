@@ -29,7 +29,7 @@
 </c:if>
 
 <div class="panel-title text-center row col-md-12">
-        <h1 class="title"><fmt:message key="account.replenish"/></h1>
+    <h1 class="title"><fmt:message key="account.replenish"/></h1>
     <hr/>
 </div>
 
@@ -39,34 +39,39 @@
             <h1 class="title"></h1>
             <hr/>
         </div>
-        <form class="form-inline" method="post">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><b><fmt:message key="refillable.account"/></b>:
-                    <select name="refillableAccount" class="form-control" id="refillableAccount">
-                        <option selected="selected">${requestScope.refillableAccount}</option>
-                    </select>
-                </li>
-                <li class="list-group-item"><b><fmt:message key="select.account"/></b>:
-                    <select name="accountFrom" class="form-control" id="accountFrom">
-                        <c:forEach var="accountFrom" items="${requestScope.accounts}">
-                            <c:if test="${accountFrom.isActive()}">
-                                <option>${accountFrom.getAccountNumber()}</option>
-                            </c:if>
-                        </c:forEach>
-                    </select>
-                </li>
-                <li class="list-group-item"><b><fmt:message key="amount"/></b>
-                    <input name="amount" type="number" class="form-control" id="amount"
-                           placeholder="<fmt:message key="enter.amount" />">
-                    <fmt:message key="currency"/>
-                </li>
-                <li class="list-group-item">
-                    <button type="submit" class="btn btn-danger">
-                        <fmt:message key="replenish"/>
-                    </button>
-                </li>
-            </ul>
-        </form>
+        <c:if test="${not empty requestScope.accounts  or not empty requestScope.refillableAccount}">
+            <form class="form-inline" action="${pageContext.request.contextPath}/site/user/replenish" method="post">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b><fmt:message key="refillable.account"/></b>:
+                        <select name="refillableAccount" class="form-control" id="refillableAccount">
+                            <option selected="selected">${requestScope.refillableAccount}</option>
+                        </select>
+                    </li>
+                    <li class="list-group-item"><b><fmt:message key="select.account"/></b>:
+                        <select name="senderAccount" class="form-control" id="senderAccount">
+                            <c:forEach var="senderAccount" items="${requestScope.accounts}">
+                                <c:if test="${senderAccount.isActive()}">
+                                    <option>${senderAccount.getAccountNumber()}&nbsp(${senderAccount.getBalance()}
+                                        <fmt:message key="currency"/>)
+                                    </option>
+                                </c:if>
+                            </c:forEach>
+                        </select>
+                    </li>
+                    <li class="list-group-item"><b><fmt:message key="amount"/></b>
+                        <input name="amount" type="number" class="form-control" id="amount"
+                               placeholder="<fmt:message key="enter.amount" />">
+                        <fmt:message key="currency"/>
+                    </li>
+                    <li class="list-group-item">
+                        <input type="hidden" name="command" value="replenish_do"/>
+                        <button type="submit" class="btn btn-danger">
+                            <fmt:message key="replenish"/>
+                        </button>
+                    </li>
+                </ul>
+            </form>
+        </c:if>
     </div>
 </div>
 <jsp:include page="/WEB-INF/views/snippets/footer.jsp"/>

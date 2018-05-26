@@ -39,7 +39,7 @@ public class PostSignupCommand implements ICommand {
             "Created profile for user with email - ";
 
     private final UserService userService = ServiceFactory.getUserService();
-    /*private final AccountService accountService = ServiceFactory.getAccountService();
+    /*private final AccountsService accountService = ServiceFactory.getAccountService();
     private final CardService cardService = ServiceFactory.getCardService();*/
 
     @Override

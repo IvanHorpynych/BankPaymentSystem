@@ -1,6 +1,6 @@
 package service;
 
-import dao.abstraction.AccountDao;
+import dao.abstraction.GenericAccountDao;
 import dao.abstraction.PaymentDao;
 import dao.factory.DaoFactory;
 import dao.factory.connection.DaoConnection;
@@ -71,9 +71,9 @@ public class PaymentService {
     public Payment createPayment(Payment payment) {
         try(DaoConnection connection = daoFactory.getConnection()) {
             PaymentDao paymentDao = daoFactory.getPaymentDao(connection);
-            AccountDao accountDaoFrom = daoFactory.getAccountDao(connection,
+            GenericAccountDao accountDaoFrom = daoFactory.getAccountDao(connection,
                     payment.getAccountFrom().getAccountType());
-            AccountDao accountDaoTo = daoFactory.getAccountDao(connection,
+            GenericAccountDao accountDaoTo = daoFactory.getAccountDao(connection,
                     payment.getAccountTo().getAccountType());
 
             connection.startSerializableTransaction();

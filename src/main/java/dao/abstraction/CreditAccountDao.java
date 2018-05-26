@@ -4,7 +4,7 @@ import entity.CreditAccount;
 
 import java.math.BigDecimal;
 
-public interface CreditAccountDao extends AccountDao<CreditAccount> {
+public interface CreditAccountDao extends GenericAccountDao<CreditAccount> {
 
     /**
      * increase accrued interest of certain amount.
