@@ -96,7 +96,7 @@
             </c:when>
             <c:otherwise>
                 <div class="alert alert-info">
-                    <strong><fmt:message key="info"/></strong> <fmt:message key="account.no.matches"/>
+                    <strong><fmt:message key="info"/></strong> <fmt:message key="payment.no.matches"/>
                 </div>
             </c:otherwise>
         </c:choose>

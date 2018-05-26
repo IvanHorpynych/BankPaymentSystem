@@ -139,6 +139,10 @@ public abstract class Account {
         return status.getId() == Status.StatusIdentifier.BLOCKED_STATUS.getId();
     }
 
+    public boolean isClosed(){
+        return status.getId() == Status.StatusIdentifier.CLOSED_STATUS.getId();
+    }
+
     @Override
     public String toString() {
         return "Account{" +

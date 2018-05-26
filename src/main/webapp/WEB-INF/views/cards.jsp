@@ -74,10 +74,10 @@
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <form action="your_url" method="post">
-                                            <input type="hidden" name="command" value="login_post"/>
-                                            <button type="submit" class="btn-link"><fmt:message
-                                                    key="payment.histrory"/></button>
+                                        <form action="${pageContext.request.contextPath}/site/user/payments" method="get">
+                                            <input type="hidden" name="command" value="cardPayments"/>
+                                            <input type="hidden" name="cardNumber" value="${card.getCardNumber()}"/>
+                                            <button type="submit" class="btn-link"><fmt:message key="payment.histrory"/></button>
                                         </form>
                                     </li>
                                     <c:if test="${card.isActive() and sessionScope.user.isManager()}">

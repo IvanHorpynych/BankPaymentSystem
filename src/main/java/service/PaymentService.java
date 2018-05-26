@@ -61,6 +61,13 @@ public class PaymentService {
         }
     }
 
+    public List<Payment> findAllByCard(Long cardNumber) {
+        try(DaoConnection connection = daoFactory.getConnection()) {
+            PaymentDao paymentDao = daoFactory.getPaymentDao(connection);
+            return paymentDao.findByCardNumber(cardNumber);
+        }
+    }
+
     public Payment createPayment(Payment payment) {
         try(DaoConnection connection = daoFactory.getConnection()) {
             PaymentDao paymentDao = daoFactory.getPaymentDao(connection);

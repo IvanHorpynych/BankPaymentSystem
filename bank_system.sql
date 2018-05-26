@@ -414,7 +414,7 @@ insert into USER (ROLE_ID, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER, PASSWORD)
 
 insert into ACCOUNT_TYPE (ID, NAME) values (4, 'CREDIT'), (8, 'DEPOSIT'), (16, 'DEBIT');
 
-insert into STATUS (ID, NAME) values (1, 'ACTIVE'), (4, 'PENDING'), (8, 'REJECT'), (16, 'BLOCKED');
+insert into STATUS (ID, NAME) values (1, 'ACTIVE'), (4, 'PENDING'), (8, 'REJECT'), (16, 'BLOCKED'), (20, 'CLOSED');
 
 start transaction;
 insert into ACCOUNT (USER_ID, BALANCE, TYPE_ID, STATUS_ID) values ((select ID

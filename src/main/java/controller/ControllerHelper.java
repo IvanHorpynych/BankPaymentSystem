@@ -53,6 +53,10 @@ public class ControllerHelper {
                 new GetPaymentsByAccountCommand());
         commands.put(buildKey(bundle.getString("user.payment.path"), null),
                 new GetPaymentsByUserCommand());
+        commands.put(buildKey(bundle.getString("user.payment.path"), "cardPayments"),
+                new GetPaymentsByCardCommand());
+        commands.put(buildKey(bundle.getString("user.replenish"), "credit_replenish"),
+                new GetReplenishCommand());
 
     }
 
