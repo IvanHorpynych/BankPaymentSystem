@@ -9,7 +9,7 @@ import java.sql.SQLException;
 /**
  * Created by JohnUkraine on 5/07/2018.
  */
-public class DebitAccountDtoConverter implements DtoConverter<DebitAccount>{
+public class AccountDtoConverter implements DtoConverter<Account>{
     private final static String ACCOUNT_NUMBER_FIELD = "id";
     private final static String BALANCE_FIELD = "balance";
 
@@ -17,21 +17,21 @@ public class DebitAccountDtoConverter implements DtoConverter<DebitAccount>{
     private final DtoConverter<AccountType> accountTypeConverter;
     private final DtoConverter<Status> statusConverter;
     private String accountOrder;
-    public DebitAccountDtoConverter() {
+    public AccountDtoConverter() {
         this(new UserDtoConverter(), new AccountTypeDtoConverter(),
                 new StatusDtoConverter());
     }
 
-    public DebitAccountDtoConverter(DtoConverter<User> userConverter,
-                                    DtoConverter<AccountType> accountTypeConverter,
-                                    DtoConverter<Status> statusConverter) {
+    public AccountDtoConverter(DtoConverter<User> userConverter,
+                               DtoConverter<AccountType> accountTypeConverter,
+                               DtoConverter<Status> statusConverter) {
         this.userConverter = userConverter;
         this.accountTypeConverter = accountTypeConverter;
         this.statusConverter = statusConverter;
     }
 
     @Override
-    public DebitAccount convertToObject(ResultSet resultSet, String tablePrefix)
+    public Account convertToObject(ResultSet resultSet, String tablePrefix)
             throws SQLException {
 
         accountOrder = accountOrderIdentifier(tablePrefix);
@@ -43,7 +43,7 @@ public class DebitAccountDtoConverter implements DtoConverter<DebitAccount>{
         Status status = statusConverter.convertToObject(resultSet,
                 accountOrder);
 
-        DebitAccount debitAccount = DebitAccount.newBuilder().
+        return Account.newBuilder().
                 addAccountNumber(resultSet.
                         getLong(tablePrefix+ACCOUNT_NUMBER_FIELD)).
                 addAccountHolder(accountHolder).
@@ -51,7 +51,5 @@ public class DebitAccountDtoConverter implements DtoConverter<DebitAccount>{
                 addBalance(resultSet.getBigDecimal(tablePrefix+BALANCE_FIELD)).
                 addStatus(status).
                 build();
-
-        return debitAccount;
     }
 }

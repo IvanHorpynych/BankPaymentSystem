@@ -6,13 +6,11 @@ import dao.exception.DaoException;
 import dao.factory.connection.DaoConnection;
 import dao.factory.connection.MySqlConnection;
 import dao.impl.mysql.*;
-import entity.Account;
 import entity.AccountType;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Optional;
 
 public class MySqlDaoFactory extends DaoFactory {
     private final static String NULLABLE_CONNECTION =
@@ -54,6 +52,11 @@ public class MySqlDaoFactory extends DaoFactory {
     @Override
     public DebitAccountDao getDebitAccountDao(DaoConnection connection) {
         return new MySqlDebitAccountDao(getOwnSqlConnection(connection));
+    }
+
+    @Override
+    public AccountDao getAccountDao(DaoConnection connection) {
+        return new MySqlAccountDao(getOwnSqlConnection(connection));
     }
 
     @Override

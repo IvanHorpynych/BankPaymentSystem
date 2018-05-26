@@ -8,7 +8,7 @@ import java.util.Date;
  */
 
 public class DepositAccount extends Account{
-    public final static String DEFAULT_TYPE = "DEBIT";
+    public final static String DEFAULT_TYPE = "DEPOSIT";
     private final static int DEFAULT_TYPE_ID = AccountType.TypeIdentifier.
             DEBIT_TYPE.getId();
 
@@ -75,7 +75,7 @@ public class DepositAccount extends Account{
         }
     }
 
-    public static DepositAccount.Builder newBuilder() {
+    public static DepositAccount.Builder newDepositBuilder() {
         return new DepositAccount.Builder();
     }
 

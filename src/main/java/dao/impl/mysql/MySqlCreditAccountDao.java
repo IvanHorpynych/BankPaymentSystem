@@ -254,7 +254,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
 
             System.out.println("Insert:");
             CreditAccount creditAccount = (CreditAccount) mySqlCreditAccountDao.insert(
-                    CreditAccount.newBuilder().
+                    CreditAccount.newCreditBuilder().
                             addAccountHolder(user).
                             addAccountType(new AccountType(4,"CREDIT")).
                             addBalance(BigDecimal.ONE).

@@ -4,8 +4,8 @@ import dao.abstraction.CreditAccountDao;
 import dao.abstraction.DebitAccountDao;
 import dao.factory.DaoFactory;
 import dao.factory.connection.DaoConnection;
+import entity.Account;
 import entity.CreditAccount;
-import entity.DebitAccount;
 import entity.Status;
 import entity.User;
 
@@ -33,43 +33,43 @@ public class DebitAccountService {
         return Singleton.INSTANCE;
     }
 
-    public List<DebitAccount> findAllDebitAccounts() {
+    public List<Account> findAllDebitAccounts() {
         try (DaoConnection connection = daoFactory.getConnection()) {
             DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(connection);
             return debitAccountDao.findAll();
         }
     }
 
-    public Optional<DebitAccount> findAccountByNumber(long accountNumber) {
+    public Optional<Account> findAccountByNumber(long accountNumber) {
         try (DaoConnection connection = daoFactory.getConnection()) {
             DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(connection);
             return debitAccountDao.findOne(accountNumber);
         }
     }
 
-    public List<DebitAccount> findAllByUser(User user) {
+    public List<Account> findAllByUser(User user) {
         try (DaoConnection connection = daoFactory.getConnection()) {
             DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(connection);
             return debitAccountDao.findByUser(user);
         }
     }
 
-    public List<DebitAccount> findAllByStatus(Status status) {
+    public List<Account> findAllByStatus(Status status) {
         try (DaoConnection connection = daoFactory.getConnection()) {
             DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(connection);
             return debitAccountDao.findByStatus(status);
         }
     }
 
-    public DebitAccount createAccount(DebitAccount account) {
+    public Account createAccount(Account account) {
         try (DaoConnection connection = daoFactory.getConnection()) {
             DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(connection);
-            DebitAccount inserted = debitAccountDao.insert(account);
+            Account inserted = debitAccountDao.insert(account);
             return inserted;
         }
     }
 
-    public void updateAccountStatus(DebitAccount account, Status status) {
+    public void updateAccountStatus(Account account, Status status) {
         try (DaoConnection connection = daoFactory.getConnection()) {
             connection.startSerializableTransaction();
             DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(connection);

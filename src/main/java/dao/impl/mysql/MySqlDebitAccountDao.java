@@ -1,10 +1,11 @@
 
 package dao.impl.mysql;
 
+import dao.abstraction.AccountDao;
 import dao.abstraction.DebitAccountDao;
 import dao.datasource.PooledConnection;
+import dao.impl.mysql.converter.AccountDtoConverter;
 import dao.impl.mysql.converter.DtoConverter;
-import dao.impl.mysql.converter.DebitAccountDtoConverter;
 import entity.*;
 
 import javax.sql.DataSource;
@@ -15,166 +16,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class MySqlDebitAccountDao implements DebitAccountDao {
-    private final static String SELECT_ALL =
+
+public class MySqlDebitAccountDao extends MySqlAccountDao implements DebitAccountDao{
+
+
+    private final static String MAIN_QUERY =
             "SELECT * FROM debit_details ";
-
-    private final static String WHERE_ACCOUNT_NUMBER =
-            "WHERE id = ? ";
-
-    private final static String WHERE_USER =
-            "WHERE user_id = ? ";
-
-    private final static String WHERE_STATUS =
-            "WHERE status_id = ? ";
-
-    private final static String INSERT =
-            "INSERT INTO account " +
-                    "(user_id, type_id, status_id, balance) " +
-                    "VALUES(?, ?, ?, ?) ";
-
-
-    private final static String UPDATE =
-            "UPDATE account SET " +
-                    "balance = ? ";
-
-    private final static String UPDATE_STATUS =
-            "UPDATE account SET " +
-                    "status_id = ? ";
-
-    private final static String INCREASE_BALANCE =
-            "UPDATE account SET " +
-                    "balance = balance + ? ";
-
-    private final static String DECREASE_BALANCE =
-            "UPDATE account SET " +
-                    "balance = balance - ? ";
-
-    private final static String DELETE =
-            "DELETE FROM account ";
-
-
-    private final DefaultDaoImpl<DebitAccount> defaultDao;
 
 
     public MySqlDebitAccountDao(Connection connection) {
-        this(connection, new DebitAccountDtoConverter());
-    }
-
-    public MySqlDebitAccountDao(Connection connection,
-                                  DtoConverter<DebitAccount> converter) {
-        this.defaultDao = new DefaultDaoImpl<>(connection, converter);
-    }
-
-    public MySqlDebitAccountDao(DefaultDaoImpl<DebitAccount> defaultDao) {
-        this.defaultDao = defaultDao;
-    }
-
-    @Override
-    public Optional<DebitAccount> findOne(Long accountNumber) {
-        return defaultDao.findOne(
-                SELECT_ALL + WHERE_ACCOUNT_NUMBER,
-                accountNumber
-        );
-    }
-
-    @Override
-    public List<DebitAccount> findAll() {
-        return defaultDao.findAll(
-                SELECT_ALL
-        );
-    }
-
-    @Override
-    public DebitAccount insert(DebitAccount account) {
-        Objects.requireNonNull(account);
-
-        long accountNumber = defaultDao.executeInsertWithGeneratedPrimaryKey(
-                INSERT,
-                account.getAccountHolder().getId(),
-                account.getAccountType().getId(),
-                account.getStatus().getId(),
-                account.getBalance()
-        );
-
-        account.setAccountNumber(accountNumber);
-
-        return account;
-    }
-
-    @Override
-    public void update(DebitAccount account) {
-        Objects.requireNonNull(account);
-
-        defaultDao.executeUpdate(
-                UPDATE + WHERE_ACCOUNT_NUMBER,
-                account.getBalance(),
-                account.getAccountNumber()
-        );
-    }
-
-    @Override
-    public void delete(Long accountNumber) {
-        defaultDao.executeUpdate(
-                DELETE + WHERE_ACCOUNT_NUMBER,
-                accountNumber
-        );
+        super(connection, MAIN_QUERY);
     }
 
 
-    @Override
-    public List<DebitAccount> findByUser(User user) {
-        Objects.requireNonNull(user);
-
-        return defaultDao.findAll(
-                SELECT_ALL + WHERE_USER,
-                user.getId()
-        );
-    }
-
-    @Override
-    public List<DebitAccount> findByStatus(Status status) {
-        return defaultDao.findAll(
-                SELECT_ALL + WHERE_STATUS,
-                status.getId()
-        );
-    }
-
-    @Override
-    public void increaseBalance(Account account, BigDecimal amount) {
-        Objects.requireNonNull(account);
-
-        defaultDao.executeUpdate(
-                INCREASE_BALANCE + WHERE_ACCOUNT_NUMBER,
-                amount, account.getAccountNumber()
-        );
-    }
-
-    @Override
-    public void decreaseBalance(Account account, BigDecimal amount) {
-        Objects.requireNonNull(account);
-
-        defaultDao.executeUpdate(
-                DECREASE_BALANCE + WHERE_ACCOUNT_NUMBER,
-                amount, account.getAccountNumber()
-        );
-    }
-
-    @Override
-    public void updateAccountStatus(DebitAccount account, Status status) {
-        Objects.requireNonNull(account);
-
-        defaultDao.executeUpdate(
-                UPDATE_STATUS + WHERE_ACCOUNT_NUMBER,
-                status.getId(),
-                account.getAccountNumber()
-        );
-    }
 
 
     public static void main(String[] args) {
         DataSource dataSource = PooledConnection.getInstance();
-        DebitAccountDao mySqlDebitAccountDao;
+        AccountDao mySqlDebitAccountDao;
         try {
             System.out.println("Find all:");
             mySqlDebitAccountDao = new MySqlDebitAccountDao(dataSource.getConnection());
@@ -198,8 +57,8 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
             System.out.println(mySqlDebitAccountDao.findByUser(user));
 
             System.out.println("Insert:");
-            DebitAccount debitAccount = (DebitAccount) mySqlDebitAccountDao.insert(
-                    DebitAccount.newBuilder().
+            Account debitAccount = (Account) mySqlDebitAccountDao.insert(
+                    Account.newBuilder().
                             addAccountHolder(user).
                             addAccountType(new AccountType(16,"DEBIT")).
                             addBalance(BigDecimal.TEN).
@@ -246,8 +105,8 @@ public class MySqlDebitAccountDao implements DebitAccountDao {
 
     }
 
-    protected void printAccount(List<DebitAccount> list){
-        for (DebitAccount debitAccount : list) {
+    protected void printAccount(List<Account> list){
+        for (Account debitAccount : list) {
             System.out.println("Account : "+debitAccount+";");
             System.out.println("Balance: "+debitAccount.getBalance()+";");
             System.out.println();

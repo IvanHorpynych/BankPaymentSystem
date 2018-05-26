@@ -13,14 +13,14 @@ import java.util.Objects;
 public class CardDtoConverter implements DtoConverter<Card> {
 
     private String CARD_TABLE_PREFIX = "card_";
-    private DtoConverter<DebitAccount> accountConverter;
+    private DtoConverter<Account> accountConverter;
     private DtoConverter<Status> statusConverter;
 
     public CardDtoConverter() {
-        this( new DebitAccountDtoConverter(), new StatusDtoConverter());
+        this( new AccountDtoConverter(), new StatusDtoConverter());
     }
 
-    public CardDtoConverter(DtoConverter<DebitAccount> accountConverter, DtoConverter<Status> statusDtoConverter) {
+    public CardDtoConverter(DtoConverter<Account> accountConverter, DtoConverter<Status> statusDtoConverter) {
         this.accountConverter = accountConverter;
         this.statusConverter = statusDtoConverter;
     }

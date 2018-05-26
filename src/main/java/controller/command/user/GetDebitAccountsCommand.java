@@ -3,8 +3,7 @@ package controller.command.user;
 import controller.command.ICommand;
 import controller.util.constants.Attributes;
 import controller.util.constants.Views;
-import entity.CreditAccount;
-import entity.DebitAccount;
+import entity.Account;
 import entity.User;
 import service.CreditAccountService;
 import service.DebitAccountService;
@@ -29,7 +28,7 @@ public class GetDebitAccountsCommand implements ICommand {
             throws ServletException, IOException {
         User user = getUserFromSession(request.getSession());
 
-        List<DebitAccount> debitAccounts = accountService.findAllByUser(user);
+        List<Account> debitAccounts = accountService.findAllByUser(user);
 
         request.setAttribute(Attributes.DEBIT_ACCOUNTS, debitAccounts);
 

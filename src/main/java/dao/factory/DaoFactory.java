@@ -4,7 +4,6 @@ import dao.abstraction.*;
 import dao.exception.DaoException;
 import dao.factory.connection.DaoConnection;
 import entity.AccountType;
-import entity.DebitAccount;
 import org.apache.log4j.Logger;
 
 import java.util.ResourceBundle;
@@ -57,6 +56,8 @@ public abstract class DaoFactory {
     public abstract DepositAccountDao getDepositAccountDao(DaoConnection connection);
 
     public abstract DebitAccountDao getDebitAccountDao(DaoConnection connection);
+
+    public abstract AccountDao getAccountDao(DaoConnection connection);
 
     public abstract AccountTypeDao getAccountTypeDao(DaoConnection connection);
 

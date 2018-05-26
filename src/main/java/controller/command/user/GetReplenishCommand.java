@@ -4,8 +4,6 @@ import controller.command.ICommand;
 import controller.util.constants.Attributes;
 import controller.util.constants.Views;
 import entity.Account;
-import entity.DebitAccount;
-import entity.Payment;
 import entity.User;
 import service.DebitAccountService;
 import service.ServiceFactory;
@@ -29,7 +27,7 @@ public class GetReplenishCommand implements ICommand {
 
         Long accountNumber = getAccountFromRequest(request);
 
-        List<DebitAccount> accounts = accountService.findAllByUser(user);
+        List<Account> accounts = accountService.findAllByUser(user);
 
         request.setAttribute(Attributes.ACCOUNTS, accounts);
         request.setAttribute(Attributes.REFILLABLE_ACCOUNT, accountNumber);

@@ -78,7 +78,7 @@ public class PaymentDtoConverter implements DtoConverter<Payment> {
             return new DepositAccountDtoConverter();
         else if (typeId == AccountType.TypeIdentifier.
                 DEBIT_TYPE.getId())
-            return new DebitAccountDtoConverter();
+            return new AccountDtoConverter();
         return null;
     }
 

@@ -22,7 +22,7 @@ public class CreditAccount extends Account{
     public CreditAccount() {
     }
 
-    public static class Builder extends Account.AbstractBuilder<Builder, CreditAccount>{
+    public static class Builder extends Account.AbstractBuilder<CreditAccount.Builder, CreditAccount>{
         private final CreditAccount creditAccount;
 
         public Builder() {
@@ -67,7 +67,7 @@ public class CreditAccount extends Account{
         }
 
         @Override
-        protected Builder getThis() {
+        protected CreditAccount.Builder getThis() {
             return this;
         }
 
@@ -82,7 +82,7 @@ public class CreditAccount extends Account{
         }
     }
 
-    public static CreditAccount.Builder newBuilder() {
+    public static CreditAccount.Builder newCreditBuilder() {
         return new CreditAccount.Builder();
     }
 

@@ -159,7 +159,7 @@ public class MySqlPaymentDao implements PaymentDao {
                         USER_ROLE.getId(), "USER")).
                 build();
 
-        CreditAccount creditAccount1 = CreditAccount.newBuilder().
+        CreditAccount creditAccount1 = CreditAccount.newCreditBuilder().
                 addAccountNumber(3).
                 addAccountHolder(user).
                 addAccountType(new AccountType(4, "CREDIT")).
@@ -172,7 +172,7 @@ public class MySqlPaymentDao implements PaymentDao {
                 addStatus(new Status(1, "ACTIVE")).
                 build();
 
-        CreditAccount creditAccount2 = CreditAccount.newBuilder().
+        CreditAccount creditAccount2 = CreditAccount.newCreditBuilder().
                 addAccountNumber(1).
                 addAccountHolder(user).
                 addAccountType(new AccountType(4, "CREDIT")).

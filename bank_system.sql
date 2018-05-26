@@ -378,6 +378,30 @@ CREATE VIEW debit_details AS
 
 /*==============================================================*/
 
+CREATE VIEW account_details AS
+  SELECT
+    account.id,
+    account.balance,
+    type.id     AS type_id,
+    type.name   AS type_name,
+    status.id   AS status_id,
+    status.name AS status_name,
+    user.id     AS user_id,
+    user.first_name,
+    user.last_name,
+    user.email,
+    user.password,
+    user.phone_number,
+    role.id     AS role_id,
+    role.name   AS role_name
+  FROM account
+    JOIN user ON user_id = user.id
+    JOIN role ON role_id = role.id
+    JOIN account_type AS type ON type_id = type.id
+    JOIN status ON account.status_id = status.id
+
+/*==============================================================*/
+
 CREATE VIEW credit_request_details AS
   SELECT
     credit_request.id,

@@ -1,7 +1,11 @@
 package dao.abstraction;
 
-import entity.DebitAccount;
+import entity.Account;
 
-public interface DebitAccountDao extends AccountDao<DebitAccount> {
+/**
+ * Interface for serching debit account.
+ *
+ */
+public interface DebitAccountDao extends AccountDao<Account> {
 
 }

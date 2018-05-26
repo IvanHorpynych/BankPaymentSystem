@@ -47,7 +47,7 @@ public class DepositAccountDtoConverter implements DtoConverter<DepositAccount>{
         Status status = statusConverter.convertToObject(resultSet,
                 accountOrder);
 
-        DepositAccount depositAccount = DepositAccount.newBuilder().
+        DepositAccount depositAccount = DepositAccount.newDepositBuilder().
                 addAccountNumber(resultSet.
                         getLong(tablePrefix+ACCOUNT_NUMBER_FIELD)).
                 addAccountHolder(accountHolder).

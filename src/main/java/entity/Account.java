@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by JohnUkraine on 5/06/2018.
  */
 
-public abstract class Account {
+public class Account {
     public final static BigDecimal DEFAULT_BALANCE = BigDecimal.ZERO;
     public final static long DEFAULT_NUMBER = 0L;
 
@@ -32,15 +32,8 @@ public abstract class Account {
     public Account() {
     }
 
-    /*public Account(long accountNumber, User accountHolder,
-                    AccountType accountType) {
-        this.accountNumber = accountNumber;
-        this.accountHolder = accountHolder;
-        this.accountType = accountType;
-    }*/
 
     public static abstract class AbstractBuilder<T extends AbstractBuilder<T,A>, A extends Account> {
-        //private Account account;
 
         protected abstract T getThis();
         protected abstract A getAccount();
@@ -88,6 +81,34 @@ public abstract class Account {
             return getThis();
         }
 
+    }
+
+    public static class Builder extends Account.AbstractBuilder<Account.Builder, Account>{
+        private final Account account;
+
+        public Builder() {
+            account = new Account();
+        }
+
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
+
+        @Override
+        protected Account getAccount() {
+            return account;
+        }
+
+        @Override
+        public Account build() {
+            return account;
+        }
+
+    }
+
+    public static final Account.Builder newBuilder() {
+        return new Account.Builder();
     }
 
     public long getAccountNumber() {

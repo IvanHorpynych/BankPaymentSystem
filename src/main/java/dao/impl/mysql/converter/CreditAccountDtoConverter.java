@@ -52,7 +52,7 @@ public class CreditAccountDtoConverter implements DtoConverter<CreditAccount> {
         Status status = statusConverter.convertToObject(resultSet,
                 accountOrder);
 
-        return CreditAccount.newBuilder().
+        return CreditAccount.newCreditBuilder().
                 addAccountNumber(resultSet.
                         getLong(tablePrefix + ACCOUNT_NUMBER_FIELD)).
                 addAccountHolder(accountHolder).

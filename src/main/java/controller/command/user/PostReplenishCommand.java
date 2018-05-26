@@ -8,7 +8,6 @@ import controller.util.validator.AmountValidator;
 import entity.Account;
 import entity.Payment;
 import entity.User;
-import service.AccountService;
 import service.PaymentService;
 import service.ServiceFactory;
 
@@ -24,7 +23,7 @@ import java.util.List;
 /**
  * Created by JohnUkraine on 26/5/2018.
  */
-public class PostReplenishCommand implements ICommand {
+/*public class PostReplenishCommand implements ICommand {
     private final static String TRANSACTION_COMPLETE = "replenish.complete";
 
     private final AccountService accountService = ServiceFactory.getAccountService();
@@ -94,5 +93,5 @@ public class PostReplenishCommand implements ICommand {
                                          List<String> messages) {
         request.setAttribute(attribute, messages);
     }
-
 }
+*/

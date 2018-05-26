@@ -231,7 +231,7 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
 
             System.out.println("Insert:");
             DepositAccount depositAccount = (DepositAccount) mySqlDepositAccountDao.insert(
-                    DepositAccount.newBuilder().
+                    DepositAccount.newDepositBuilder().
                             addAccountHolder(user).
                             addAccountType(new AccountType(8,"DEBIT")).
                             addBalance(BigDecimal.TEN).

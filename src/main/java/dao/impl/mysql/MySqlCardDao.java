@@ -160,7 +160,7 @@ public class MySqlCardDao implements CardDao {
                         USER_ROLE.getId(), "USER")).
                 build();
 
-        DebitAccount debitAccount = DebitAccount.newBuilder().
+        Account debitAccount = Account.newBuilder().
                 addAccountNumber(3).
                 addAccountHolder(user).
                 addAccountType(new AccountType(16, "DEBIT")).
