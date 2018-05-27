@@ -15,6 +15,8 @@
 <c:set var="loginPage" scope="page" value="/WEB-INF/views/login.jsp"/>
 <c:set var="signUpPage" scope="page" value="/WEB-INF/views/signup.jsp"/>
 <c:set var="replenishPage" scope="page" value="/WEB-INF/views/replenish.jsp"/>
+<c:set var="createRequest" scope="page" value="/WEB-INF/views/newRequest.jsp"/>
+<c:set var="creditRequestPage" scope="page" value="/WEB-INF/views/creditRequests.jsp"/>
 
 <c:set var="currPage" scope="page">
     <customTag:currPage/>
@@ -70,7 +72,7 @@
                         <li>
                     </c:otherwise>
                 </c:choose>
-                    <a href="${pageContext.request.contextPath}/site/home">
+                    <a>
                         <fmt:message key="account.replenish"/>
                     </a>
                 </li>
@@ -111,6 +113,19 @@
                 </c:choose>
                     <a href="${pageContext.request.contextPath}/site/user/payments">
                         <fmt:message key="payment.histrory"/>
+                    </a>
+                </li>
+
+                <c:choose>
+                    <c:when test="${createRequest.equals(currPage) or creditRequestPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
+                    <a href="${pageContext.request.contextPath}/site/user/credit_request">
+                        <fmt:message key="credit.request"/>
                     </a>
                 </li>
 

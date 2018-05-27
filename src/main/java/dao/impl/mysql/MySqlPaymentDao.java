@@ -36,9 +36,9 @@ public class MySqlPaymentDao implements PaymentDao {
 
     private final static String INSERT =
             "INSERT INTO payment (" +
-                    "amount, account_from, " +
+                    "amount, account_from, card_number_from, " +
                     "account_to, operation_date) " +
-                    "VALUES (?, ?, ?, ?) ";
+                    "VALUES (?, ?, ?, ?, ?) ";
 
     private final static String UPDATE =
             "UPDATE payment SET " +
@@ -89,6 +89,7 @@ public class MySqlPaymentDao implements PaymentDao {
                         INSERT,
                         obj.getAmount(),
                         obj.getAccountFrom().getAccountNumber(),
+                        obj.getCardNumberFrom(),
                         obj.getAccountTo().getAccountNumber(),
                         TimeConverter.toTimestamp(obj.getDate())
                 );
@@ -211,6 +212,7 @@ public class MySqlPaymentDao implements PaymentDao {
                             addAccountTo(creditAccount2).
                             addAmount(BigDecimal.TEN).
                             addDate(new Date()).
+                            addCardNumberFrom(1000000000000000L).
                             build()
             );
             System.out.println("Find one:");
