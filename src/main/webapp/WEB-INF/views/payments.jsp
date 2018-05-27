@@ -12,21 +12,7 @@
 <body>
 <jsp:include page="/WEB-INF/views/snippets/navbar.jsp"/>
 
-<c:if test="${not empty requestScope.messages}">
-    <div class="alert alert-success">
-        <c:forEach items="${requestScope.messages}" var="message">
-            <strong><fmt:message key="info"/></strong> <fmt:message key="${message}"/><br>
-        </c:forEach>
-    </div>
-</c:if>
 
-<c:if test="${not empty requestScope.errors}">
-    <div class="alert alert-danger">
-        <c:forEach items="${requestScope.errors}" var="error">
-            <strong><fmt:message key="error"/></strong> <fmt:message key="${error}"/><br>
-        </c:forEach>
-    </div>
-</c:if>
 <div class="panel-title text-center row col-md-12">
     <c:if test="${not empty sessionScope.user and not sessionScope.user.isManager()}">
         <h1 class="title"><fmt:message key="payments.history"/>
@@ -43,6 +29,22 @@
 
 <div class="container">
     <div class="row col-md-12">
+
+        <c:if test="${not empty requestScope.messages}">
+            <div class="alert alert-success">
+                <c:forEach items="${requestScope.messages}" var="message">
+                    <strong><fmt:message key="info"/></strong> <fmt:message key="${message}"/><br>
+                </c:forEach>
+            </div>
+        </c:if>
+
+        <c:if test="${not empty requestScope.errors}">
+            <div class="alert alert-danger">
+                <c:forEach items="${requestScope.errors}" var="error">
+                    <strong><fmt:message key="error"/></strong> <fmt:message key="${error}"/><br>
+                </c:forEach>
+            </div>
+        </c:if>
         <c:choose>
             <c:when test="${not empty requestScope.payments}">
                 <table class="table table-hover">

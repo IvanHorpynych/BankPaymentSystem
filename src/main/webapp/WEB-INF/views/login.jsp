@@ -25,7 +25,7 @@
             <div class="account-wall">
                 <img class="profile-img" src="${pageContext.request.contextPath}/resources/someone.png" alt="">
                 <form class="form-signin" method="post">
-                    <input type="hidden" name="command" value="login_post"/>
+                    <input type="hidden" name="command" value="login.post"/>
                     <input type="text" class="form-control" name="email" placeholder="<fmt:message key="enter.email"/>"
                            value="<c:out value="${requestScope.user.getEmail()}" />" required autofocus>
                     <input type="password" class="form-control" name="password" placeholder="<fmt:message key="enter.password"/>" required>

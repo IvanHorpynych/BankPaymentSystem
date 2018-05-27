@@ -20,7 +20,7 @@
 </c:if>
 <div class="container">
     <form class="form-horizontal" role="form" method="post">
-        <input type="hidden" name="command" value="signup_post"/>
+        <input type="hidden" name="command" value="signup.post"/>
         <h2><fmt:message key="create.new.profile"/></h2>
         <div class="form-group">
             <label for="firstname" class="col-sm-3 control-label"><fmt:message key="firstname"/></label>

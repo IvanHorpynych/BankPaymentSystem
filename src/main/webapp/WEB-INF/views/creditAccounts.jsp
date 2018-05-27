@@ -89,7 +89,7 @@
                                         <li class="divider"></li>
                                         <li>
                                             <form action="${pageContext.request.contextPath}/site/user/replenish" method="get">
-                                                <input type="hidden" name="command" value="credit_replenish"/>
+                                                <input type="hidden" name="command" value="replenish"/>
                                                 <input type="hidden" name="refillableAccount" value="${creditAccount.getAccountNumber()}"/>
                                                 <button type="submit" class="btn-link"><fmt:message key="account.replenish"/></button>
                                             </form>

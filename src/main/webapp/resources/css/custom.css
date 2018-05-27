@@ -17,3 +17,11 @@
 .card-img {
     width: 50px;
 }
+
+.default-input {
+    width: 100% !important;
+}
+
+.default-min-input {
+    width: 15% !important;
+}

@@ -18,10 +18,15 @@ public interface Attributes {
     String PAYMENTS = "payments";
     String ACCOUNT = "account";
     String CARD_NUMBER = "cardNumber";
+    String CARD_TO = "cardTo";
+    String CARD_FROM = "cardFrom";
+    String PIN = "pin";
+    String CVV = "cvv";
     String DESIRED_ACCOUNT = "desiredAccount";
     String REFILLABLE_ACCOUNT = "refillableAccount";
     String SENDER_ACCOUNT = "senderAccount";
     String AMOUNT = "amount";
+    String WARNING = "warning";
 
     String USER_LIST  ="activeUserList";
 

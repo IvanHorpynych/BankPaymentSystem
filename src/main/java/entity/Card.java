@@ -141,7 +141,8 @@ public class Card {
     }
 
     public boolean isActive(){
-        return status.getId() == Status.StatusIdentifier.ACTIVE_STATUS.getId();
+        return status.getId() == Status.StatusIdentifier.ACTIVE_STATUS.getId() &&
+                new Date().compareTo(expireDate) < 0;
     }
 
     public boolean isBlocked(){

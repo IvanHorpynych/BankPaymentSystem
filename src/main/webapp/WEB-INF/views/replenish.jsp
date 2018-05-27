@@ -12,42 +12,57 @@
 <body>
 <jsp:include page="/WEB-INF/views/snippets/navbar.jsp"/>
 
-<c:if test="${not empty requestScope.messages}">
-    <div class="alert alert-success">
-        <c:forEach items="${requestScope.messages}" var="message">
-            <strong><fmt:message key="info"/></strong> <fmt:message key="${message}"/><br>
-        </c:forEach>
-    </div>
-</c:if>
-
-<c:if test="${not empty requestScope.errors}">
-    <div class="alert alert-danger">
-        <c:forEach items="${requestScope.errors}" var="error">
-            <strong><fmt:message key="error"/></strong> <fmt:message key="${error}"/><br>
-        </c:forEach>
-    </div>
-</c:if>
-
 <div class="panel-title text-center row col-md-12">
     <h1 class="title"><fmt:message key="account.replenish"/></h1>
     <hr/>
 </div>
 
 <div class="container">
+    <div class="row col-md-12">
+        <c:if test="${not empty requestScope.messages}">
+            <div class="alert alert-success">
+                <c:forEach items="${requestScope.messages}" var="message">
+                    <strong><fmt:message key="info"/></strong> <fmt:message key="${message}"/><br>
+                </c:forEach>
+            </div>
+        </c:if>
+
+        <c:if test="${not empty requestScope.warning and not empty requestScope.amount}">
+            <div class="alert alert-warning">
+                <fmt:message key="${requestScope.warning}"/>&nbsp${requestScope.amount}<fmt:message key="currency"/><br>
+            </div>
+        </c:if>
+
+
+        <c:if test="${not empty requestScope.errors}">
+            <div class="alert alert-danger">
+                <c:forEach items="${requestScope.errors}" var="error">
+                    <strong><fmt:message key="error"/></strong> <fmt:message key="${error}"/><br>
+                </c:forEach>
+            </div>
+        </c:if>
+
+    </div>
+</div>
+
+
+<div class="container">
     <div class="row col-md-5">
-        <div class="panel-title text-center">
-            <h1 class="title"></h1>
-            <hr/>
-        </div>
-        <c:if test="${not empty requestScope.accounts  or not empty requestScope.refillableAccount}">
+        <c:if test="${empty requestScope.messages}">
             <form class="form-inline" action="${pageContext.request.contextPath}/site/user/replenish" method="post">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><b><fmt:message key="refillable.account"/></b>:
+                    <li class="list-group-item">
+                        <label for="refillableAccount">
+                            <fmt:message key="refillable.account"/>:
+                        </label>
                         <select name="refillableAccount" class="form-control" id="refillableAccount">
                             <option selected="selected">${requestScope.refillableAccount}</option>
                         </select>
                     </li>
-                    <li class="list-group-item"><b><fmt:message key="select.account"/></b>:
+                    <li class="list-group-item">
+                        <label for="senderAccount">
+                            <fmt:message key="select.account"/>:
+                        </label>
                         <select name="senderAccount" class="form-control" id="senderAccount">
                             <c:forEach var="senderAccount" items="${requestScope.accounts}">
                                 <c:if test="${senderAccount.isActive()}">
@@ -59,12 +74,12 @@
                         </select>
                     </li>
                     <li class="list-group-item"><b><fmt:message key="amount"/></b>
-                        <input name="amount" type="number" class="form-control" id="amount"
+                        <input name="amount" type="number" class="form-control" id="amount" step="0.0001"
                                placeholder="<fmt:message key="enter.amount" />">
                         <fmt:message key="currency"/>
                     </li>
                     <li class="list-group-item">
-                        <input type="hidden" name="command" value="replenish_do"/>
+                        <input type="hidden" name="command" value="replenish.do"/>
                         <button type="submit" class="btn btn-danger">
                             <fmt:message key="replenish"/>
                         </button>

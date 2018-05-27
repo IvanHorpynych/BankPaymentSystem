@@ -19,7 +19,7 @@ public class RegexValidator extends AbstractValidator<String> {
     public boolean isValid(String str) {
         resetErrorStatus();
 
-        if(str == null || str.length() >= maxLength) {
+        if(str == null || str.length() > maxLength) {
             setErrorStatus(true);
             return false;
         }

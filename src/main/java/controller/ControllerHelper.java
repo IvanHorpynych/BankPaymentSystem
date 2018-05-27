@@ -35,9 +35,9 @@ public class ControllerHelper {
                 new GetLoginCommand());
         commands.put(buildKey(bundle.getString("signup.path"), null),
                 new GetSignupCommand());
-        commands.put(buildKey(bundle.getString("login.path"), "login_post"),
+        commands.put(buildKey(bundle.getString("login.path"), "login.post"),
                 new PostLoginCommand());
-        commands.put(buildKey(bundle.getString("signup.path"), "signup_post"),
+        commands.put(buildKey(bundle.getString("signup.path"), "signup.post"),
                 new PostSignupCommand());
         commands.put(buildKey(bundle.getString("logout.path"), "logout"),
                 new LogoutCommand());
@@ -55,10 +55,14 @@ public class ControllerHelper {
                 new GetPaymentsByUserCommand());
         commands.put(buildKey(bundle.getString("user.payment.path"), "cardPayments"),
                 new GetPaymentsByCardCommand());
-        commands.put(buildKey(bundle.getString("user.replenish"), "credit_replenish"),
+        commands.put(buildKey(bundle.getString("user.replenish"), "replenish"),
                 new GetReplenishCommand());
-        commands.put(buildKey(bundle.getString("user.replenish"), "replenish_do"),
+        commands.put(buildKey(bundle.getString("user.replenish"), "replenish.do"),
                 new PostReplenishCommand());
+        commands.put(buildKey(bundle.getString("user.create.payment"), null),
+                new GetNewPaymentCommand());
+        commands.put(buildKey(bundle.getString("user.create.payment"), "payment.do"),
+                new PostNewPaymentCommand());
 
     }
 

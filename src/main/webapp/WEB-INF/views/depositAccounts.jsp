@@ -79,6 +79,16 @@
                                             <button type="submit" class="btn-link"><fmt:message key="payment.histrory"/></button>
                                         </form>
                                     </li>
+                                    <c:if test="${not depositAccount.isClosed() and not sessionScope.user.isManager()}">
+                                        <li class="divider"></li>
+                                        <li>
+                                            <form action="${pageContext.request.contextPath}/site/user/replenish" method="get">
+                                                <input type="hidden" name="command" value="replenish"/>
+                                                <input type="hidden" name="refillableAccount" value="${depositAccount.getAccountNumber()}"/>
+                                                <button type="submit" class="btn-link"><fmt:message key="account.replenish"/></button>
+                                            </form>
+                                        </li>
+                                    </c:if>
                                     <li class="divider"></li>
                                     <c:if test="${depositAccount.isActive() and not sessionScope.user.isManager()}">
                                         <li>

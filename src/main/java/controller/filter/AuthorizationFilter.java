@@ -24,6 +24,8 @@ public class AuthorizationFilter implements Filter {
     private static final String SITE_PREFIX = "site.prefix";
     private static final String USER_PREFIX = "user.prefix";
     private static final String MANAGER_PREFIX = "manager.prefix";
+    private static final String HOME_PATH = "home.path";
+    private static final String LOGIN_PATH = "login.path";
     private static final ResourceBundle bundle = ResourceBundle.
             getBundle(Views.PAGES_BUNDLE);
 
@@ -47,7 +49,7 @@ public class AuthorizationFilter implements Filter {
             Util.redirectTo(
                     request,
                     (HttpServletResponse) servletResponse,
-                    PagesPaths.LOGIN_PATH
+                    bundle.getString(LOGIN_PATH)
             );
             logInfoAboutAccessDenied(request.getRequestURI());
             return;
@@ -59,7 +61,7 @@ public class AuthorizationFilter implements Filter {
             Util.redirectTo(
                     request,
                     (HttpServletResponse) servletResponse,
-                    PagesPaths.HOME_PATH
+                    bundle.getString(HOME_PATH)
             );
             logInfoAboutAccessDenied(request.getRequestURI());
             return;
@@ -85,7 +87,7 @@ public class AuthorizationFilter implements Filter {
     private boolean isUserRoleInvalidForRequestedPage(HttpServletRequest request,
                                                       User user) {
         return (isUserPage(request) && user.getRole().getId() != USER_ROLE_ID) ||
-                (isAdminPage(request) && user.getRole().getId() != MANAGER_ROLE_ID);
+                (isManagerPage(request) && user.getRole().getId() != MANAGER_ROLE_ID);
     }
 
     private boolean isUserPage(HttpServletRequest request) {
@@ -95,7 +97,7 @@ public class AuthorizationFilter implements Filter {
                         bundle.getString(USER_PREFIX));
     }
 
-    private boolean isAdminPage(HttpServletRequest request) {
+    private boolean isManagerPage(HttpServletRequest request) {
         return request
                 .getRequestURI()
                 .startsWith(bundle.getString(SITE_PREFIX) +

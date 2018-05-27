@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created by JohnUkraine on 5/13/2018.
@@ -35,6 +36,9 @@ public class PostSignupCommand implements ICommand {
     private final static String INVALID_LASTNAME_KEY = "invalid.lastname";
     private final static String USER_ALREADY_EXISTS = "user.exists";
 
+    private static final ResourceBundle bundle = ResourceBundle.
+            getBundle(Views.PAGES_BUNDLE);
+
     private final static String ACCOUNT_CREATED =
             "Created profile for user with email - ";
 
@@ -47,7 +51,8 @@ public class PostSignupCommand implements ICommand {
             throws ServletException, IOException {
 
         if(Util.isAlreadyLoggedIn(request.getSession())) {
-            Util.redirectTo(request, response, PagesPaths.HOME_PATH);
+            Util.redirectTo(request, response, bundle.
+                    getString("home.path"));
             return REDIRECTED;
         }
 
@@ -59,7 +64,8 @@ public class PostSignupCommand implements ICommand {
 
             addUserToSession(request.getSession(), createdUser);
 
-            Util.redirectTo(request, response, PagesPaths.HOME_PATH);
+            Util.redirectTo(request, response, bundle.
+                    getString("home.path"));
 
             return REDIRECTED;
         }

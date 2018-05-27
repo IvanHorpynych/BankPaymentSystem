@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  * Created by JohnUkraine on 5/13/2018.
@@ -26,8 +27,12 @@ import java.util.Optional;
 public class PostLoginCommand implements ICommand {
     private final static String EMAIL_PARAM = "email";
     private final static String PASSWORD_PARAM = "password";
-    private final static String INVALID_CREDENTIALS = "invalid.credentials";
-    private final static String ACTIVE_ACCOUNT_IS_EXIST = "active.account.exist";
+    private final static String INVALID_CREDENTIALS =
+            "invalid.credentials";
+    private final static String ACTIVE_ACCOUNT_IS_EXIST =
+            "active.account.exist";
+    private static final ResourceBundle bundle = ResourceBundle.
+            getBundle(Views.PAGES_BUNDLE);
 
     private final UserService userService = ServiceFactory.getUserService();
 
@@ -36,7 +41,8 @@ public class PostLoginCommand implements ICommand {
             throws ServletException, IOException {
 
         if(Util.isAlreadyLoggedIn(request.getSession())) {
-            Util.redirectTo(request, response, PagesPaths.HOME_PATH);
+            Util.redirectTo(request, response, bundle.
+                    getString("home.path"));
             return REDIRECTED;
         }
 
@@ -50,7 +56,8 @@ public class PostLoginCommand implements ICommand {
             User user = loadUserFromDatabase(userDto.getEmail());
             addUserToContext(request.getSession(),user);
             addUserToSession(request.getSession(), user);
-            Util.redirectTo(request, response, PagesPaths.HOME_PATH);
+            Util.redirectTo(request, response,  bundle.
+                    getString("home.path"));
 
             return REDIRECTED;
         }

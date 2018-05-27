@@ -10,7 +10,7 @@
 <c:set var="debitAccountsPage" scope="page" value="/WEB-INF/views/debitAccounts.jsp"/>
 <c:set var="depositAccountsPage" scope="page" value="/WEB-INF/views/depositAccounts.jsp"/>
 <c:set var="cardsPage" scope="page" value="/WEB-INF/views/cards.jsp"/>
-<c:set var="createPage" scope="page" value="/WEB-INF/views/createPayment.jsp"/>
+<c:set var="createPage" scope="page" value="/WEB-INF/views/newPayment.jsp"/>
 <c:set var="paymentsPage" scope="page" value="/WEB-INF/views/payments.jsp"/>
 <c:set var="loginPage" scope="page" value="/WEB-INF/views/login.jsp"/>
 <c:set var="signUpPage" scope="page" value="/WEB-INF/views/signup.jsp"/>
@@ -70,7 +70,7 @@
                         <li>
                     </c:otherwise>
                 </c:choose>
-                    <a href="${pageContext.request.contextPath}/site/user/replenish">
+                    <a href="${pageContext.request.contextPath}/site/home">
                         <fmt:message key="account.replenish"/>
                     </a>
                 </li>
@@ -96,7 +96,7 @@
                         <li>
                     </c:otherwise>
                 </c:choose>
-                    <a href="${pageContext.request.contextPath}/site/user/create">
+                    <a href="${pageContext.request.contextPath}/site/user/new_payment">
                         <fmt:message key="payment.create"/>
                     </a>
                 </li>
