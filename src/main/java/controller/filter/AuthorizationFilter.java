@@ -2,7 +2,6 @@ package controller.filter;
 
 import controller.util.Util;
 import controller.util.constants.Attributes;
-import controller.util.constants.PagesPaths;
 import controller.util.constants.Views;
 import entity.User;
 import org.apache.log4j.Logger;

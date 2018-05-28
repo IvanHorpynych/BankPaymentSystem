@@ -19,10 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by JohnUkraine on 27/5/2018.
@@ -37,6 +34,9 @@ public class PostNewPaymentCommand implements ICommand {
     private final static String RECIPIENT_ACCOUNT_ALREADY_CLOSED = "recipient.account.already.closed";
     private final static String TRANSACTION_COMPLETE = "payment.success";
     private final static String COINCIDENCE_ACCOUNTS  = "coincidence.accounts";
+
+    private static final ResourceBundle bundle = ResourceBundle.
+            getBundle(Views.PAGES_BUNDLE);
 
     private final CardService cardService = ServiceFactory.getCardService();
     private final DebitAccountService accountService = ServiceFactory.getDebitAccountService();
@@ -55,11 +55,12 @@ public class PostNewPaymentCommand implements ICommand {
             List<String> messages = new ArrayList<>();
             messages.add(TRANSACTION_COMPLETE);
 
-            addMessageDataToRequest(request, Attributes.MESSAGES, messages);
+            addMessageDataToSession(request, Attributes.MESSAGES, messages);
 
-            addCardsToRequest(request);
+            Util.redirectTo(request, response,  bundle.
+                    getString("user.info"));
 
-            return Views.NEW_PAYMENT_VIEW;
+            return REDIRECTED;
         }
 
         addMessageDataToRequest(request, Attributes.ERRORS, errors);
@@ -227,6 +228,12 @@ public class PostNewPaymentCommand implements ICommand {
                                          String attribute,
                                          List<String> messages) {
         request.setAttribute(attribute, messages);
+    }
+
+    private void addMessageDataToSession(HttpServletRequest request,
+                                         String attribute,
+                                         List<String> messages) {
+        request.getSession().setAttribute(attribute, messages);
     }
 
     private void addCardsToRequest(HttpServletRequest request) {

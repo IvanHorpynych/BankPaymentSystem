@@ -29,118 +29,81 @@
 </c:if>
 <div class="panel-title text-center row col-md-12">
     <c:if test="${not empty sessionScope.user and not sessionScope.user.isManager()}">
-        <h1 class="title"><fmt:message key="credit.accounts"/></h1>
+        <h1 class="title"><fmt:message key="credit.request"/></h1>
     </c:if>
     <%--<c:if test="${not empty sessionScope.user and sessionScope.user.isAdmin()}">
         <h1 class="title"><fmt:message key="accounts"/></h1>
     </c:if>--%>
     <hr/>
 </div>
-
 <div class="container">
     <div class="row col-md-4">
         <c:choose>
-            <c:when test="${not empty requestScope.creditAccounts}">
-                <c:forEach var="creditAccount" items="${requestScope.creditAccounts}">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><b><fmt:message key="account.number"/></b>:
-                            <c:out value="${creditAccount.getAccountNumber()}"/></li>
-                        <li class="list-group-item"><b><fmt:message key="account.balance"/></b>:
-                            <c:out value="${creditAccount.getBalance()}"/>
-                            <fmt:message key="currency"/>
-                        </li>
-                        <li class="list-group-item"><b><fmt:message key="credit.limit"/></b>:
-                            <c:out value="${creditAccount.getCreditLimit()}"/>
-                            <fmt:message key="currency"/>
-                        </li>
-                        <li class="list-group-item"><b><fmt:message key="interest.rate"/></b>:
-                            <c:out value="${creditAccount.getInterestRate()}"/>%
-                        </li>
-                        <li class="list-group-item"><b><fmt:message key="accrued.interest"/></b>:
-                            <c:out value="${creditAccount.getAccruedInterest()}"/>
-                            <fmt:message key="currency"/>
-                        </li>
-                        <li class="list-group-item"><b><fmt:message key="account.status"/></b>:
-                            <c:out value="${creditAccount.getStatus().getName()}"/>
-                        </li>
-                        <li class="list-group-item"><b><fmt:message key="validity.date"/></b>:
-                            <fmt:formatDate type = "date" value="${creditAccount.getValidityDate()}"/>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="btn-group group-style">
-                                <c:if test="${creditAccount.isActive()}">
-                                <form action="your_url" method="post" class="col-xs-8 main-btn">
-                                    <input type="hidden" name="command" value="login_post"/>
-                                    <button type="submit" class="btn btn-info"><fmt:message key="credit.take.loan"/></button>
-                                </form>
-                                </c:if>
-                                <button type="button" class="custom-btn btn btn-info dropdown-toggle"
-                                        data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <form action="${pageContext.request.contextPath}/site/user/payments" method="get">
-                                            <input type="hidden" name="command" value="accountPayments"/>
-                                            <input type="hidden" name="account" value="${creditAccount.getAccountNumber()}"/>
-                                            <button type="submit" class="btn-link"><fmt:message key="payment.histrory"/></button>
-                                        </form>
-                                    </li>
+            <c:when test="${not empty requestScope.creditRequests}">
+                <c:forEach var="creditRequest" items="${requestScope.creditRequests}">
+                    <c:if test="${creditRequest.isPending()}">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b><fmt:message key="credit.request"/></b>:
+                                <c:out value="${creditRequest.getRequestNumber()}"/>
+                            </li>
+                            <li class="list-group-item"><b><fmt:message key="credit.limit"/></b>:
+                                <c:out value="${creditRequest.getCreditLimit()}"/>
+                                <fmt:message key="currency"/>
+                            </li>
+                            <li class="list-group-item"><b><fmt:message key="interest.rate"/></b>:
+                                <c:out value="${creditRequest.getInterestRate()}"/>%
+                            </li>
+                            <li class="list-group-item"><b><fmt:message key="validity.date"/></b>:
+                                <fmt:formatDate type="date" value="${creditRequest.getValidityDate()}"/>
+                            </li>
+                            <li class="list-group-item"><b><fmt:message key="account.status"/></b>:
+                                <c:out value="${creditRequest.getStatus().getName()}"/>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="btn-group group-style">
+                                    <button type="button" class="custom-btn btn btn-info dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <form action="your_url" method="post">
+                                                <input type="hidden" name="command" value="login_post"/>
+                                                <button type="submit" class="btn-link"><fmt:message
+                                                        key="account.close"/></button>
+                                            </form>
+                                        </li>
 
-                                    <c:if test="${not creditAccount.isClosed() and not sessionScope.user.isManager()}">
-                                        <li class="divider"></li>
-                                        <li>
-                                            <form action="${pageContext.request.contextPath}/site/user/replenish" method="get">
-                                                <input type="hidden" name="command" value="replenish"/>
-                                                <input type="hidden" name="refillableAccount" value="${creditAccount.getAccountNumber()}"/>
-                                                <button type="submit" class="btn-link"><fmt:message key="account.replenish"/></button>
-                                            </form>
-                                        </li>
-                                    </c:if>
-                                    <li class="divider"></li>
-                                    <c:if test="${creditAccount.isActive() and not sessionScope.user.isManager()}">
-                                        <li>
-                                            <form action="your_url" method="post">
-                                                <input type="hidden" name="command" value="login_post"/>
-                                                <button type="submit" class="btn-link"><fmt:message key="account.close"/></button>
-                                            </form>
-                                        </li>
-                                    </c:if>
-                                    <c:if test="${creditAccount.isActive() and sessionScope.user.isManager()}">
-                                        <li>
-                                            <form action="your_url" method="post">
-                                                <input type="hidden" name="command" value="login_post"/>
-                                                <button type="submit" class="btn-link"><fmt:message key="account.block"/></button>
-                                            </form>
-                                        </li>
-                                    </c:if>
-                                    <c:if test="${creditAccount.isBlocked() and sessionScope.user.isManager()}">
-                                        <li>
-                                            <form action="your_url" method="post">
-                                                <input type="hidden" name="command" value="login_post"/>
-                                                <button type="submit" class="btn-link"><fmt:message key="account.unblock"/></button>
-                                            </form>
-                                        </li>
-                                    </c:if>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
+                                            <%-- <c:if test="${card.isBlocked() and sessionScope.user.isManager()}">
+                                                 <li class="divider"></li>
+                                                 <li>
+                                                     <form action="your_url" method="post">
+                                                         <input type="hidden" name="command" value="login_post"/>
+                                                         <button type="submit" class="btn-link"><fmt:message
+                                                                 key="account.unblock"/></button>
+                                                     </form>
+                                                 </li>
+                                             </c:if>--%>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </c:if>
                     <%--<tr>
-                        <td><c:out value="${creditAccounts.getAccountNumber()}"/></td>
+                        <td><c:out value="${debitAccounts.getAccountNumber()}"/></td>
                         <td>
-                            <c:out value="${creditAccounts.getBalance()}"/>
+                            <c:out value="${debitAccounts.getBalance()}"/>
                             <fmt:message key="currency"/>
                         </td>
-                        <td><c:out value="${creditAccounts.getCreditLimit()}"/>
+                        <td><c:out value="${debitAccounts.getCreditLimit()}"/>
                             <fmt:message key="currency"/>
                         </td>
-                        <td><c:out value="${creditAccounts.getInterestRate()}"/>%</td>
-                        <td><c:out value="${creditAccounts.getAccruedInterest()}"/>
+                        <td><c:out value="${debitAccounts.getInterestRate()}"/>%</td>
+                        <td><c:out value="${debitAccounts.getAccruedInterest()}"/>
                             <fmt:message key="currency"/>
                         </td>
-                        <td><c:out value="${creditAccounts.getStatus().getName()}"/></td>
+                        <td><c:out value="${debitAccounts.getStatus().getName()}"/></td>
                         <td><div class="btn-group">
                             <button type="button" class="btn btn-danger">Action</button>
                             <button type="button" class="custom-btn btn btn-info dropdown-toggle"
@@ -213,7 +176,10 @@
                 </div>
             </c:otherwise>
         </c:choose>
-
+        <form action="${pageContext.request.contextPath}/site/user/credit_request" method="get">
+            <input type="hidden" name="command" value="new.request"/>
+            <button type="submit" class="btn btn-info"><fmt:message key="create.new"/></button>
+        </form>
     </div>
 </div>
 <jsp:include page="/WEB-INF/views/snippets/footer.jsp"/>

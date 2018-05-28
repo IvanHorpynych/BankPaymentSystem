@@ -19,10 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by JohnUkraine on 26/5/2018.
@@ -35,6 +32,9 @@ public class PostReplenishCommand implements ICommand {
     private final static String ZERO_CREDIT_FUNDS = "zero.credit.funds";
     private final static String ZERO_AMOUNT = "zero.amount";
     private final static String NEGATIVE_AMOUNT = "negative.amount";
+
+    private static final ResourceBundle bundle = ResourceBundle.
+            getBundle(Views.PAGES_BUNDLE);
 
     private final AccountsService accountsService = ServiceFactory.getAccountsService();
     private final PaymentService paymentService = ServiceFactory.getPaymentService();
@@ -49,17 +49,21 @@ public class PostReplenishCommand implements ICommand {
 
         if (errors.isEmpty()) {
             Payment payment = createPayment(request);
-            checkCreditPositiveFund(payment, request);
 
-            paymentService.createPayment(payment);
+            paymentService.createPayment(payment.clone());
 
             List<String> messages = new ArrayList<>();
             messages.add(TRANSACTION_COMPLETE);
 
-            addMessageDataToRequest(request, Attributes.MESSAGES, messages);
+            checkCreditPositiveFund(payment, request);
+
+            addMessageDataToSession(request, Attributes.MESSAGES, messages);
+
+            Util.redirectTo(request, response,
+                    bundle.getString("user.info"));
 
 
-            return Views.REPLENISH_VIEW;
+            return REDIRECTED;
         }
 
         addMessageDataToRequest(request, Attributes.ERRORS, errors);
@@ -137,8 +141,8 @@ public class PostReplenishCommand implements ICommand {
                 AccountType.TypeIdentifier.CREDIT_TYPE.getId()) {
             BigDecimal compareValue = payment.getAccountTo().getBalance().add(payment.getAmount());
             if (compareValue.compareTo(BigDecimal.ZERO) > 0) {
-                request.setAttribute(Attributes.WARNING, CREDIT_POSITIVE_FUNDS);
-                request.setAttribute(Attributes.AMOUNT, payment.getAmount().subtract(compareValue));
+                request.getSession().setAttribute(Attributes.WARNING, CREDIT_POSITIVE_FUNDS);
+                request.getSession().setAttribute(Attributes.AMOUNT, payment.getAmount().subtract(compareValue));
             }
         }
     }
@@ -157,5 +161,11 @@ public class PostReplenishCommand implements ICommand {
                                          String attribute,
                                          List<String> messages) {
         request.setAttribute(attribute, messages);
+    }
+
+    private void addMessageDataToSession(HttpServletRequest request,
+                                         String attribute,
+                                         List<String> messages) {
+        request.getSession().setAttribute(attribute, messages);
     }
 }

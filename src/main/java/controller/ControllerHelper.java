@@ -1,11 +1,11 @@
 package controller;
 
 import controller.command.DefaultCommand;
+import controller.command.GetInfoCommand;
 import controller.command.HomeCommand;
 import controller.command.ICommand;
 import controller.command.authorization.*;
 import controller.command.user.*;
-import controller.util.constants.PagesPaths;
 import controller.util.constants.Views;
 
 import java.util.HashMap;
@@ -41,6 +41,8 @@ public class ControllerHelper {
                 new PostSignupCommand());
         commands.put(buildKey(bundle.getString("logout.path"), "logout"),
                 new LogoutCommand());
+        commands.put(buildKey(bundle.getString("user.info"), null),
+                new GetInfoCommand());
         commands.put(buildKey(bundle.getString("user.credit.account.path"), null),
                 new GetCreditAccountsCommand());
         commands.put(buildKey(bundle.getString("user.debit.account.path"), null),
@@ -63,6 +65,12 @@ public class ControllerHelper {
                 new GetNewPaymentCommand());
         commands.put(buildKey(bundle.getString("user.create.payment"), "payment.do"),
                 new PostNewPaymentCommand());
+        commands.put(buildKey(bundle.getString("user.credit.request"), null),
+                new GetCreditRequestsCommand());
+        commands.put(buildKey(bundle.getString("user.credit.request"), "new.request"),
+                new GetNewCreditRequestCommand());
+        commands.put(buildKey(bundle.getString("user.credit.request"), "request.do"),
+                new PostNewCreditRequestCommand());
 
     }
 

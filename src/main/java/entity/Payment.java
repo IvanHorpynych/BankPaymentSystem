@@ -2,13 +2,14 @@ package entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
  * Created by JohnUkraine on 5/06/2018.
  */
 
-public class Payment {
+public class Payment implements Cloneable{
     private long id;
     private BigDecimal amount;
     private Account accountFrom;
@@ -118,5 +119,15 @@ public class Payment {
                 ", cardNumberFrom=" + cardNumberFrom  +
                 ", accountTo=" + accountTo  +
                 '}';
+    }
+
+    @Override
+    public Payment clone(){
+        try {
+           return(Payment) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

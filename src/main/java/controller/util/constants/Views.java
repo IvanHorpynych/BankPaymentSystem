@@ -10,6 +10,7 @@ public interface Views {
 
     String HOME_VIEW = FOLDER + "index.jsp";
     String LOGIN_VIEW = FOLDER + "login.jsp";
+    String INFO_VIEW = FOLDER + "infoPage.jsp";
     String SIGNUP_VIEW = FOLDER + "signup.jsp";
     String CREDIT_ACCOUNTS_VIEW = FOLDER + "creditAccounts.jsp";
     String DEBIT_ACCOUNTS_VIEW = FOLDER + "debitAccounts.jsp";
@@ -18,4 +19,6 @@ public interface Views {
     String PAYMENTS_VIEW = FOLDER + "payments.jsp";
     String NEW_PAYMENT_VIEW = FOLDER + "newPayment.jsp";
     String REPLENISH_VIEW = FOLDER + "replenish.jsp";
+    String CREDIT_REQUEST_VIEW = FOLDER + "creditRequests.jsp";
+    String NEW_CREDIT_REQUEST_VIEW = FOLDER + "newCreditRequest.jsp";
 }

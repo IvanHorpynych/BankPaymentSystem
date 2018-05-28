@@ -3,7 +3,6 @@ package controller;
 import controller.command.ICommand;
 import controller.i18n.SupportedLocale;
 import controller.util.constants.Attributes;
-import controller.util.constants.PagesPaths;
 import controller.util.constants.Views;
 import entity.User;
 

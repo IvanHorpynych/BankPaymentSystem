@@ -89,7 +89,7 @@ public class MySqlPaymentDao implements PaymentDao {
                         INSERT,
                         obj.getAmount(),
                         obj.getAccountFrom().getAccountNumber(),
-                        obj.getCardNumberFrom(),
+                        (obj.getCardNumberFrom() == 0L ? null : obj.getCardNumberFrom()),
                         obj.getAccountTo().getAccountNumber(),
                         TimeConverter.toTimestamp(obj.getDate())
                 );
@@ -212,7 +212,7 @@ public class MySqlPaymentDao implements PaymentDao {
                             addAccountTo(creditAccount2).
                             addAmount(BigDecimal.TEN).
                             addDate(new Date()).
-                            addCardNumberFrom(1000000000000000L).
+                            addCardNumberFrom(0L).
                             build()
             );
             System.out.println("Find one:");

@@ -164,6 +164,10 @@ public class Account {
         return status.getId() == Status.StatusIdentifier.CLOSED_STATUS.getId();
     }
 
+    public boolean isNotClosed(){
+        return status.getId() != Status.StatusIdentifier.CLOSED_STATUS.getId();
+    }
+
     @Override
     public String toString() {
         return "Account{" +

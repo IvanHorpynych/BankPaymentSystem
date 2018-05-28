@@ -130,6 +130,10 @@ public class CreditRequest {
         this.validityDate = validityDate;
     }
 
+    public boolean isPending(){
+        return status.getId() == Status.StatusIdentifier.PENDING_STATUS.getId();
+    }
+
     @Override
     public String toString() {
         return "CreditRequest{" +

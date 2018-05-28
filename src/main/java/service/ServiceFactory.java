@@ -1,6 +1,7 @@
 package service;
 
 import entity.CreditAccount;
+import entity.CreditRequest;
 
 /**
  * Intermediate layer between command layer and dao layer.
@@ -50,13 +51,10 @@ public class ServiceFactory {
     public static AccountsService getAccountsService() {
         return AccountsService.getInstance();
     }
-    /*public static DebitAccountService getAccountService() {
-        return DebitAccountService.getInstance();
+
+    public static CreditRequestService getCreditRequestService() {
+        return CreditRequestService.getInstance();
     }
-
-
-
-    */
 
 
 }

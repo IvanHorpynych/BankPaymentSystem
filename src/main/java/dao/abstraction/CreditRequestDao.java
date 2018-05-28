@@ -27,8 +27,7 @@ public interface CreditRequestDao extends GenericDao<CreditRequest, Long> {
      * Updates certain credit request status.
      *
      * @param request account which status will be updated.
-     * @param status new status of account to update
      */
-    void updateRequestStatus(CreditRequest request, Status status);
+    void updateRequestStatus(CreditRequest request);
 
 }
