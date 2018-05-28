@@ -70,11 +70,33 @@
                                         <form action="${pageContext.request.contextPath}/site/user/payments" method="get">
                                             <input type="hidden" name="command" value="accountPayments"/>
                                             <input type="hidden" name="account" value="${debitAccount.getAccountNumber()}"/>
-                                            <button type="submit" class="btn-link"><fmt:message key="payment.histrory"/></button>
+                                            <button type="submit" class="btn-link text-left"><fmt:message key="payment.histrory"/></button>
                                         </form>
                                     </li>
-                                    <li class="divider"></li>
                                     <c:if test="${debitAccount.isActive() and not sessionScope.user.isManager()}">
+                                        <li class="divider"></li>
+                                        <li>
+                                            <form action="${pageContext.request.contextPath}/site/user/cards" method="post">
+                                                <input type="hidden" name="command" value="create.card"/>
+                                                <input type="hidden" name="debitAccount" value="${debitAccount.getAccountNumber()}"/>
+                                                <input type="hidden" name="cardType" value="VISA"/>
+                                                <button type="submit" class="btn-link text-left"><fmt:message
+                                                        key="create.visa.card"/></button>
+                                            </form>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li>
+                                            <form action="${pageContext.request.contextPath}/site/user/cards" method="post">
+                                                <input type="hidden" name="command" value="create.card"/>
+                                                <input type="hidden" name="debitAccount" value="${debitAccount.getAccountNumber()}"/>
+                                                <input type="hidden" name="cardType" value="MASTERCARD"/>
+                                                <button type="submit" class="btn-link text-left"><fmt:message
+                                                        key="create.mastercard.card"/></button>
+                                            </form>
+                                        </li>
+                                    </c:if>
+                                    <c:if test="${debitAccount.isActive() and not sessionScope.user.isManager()}">
+                                        <li class="divider"></li>
                                         <li>
                                             <form action="your_url" method="post">
                                                 <input type="hidden" name="command" value="login_post"/>

@@ -51,9 +51,10 @@
                         </li>
                         <li class="list-group-item"><b><fmt:message key="deposit.min.month.balance"/></b>:
                             <c:out value="${depositAccount.getMinBalance()}"/>
+                            <fmt:message key="currency"/>
                         </li>
                         <li class="list-group-item"><b><fmt:message key="deposit.annual.rate"/></b>:
-                            <c:out value="${depositAccount.getAnnualRate()}"/>
+                            <c:out value="${depositAccount.getAnnualRate()}"/>%
                         </li>
                         <li class="list-group-item"><b><fmt:message key="account.status"/></b>:
                             <c:out value="${depositAccount.getStatus().getName()}"/>

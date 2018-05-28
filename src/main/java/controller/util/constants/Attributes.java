@@ -13,12 +13,14 @@ public interface Attributes {
     String ACCOUNTS = "accounts";
     String CREDIT_ACCOUNTS = "creditAccounts";
     String DEBIT_ACCOUNTS = "debitAccounts";
+    String DEBIT_ACCOUNT = "debitAccount";
     String DEPOSIT_ACCOUNTS = "depositAccounts";
     String CREDIT_REQUESTS = "creditRequests";
     String VALIDITY_DATE = "validityDate";
     String CREDIT_LIMIT = "creditLimit";
     String INTEREST_RATE = "interestRate";
     String CARDS = "cards";
+    String CARD_TYPE = "cardType";
     String PAYMENTS = "payments";
     String ACCOUNT = "account";
     String CARD_NUMBER = "cardNumber";

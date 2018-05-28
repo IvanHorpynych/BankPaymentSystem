@@ -58,6 +58,9 @@
                         <li class="list-group-item"><b>CVV</b>:
                             <c:out value="${card.getCvv()}"/>
                         </li>
+                        <li class="list-group-item"><b>PIN</b>:
+                            <c:out value="${card.getPin()}"/>
+                        </li>
                         <li class="list-group-item"><b><fmt:message key="account.status"/></b>:
                             <c:out value="${card.getStatus().getName()}"/>
                         </li>

@@ -71,6 +71,8 @@ public class ControllerHelper {
                 new GetNewCreditRequestCommand());
         commands.put(buildKey(bundle.getString("user.credit.request"), "request.do"),
                 new PostNewCreditRequestCommand());
+        commands.put(buildKey(bundle.getString("user.card.path"), "create.card"),
+                new PostCreateCardCommand());
 
     }
 

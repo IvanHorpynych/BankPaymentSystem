@@ -12,7 +12,7 @@ public class Card {
     public enum CardType {
     VISA, MASTERCARD
 }
-    public final static long DEFAULT_NUMBER = 0L;
+
     public final static String DEFAULT_STATUS = "ACTIVE";
     private final static int DEFAULT_STATUS_ID = Status.StatusIdentifier.
             ACTIVE_STATUS.getId();
