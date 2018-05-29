@@ -30,9 +30,16 @@ public interface Attributes {
     String CVV = "cvv";
     String DESIRED_ACCOUNT = "desiredAccount";
     String REFILLABLE_ACCOUNT = "refillableAccount";
+    String REFILLABLE_ACCOUNTS = "refillableAccounts";
+    String REPLENISH_TYPE = "replenishType";
     String SENDER_ACCOUNT = "senderAccount";
+    String SENDER_ACCOUNTS = "senderAccounts";
     String AMOUNT = "amount";
     String WARNING = "warning";
+    String COMMAND = "command";
+    String WITHDRAW_DEPOSIT = "withdraw.deposit";
+    String WITHDRAW_CREDIT = "withdraw.credit";
+    String REPLENISH_DO = "replenish.do";
 
     String USER_LIST  ="activeUserList";
 

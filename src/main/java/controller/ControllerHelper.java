@@ -73,6 +73,12 @@ public class ControllerHelper {
                 new PostNewCreditRequestCommand());
         commands.put(buildKey(bundle.getString("user.card.path"), "create.card"),
                 new PostCreateCardCommand());
+        commands.put(buildKey(bundle.getString("user.replenish"), "withdraw"),
+                new GetWithdrawCommand());
+        commands.put(buildKey(bundle.getString("user.replenish"), "withdraw.deposit"),
+                new PostWithdrawDepositCommand());
+        commands.put(buildKey(bundle.getString("user.replenish"), "withdraw.credit"),
+                new PostWithdrawCreditCommand());
 
     }
 

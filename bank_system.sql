@@ -88,7 +88,6 @@ create table CREDIT_ACCOUNT_DETAILS
   ID               bigint unsigned not null AUTO_INCREMENT,
   CREDIT_LIMIT     DECIMAL(13, 4)  not null,
   INTEREST_RATE    real            not null,
-  LAST_OPERATION   timestamp       not null,
   ACCRUED_INTEREST DECIMAL(13, 4)  not null,
   VALIDITY_DATE    timestamp       not null,
   primary key (ID),
@@ -194,7 +193,6 @@ CREATE view payment_details AS SELECT
   acc1_account.balance AS acc1_credit_balance,
   acc1_cad.credit_limit AS acc1_credit_credit_limit,
   acc1_cad.interest_rate AS acc1_credit_interest_rate,
-  acc1_cad.last_operation AS acc1_credit_last_operation,
   acc1_cad.accrued_interest AS acc1_credit_accrued_interest,
   acc1_cad.validity_date AS acc1_credit_validity_date,
   acc1_dpad.id AS acc1_deposit_id,
@@ -215,7 +213,6 @@ CREATE view payment_details AS SELECT
   acc2_account.balance AS acc2_credit_balance,
   acc2_cad.credit_limit AS acc2_credit_credit_limit,
   acc2_cad.interest_rate AS acc2_credit_interest_rate,
-  acc2_cad.last_operation AS acc2_credit_last_operation,
   acc2_cad.accrued_interest AS acc2_credit_accrued_interest,
   acc2_cad.validity_date AS acc2_credit_validity_date,
   acc2_dpad.id AS acc2_deposit_id,
@@ -294,7 +291,6 @@ CREATE VIEW credit_details AS
     account.balance,
     cad.credit_limit,
     cad.interest_rate,
-    cad.last_operation,
     cad.accrued_interest,
     cad.validity_date,
     type.id     AS type_id,
@@ -470,8 +466,8 @@ insert into ACCOUNT (USER_ID, BALANCE, TYPE_ID, STATUS_ID) values ((select ID
                                                                     where NAME = 'CREDIT'), (select ID
                                                                                              from STATUS
                                                                                              where NAME = 'ACTIVE'));
-insert into CREDIT_ACCOUNT_DETAILS (ID, CREDIT_LIMIT, INTEREST_RATE, LAST_OPERATION, ACCRUED_INTEREST, VALIDITY_DATE)
-values (last_insert_id(), 2500, 12.5, now(), 123, '2019-1-01');
+insert into CREDIT_ACCOUNT_DETAILS (ID, CREDIT_LIMIT, INTEREST_RATE, ACCRUED_INTEREST, VALIDITY_DATE)
+values (last_insert_id(), 2500, 12.5, 123, '2019-1-01');
 
 commit;
 

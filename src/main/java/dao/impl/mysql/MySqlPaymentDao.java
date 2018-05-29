@@ -167,7 +167,6 @@ public class MySqlPaymentDao implements PaymentDao {
                 addBalance(BigDecimal.ONE).
                 addCreditLimit(BigDecimal.TEN).
                 addInterestRate(2L).
-                addLastOperationDate(new Date()).
                 addAccruedInterest(BigDecimal.ZERO).
                 addValidityDate(new Date()).
                 addStatus(new Status(1, "ACTIVE")).
@@ -180,7 +179,6 @@ public class MySqlPaymentDao implements PaymentDao {
                 addBalance(BigDecimal.ONE).
                 addCreditLimit(BigDecimal.TEN).
                 addInterestRate(2L).
-                addLastOperationDate(new Date()).
                 addAccruedInterest(BigDecimal.ZERO).
                 addValidityDate(new Date()).
                 addStatus(new Status(1, "ACTIVE")).

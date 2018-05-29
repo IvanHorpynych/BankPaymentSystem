@@ -1,5 +1,6 @@
 package service;
 
+import dao.abstraction.DepositAccountDao;
 import dao.abstraction.GenericAccountDao;
 import dao.abstraction.PaymentDao;
 import dao.factory.DaoFactory;
@@ -78,20 +79,12 @@ public class PaymentService {
             GenericAccountDao accountDaoTo = daoFactory.getAccountDao(connection,
                     payment.getAccountTo().getAccountType());
 
-            connection.startSerializableTransaction();
 
             Account accountFrom = payment.getAccountFrom();
             Account accountTo = payment.getAccountTo();
             BigDecimal amount = payment.getAmount();
 
-
-            if (accountTo.getAccountType().getId() == AccountType.TypeIdentifier.CREDIT_TYPE.getId()) {
-                BigDecimal compareValue = accountTo.getBalance().add(amount);
-                if (compareValue.compareTo(BigDecimal.ZERO) > 0) {
-                    amount = amount.subtract(compareValue);
-                    payment.setAmount(amount);
-                }
-            }
+            connection.startSerializableTransaction();
 
             accountDaoFrom.decreaseBalance(accountFrom, amount);
             accountDaoTo.increaseBalance(accountTo, amount);
@@ -103,4 +96,37 @@ public class PaymentService {
             return inserted;
         }
     }
+
+    public Payment createPaymentWithUpdate(Payment payment) {
+        try (DaoConnection connection = daoFactory.getConnection()) {
+            PaymentDao paymentDao = daoFactory.getPaymentDao(connection);
+
+            GenericAccountDao accountDaoFrom = daoFactory.getAccountDao(connection,
+                    payment.getAccountFrom().getAccountType());
+            GenericAccountDao accountDaoTo = daoFactory.getAccountDao(connection,
+                    payment.getAccountTo().getAccountType());
+
+
+            Account accountFrom = payment.getAccountFrom();
+            Account accountTo = payment.getAccountTo();
+            BigDecimal amount = payment.getAmount();
+
+            connection.startSerializableTransaction();
+
+            accountDaoFrom.decreaseBalance(accountFrom, amount);
+            accountDaoTo.increaseBalance(accountTo, amount);
+
+            accountDaoFrom.update(accountDaoFrom.castType(accountFrom));
+            accountDaoTo.update(accountDaoTo.castType(accountTo));
+
+            Payment inserted = paymentDao.insert(payment);
+
+            connection.commit();
+
+            return inserted;
+        }
+    }
+
+
+
 }

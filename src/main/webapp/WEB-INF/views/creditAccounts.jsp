@@ -69,10 +69,11 @@
                         <li class="list-group-item">
                             <div class="btn-group group-style">
                                 <c:if test="${creditAccount.isActive()}">
-                                <form action="your_url" method="post" class="col-xs-8 main-btn">
-                                    <input type="hidden" name="command" value="login_post"/>
-                                    <button type="submit" class="btn btn-info"><fmt:message key="credit.take.loan"/></button>
-                                </form>
+                                    <form action="${pageContext.request.contextPath}/site/user/replenish" method="get" class="col-xs-8 main-btn">
+                                        <input type="hidden" name="command" value="withdraw"/>
+                                        <input type="hidden" name="senderAccount" value="${creditAccount.getAccountNumber()}"/>
+                                        <button type="submit" class="btn btn-info"><fmt:message key="credit.take.loan"/></button>
+                                    </form>
                                 </c:if>
                                 <button type="button" class="custom-btn btn btn-info dropdown-toggle"
                                         data-toggle="dropdown">

@@ -6,7 +6,7 @@ import controller.util.constants.Attributes;
 import controller.util.constants.Views;
 import controller.util.validator.AccountNumberValidator;
 import entity.Account;
-import entity.Card;
+import entity.AccountType;
 import entity.User;
 import service.AccountsService;
 import service.DebitAccountService;
@@ -20,12 +20,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 /**
  * Created by JohnUkraine on 26/5/2018.
  */
-public class GetReplenishCommand implements ICommand {
+public class GetWithdrawCommand implements ICommand {
     private final static String NO_SUCH_ACCOUNT = "account.not.exist";
     private final static String ACCOUNT_STATUS_NOT_ACTIVE = "account.not.active";
 
@@ -41,16 +40,25 @@ public class GetReplenishCommand implements ICommand {
 
         if (errors.isEmpty()) {
             User user = getUserFromSession(request.getSession());
-            Long refillableAccountNumber = getAccountFromRequest(request);
+            Long senderAccountNumber = getAccountFromRequest(request);
 
-            List<Account> senderAccounts = debitAccountService.findAllByUser(user);
-            List<Account> refillableAccounts = new ArrayList<>();
-            refillableAccounts.add(accountsService.findAccountByNumber(
-                    refillableAccountNumber).get());
+            List<Account> refillableAccounts = debitAccountService.findAllByUser(user);
 
-            request.setAttribute(Attributes.SENDER_ACCOUNTS, senderAccounts);
+            Account senderAccount = accountsService.findAccountByNumber(
+                    senderAccountNumber).get();
+            List<Account> senderAccounts = new ArrayList<>();
+            senderAccounts.add(senderAccount);
+
             request.setAttribute(Attributes.REFILLABLE_ACCOUNTS, refillableAccounts);
-            request.setAttribute(Attributes.COMMAND, Attributes.REPLENISH_DO);
+            request.setAttribute(Attributes.SENDER_ACCOUNTS, senderAccounts);
+
+            if(senderAccount.getAccountType().getId()==
+                    AccountType.TypeIdentifier.CREDIT_TYPE.getId())
+                request.setAttribute(Attributes.COMMAND, Attributes.WITHDRAW_CREDIT);
+            else if(senderAccount.getAccountType().getId()==
+                    AccountType.TypeIdentifier.DEPOSIT_TYPE.getId())
+                request.setAttribute(Attributes.COMMAND, Attributes.WITHDRAW_DEPOSIT);
+
             return Views.REPLENISH_VIEW;
         }
         request.setAttribute(Attributes.ERRORS, errors);
@@ -60,12 +68,12 @@ public class GetReplenishCommand implements ICommand {
 
     private void validateRequestData(HttpServletRequest request, List<String> errors) {
         Util.validateField(new AccountNumberValidator(),
-                request.getParameter(Attributes.REFILLABLE_ACCOUNT), errors);
+                request.getParameter(Attributes.SENDER_ACCOUNT), errors);
     }
 
     private void validateAccount(HttpServletRequest request, List<String> errors) {
         Optional<Account> account = accountsService.findAccountByNumber(
-                Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT)));
+                Long.valueOf(request.getParameter(Attributes.SENDER_ACCOUNT)));
 
         if (!account.isPresent()) {
             errors.add(NO_SUCH_ACCOUNT);
@@ -78,7 +86,7 @@ public class GetReplenishCommand implements ICommand {
     }
 
     private Long getAccountFromRequest(HttpServletRequest request) {
-        return Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT));
+        return Long.valueOf(request.getParameter(Attributes.SENDER_ACCOUNT));
     }
 
     private User getUserFromSession(HttpSession session) {

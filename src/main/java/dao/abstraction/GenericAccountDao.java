@@ -47,4 +47,6 @@ public interface GenericAccountDao<T extends Account> extends GenericDao<T, Long
      * @param status new status of account to update
      */
     void updateAccountStatus(T account, Status status);
+
+    T castType(Account account);
 }

@@ -9,15 +9,15 @@ import java.util.Optional;
  * Created by JohnUkraine on 5/06/2018.
  */
 
-public class Payment implements Cloneable{
+public class Payment<T extends Account>{
     private long id;
     private BigDecimal amount;
-    private Account accountFrom;
-    private Account accountTo;
+    private T accountFrom;
+    private T accountTo;
     private Date date;
     private long cardNumberFrom;
 
-    public static class Builder {
+    public static class Builder<T extends Account> {
         private final Payment payment;
 
         public Builder() {
@@ -34,12 +34,12 @@ public class Payment implements Cloneable{
             return this;
         }
 
-        public Builder addAccountFrom(Account accountFrom) {
+        public Builder addAccountFrom(T accountFrom) {
             payment.setAccountFrom(accountFrom);
             return this;
         }
 
-        public Builder addAccountTo(Account accountTo) {
+        public Builder addAccountTo(T accountTo) {
             payment.setAccountTo(accountTo);
             return this;
         }
@@ -78,19 +78,19 @@ public class Payment implements Cloneable{
         this.amount = amount;
     }
 
-    public Account getAccountFrom() {
+    public T getAccountFrom() {
         return accountFrom;
     }
 
-    public void setAccountFrom(Account accountFrom) {
+    public void setAccountFrom(T accountFrom) {
         this.accountFrom = accountFrom;
     }
 
-    public Account getAccountTo() {
+    public T getAccountTo() {
         return accountTo;
     }
 
-    public void setAccountTo(Account accountTo) {
+    public void setAccountTo(T accountTo) {
         this.accountTo = accountTo;
     }
 
@@ -110,6 +110,7 @@ public class Payment implements Cloneable{
         this.cardNumberFrom = cardNumberFrom;
     }
 
+
     @Override
     public String toString() {
         return "Payment{" +
@@ -121,13 +122,4 @@ public class Payment implements Cloneable{
                 '}';
     }
 
-    @Override
-    public Payment clone(){
-        try {
-           return(Payment) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

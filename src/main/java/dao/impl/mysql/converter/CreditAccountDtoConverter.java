@@ -62,14 +62,11 @@ public class CreditAccountDtoConverter implements DtoConverter<CreditAccount> {
                         getBigDecimal(tablePrefix + CREDIT_LIMIT_FIELD)).
                 addInterestRate(resultSet.
                         getFloat(tablePrefix + INTEREST_RATE_FIELD)).
-                addLastOperationDate(TimeConverter.
-                        toDate(resultSet.getTimestamp(
-                                tablePrefix + VALIDITY_DATE_FIELD))).
                 addAccruedInterest(resultSet.
                         getBigDecimal(tablePrefix + ACCRUED_INTEREST_FIELD)).
                 addValidityDate(TimeConverter.
                         toDate(resultSet.getTimestamp(
-                                tablePrefix + LAST_OPERATION_DATE_FIELD))).
+                                tablePrefix + VALIDITY_DATE_FIELD))).
                 addStatus(status).
                 build();
 

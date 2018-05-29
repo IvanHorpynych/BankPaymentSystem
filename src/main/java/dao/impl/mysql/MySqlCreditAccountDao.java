@@ -37,13 +37,12 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
     private final static String INSERT_DETAILS =
             "INSERT INTO credit_account_details " +
                     "(id, credit_limit, interest_rate, " +
-                    "last_operation, accrued_interest, " +
+                    "accrued_interest, " +
                     "validity_date) " +
-                    "VALUES(?, ?, ?, ?, ?, ?) ";
+                    "VALUES(?, ?, ?, ?, ?) ";
 
     private final static String UPDATE =
             "UPDATE credit_account_details SET " +
-                    "last_operation = ?, " +
                     "accrued_interest = ?, validity_date = ? ";
 
     private final static String UPDATE_STATUS =
@@ -122,7 +121,6 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
                 account.getAccountNumber(),
                 account.getCreditLimit(),
                 account.getInterestRate(),
-                TimeConverter.toTimestamp(account.getLastOperationDate()),
                 account.getAccruedInterest(),
                 TimeConverter.toTimestamp(account.getValidityDate())
         );
@@ -132,15 +130,14 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
 
     @Override
     public void update(CreditAccount account) {
-        Objects.requireNonNull(account);
+        /*Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(
                 UPDATE + WHERE_ACCOUNT_NUMBER,
-                TimeConverter.toTimestamp(account.getLastOperationDate()),
                 account.getAccruedInterest(),
                 TimeConverter.toTimestamp(account.getValidityDate()),
                 account.getAccountNumber()
-        );
+        );*/
     }
 
     @Override
@@ -205,6 +202,11 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
     }
 
     @Override
+    public CreditAccount castType(Account account) {
+        return (CreditAccount)account;
+    }
+
+    @Override
     public void increaseAccruedInterest(CreditAccount account, BigDecimal amount) {
         Objects.requireNonNull(account);
 
@@ -260,7 +262,6 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
                             addBalance(BigDecimal.ONE).
                             addCreditLimit(BigDecimal.TEN).
                             addInterestRate(2L).
-                            addLastOperationDate(new Date()).
                             addAccruedInterest(BigDecimal.ZERO).
                             addValidityDate(new Date()).
                             addStatus(new Status(1,"ACTIVE")).
@@ -312,7 +313,6 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
             System.out.println("Balance: "+creditAccount.getBalance()+";");
             System.out.println("Credit limit: "+creditAccount.getCreditLimit()+";");
             System.out.println("Interest Rate: "+creditAccount.getInterestRate()+";");
-            System.out.println("Last operation: "+creditAccount.getLastOperationDate()+";");
             System.out.println("Accrued interest: "+creditAccount.getAccruedInterest()+";");
             System.out.println("Validity date: "+creditAccount.getValidityDate()+";");
             System.out.println();

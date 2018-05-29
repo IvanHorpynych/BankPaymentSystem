@@ -62,8 +62,9 @@
                         <li class="list-group-item">
                             <div class="btn-group group-style">
                                 <c:if test="${depositAccount.isActive()}">
-                                    <form action="your_url" method="post" class="col-xs-8 main-btn">
-                                        <input type="hidden" name="command" value="login_post"/>
+                                    <form action="${pageContext.request.contextPath}/site/user/replenish" method="get" class="col-xs-8 main-btn">
+                                        <input type="hidden" name="command" value="withdraw"/>
+                                        <input type="hidden" name="senderAccount" value="${depositAccount.getAccountNumber()}"/>
                                         <button type="submit" class="btn btn-info"><fmt:message key="deposit.withdraw"/></button>
                                     </form>
                                 </c:if>

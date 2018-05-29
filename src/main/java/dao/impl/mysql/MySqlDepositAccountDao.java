@@ -194,6 +194,11 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
     }
 
     @Override
+    public DepositAccount castType(Account account) {
+        return (DepositAccount)account;
+    }
+
+    @Override
     public void updateMinBalance(DepositAccount account, BigDecimal minBalance) {
         Objects.requireNonNull(account);
 

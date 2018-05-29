@@ -8,13 +8,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class CreditAccount extends Account{
-    public final static String DEFAULT_TYPE = "DEBIT";
+    public final static String DEFAULT_TYPE = "CREDIT";
     private final static int DEFAULT_TYPE_ID = AccountType.TypeIdentifier.
-            DEBIT_TYPE.getId();
+            CREDIT_TYPE.getId();
 
     private BigDecimal creditLimit;
     private float interestRate;
-    private Date lastOperationDate;
     private BigDecimal accruedInterest;
     private Date validityDate;
 
@@ -47,11 +46,6 @@ public class CreditAccount extends Account{
 
         public CreditAccount.Builder addInterestRate(float interestRate) {
             creditAccount.setInterestRate(interestRate);
-            return this;
-        }
-
-        public CreditAccount.Builder addLastOperationDate(Date date) {
-            creditAccount.setLastOperationDate(date);
             return this;
         }
 
@@ -102,13 +96,6 @@ public class CreditAccount extends Account{
         this.interestRate = interestRate;
     }
 
-    public Date getLastOperationDate() {
-        return lastOperationDate;
-    }
-
-    public void setLastOperationDate(Date lastOperationDate) {
-        this.lastOperationDate = lastOperationDate;
-    }
 
     public BigDecimal getAccruedInterest() {
         return accruedInterest;

@@ -56,7 +56,11 @@
                             <fmt:message key="refillable.account"/>:
                         </label>
                         <select name="refillableAccount" class="form-control" id="refillableAccount">
-                            <option selected="selected">${requestScope.refillableAccount}</option>
+                            <c:forEach var="refillableAccount" items="${requestScope.refillableAccounts}">
+                                <c:if test="${refillableAccount.isActive()}">
+                                    <option>${refillableAccount.getAccountNumber()}</option>
+                                </c:if>
+                            </c:forEach>
                         </select>
                     </li>
                     <li class="list-group-item">
@@ -64,7 +68,7 @@
                             <fmt:message key="select.account"/>:
                         </label>
                         <select name="senderAccount" class="form-control" id="senderAccount">
-                            <c:forEach var="senderAccount" items="${requestScope.accounts}">
+                            <c:forEach var="senderAccount" items="${requestScope.senderAccounts}">
                                 <c:if test="${senderAccount.isActive()}">
                                     <option>${senderAccount.getAccountNumber()}&nbsp(${senderAccount.getBalance()}
                                         <fmt:message key="currency"/>)
@@ -79,7 +83,7 @@
                         <fmt:message key="currency"/>
                     </li>
                     <li class="list-group-item">
-                        <input type="hidden" name="command" value="replenish.do"/>
+                        <input type="hidden" name="command" value="<c:out value="${requestScope.command}"/>"/>
                         <button type="submit" class="btn btn-danger">
                             <fmt:message key="replenish"/>
                         </button>

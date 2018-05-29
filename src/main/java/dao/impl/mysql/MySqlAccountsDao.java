@@ -114,13 +114,13 @@ public class MySqlAccountsDao implements AccountsDao {
 
     @Override
     public void update(Account account) {
-        Objects.requireNonNull(account);
+        /*Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(
                 UPDATE + WHERE_ACCOUNT_NUMBER,
                 account.getBalance(),
                 account.getAccountNumber()
-        );
+        );*/
     }
 
     @Override
@@ -179,6 +179,11 @@ public class MySqlAccountsDao implements AccountsDao {
                 status.getId(),
                 account.getAccountNumber()
         );
+    }
+
+    @Override
+    public Account castType(Account account) {
+        return account;
     }
 
 
