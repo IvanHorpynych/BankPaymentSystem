@@ -9,15 +9,15 @@ import java.util.Optional;
  * Created by JohnUkraine on 5/06/2018.
  */
 
-public class Payment<T extends Account>{
+public class Payment{
     private long id;
     private BigDecimal amount;
-    private T accountFrom;
-    private T accountTo;
+    private Account accountFrom;
+    private Account accountTo;
     private Date date;
     private long cardNumberFrom;
 
-    public static class Builder<T extends Account> {
+    public static class Builder {
         private final Payment payment;
 
         public Builder() {
@@ -34,12 +34,12 @@ public class Payment<T extends Account>{
             return this;
         }
 
-        public Builder addAccountFrom(T accountFrom) {
+        public Builder addAccountFrom(Account accountFrom) {
             payment.setAccountFrom(accountFrom);
             return this;
         }
 
-        public Builder addAccountTo(T accountTo) {
+        public Builder addAccountTo(Account accountTo) {
             payment.setAccountTo(accountTo);
             return this;
         }
@@ -78,19 +78,19 @@ public class Payment<T extends Account>{
         this.amount = amount;
     }
 
-    public T getAccountFrom() {
+    public Account getAccountFrom() {
         return accountFrom;
     }
 
-    public void setAccountFrom(T accountFrom) {
+    public void setAccountFrom(Account accountFrom) {
         this.accountFrom = accountFrom;
     }
 
-    public T getAccountTo() {
+    public Account getAccountTo() {
         return accountTo;
     }
 
-    public void setAccountTo(T accountTo) {
+    public void setAccountTo(Account accountTo) {
         this.accountTo = accountTo;
     }
 
@@ -109,7 +109,6 @@ public class Payment<T extends Account>{
     public void setCardNumberFrom(long cardNumberFrom) {
         this.cardNumberFrom = cardNumberFrom;
     }
-
 
     @Override
     public String toString() {
