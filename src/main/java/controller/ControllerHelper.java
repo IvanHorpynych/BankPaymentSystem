@@ -44,8 +44,12 @@ public class ControllerHelper {
                 new GetCreditAccountsCommand());
         commands.put(buildKey(bundle.getString("user.debit.account.path"), null),
                 new GetDebitAccountsCommand());
+        commands.put(buildKey(bundle.getString("user.debit.account.path"), "new.debit"),
+                new PostCreateDebitCommand());
         commands.put(buildKey(bundle.getString("user.deposit.account.path"), null),
                 new GetDepositAccountsCommand());
+        commands.put(buildKey(bundle.getString("user.deposit.account.path"), "new.deposit"),
+                new PostCreateDepositCommand());
         commands.put(buildKey(bundle.getString("user.card.path"), null),
                 new GetCardsCommand());
         commands.put(buildKey(bundle.getString("user.payment.path"), "accountPayments"),
@@ -80,6 +84,8 @@ public class ControllerHelper {
                 new PostWithdrawCreditCommand());
         commands.put(buildKey(bundle.getString("user.close"), "account.close"),
                 new CloseAccountCommand());
+        commands.put(buildKey(bundle.getString("user.close"), "request.close"),
+                new CloseRequestCommand());
 
     }
 

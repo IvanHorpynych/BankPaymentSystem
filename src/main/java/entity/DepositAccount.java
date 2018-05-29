@@ -10,7 +10,7 @@ import java.util.Date;
 public class DepositAccount extends Account{
     public final static String DEFAULT_TYPE = "DEPOSIT";
     private final static int DEFAULT_TYPE_ID = AccountType.TypeIdentifier.
-            DEBIT_TYPE.getId();
+            DEPOSIT_TYPE.getId();
 
     private BigDecimal minBalance;
     private float annualRate;

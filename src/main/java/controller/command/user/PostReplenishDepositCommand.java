@@ -44,9 +44,9 @@ public class PostReplenishDepositCommand implements ICommand {
         if (errors.isEmpty()) {
             Payment payment = createPayment(request);
 
-            checkChangingAccountData(payment);
+            paymentService.createPayment(payment);
 
-            paymentService.createPaymentWithUpdate(payment);
+            checkChangingAccountData(payment);
 
             List<String> messages = new ArrayList<>();
             messages.add(TRANSACTION_COMPLETE);
@@ -134,13 +134,13 @@ public class PostReplenishDepositCommand implements ICommand {
     }
 
     private void checkChangingAccountData(Payment payment) {
-         if (payment.getAccountTo().getAccountType().getId() ==
+         /*if (payment.getAccountTo().getAccountType().getId() ==
                 AccountType.TypeIdentifier.DEPOSIT_TYPE.getId()) {
             ((DepositAccount) payment.getAccountTo()).setMinBalance(
                     ((DepositAccount) payment.getAccountTo()).getMinBalance().
                             add(payment.getAmount())
             );
-        }
+        }*/
     }
 
 

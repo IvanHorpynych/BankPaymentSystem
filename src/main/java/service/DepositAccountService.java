@@ -67,11 +67,11 @@ public class DepositAccountService {
         }
     }
 
-    public void updateAccountStatus(DepositAccount account, Status status) {
+    public void updateAccountStatus(DepositAccount account, int statusId) {
         try (DaoConnection connection = daoFactory.getConnection()) {
             connection.startSerializableTransaction();
             DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(connection);
-            depositAccountDao.updateAccountStatus(account, status);
+            depositAccountDao.updateAccountStatus(account, statusId);
             connection.commit();
         }
     }

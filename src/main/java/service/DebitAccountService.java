@@ -69,11 +69,11 @@ public class DebitAccountService {
         }
     }
 
-    public void updateAccountStatus(Account account, Status status) {
+    public void updateAccountStatus(Account account, int statusId) {
         try (DaoConnection connection = daoFactory.getConnection()) {
             connection.startSerializableTransaction();
             DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(connection);
-            debitAccountDao.updateAccountStatus(account, status);
+            debitAccountDao.updateAccountStatus(account, statusId);
             connection.commit();
         }
     }

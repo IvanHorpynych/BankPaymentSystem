@@ -28,6 +28,6 @@ public interface CreditRequestDao extends GenericDao<CreditRequest, Long> {
      *
      * @param request account which status will be updated.
      */
-    void updateRequestStatus(CreditRequest request);
+    void updateRequestStatus(CreditRequest request, int statusId);
 
 }

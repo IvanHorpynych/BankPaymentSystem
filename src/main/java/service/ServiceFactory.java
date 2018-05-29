@@ -56,5 +56,9 @@ public class ServiceFactory {
         return CreditRequestService.getInstance();
     }
 
+    public static RateService getRateService() {
+        return RateService.getInstance();
+    }
+
 
 }

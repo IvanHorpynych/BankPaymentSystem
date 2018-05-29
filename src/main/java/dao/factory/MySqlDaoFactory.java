@@ -70,6 +70,11 @@ public class MySqlDaoFactory extends DaoFactory {
     }
 
     @Override
+    public RateDao getRateDao(DaoConnection connection) {
+        return new MySqlRateDao(getOwnSqlConnection(connection));
+    }
+
+    @Override
     public CardDao getCardDao(DaoConnection connection) {
         return new MySqlCardDao(getOwnSqlConnection(connection));
     }

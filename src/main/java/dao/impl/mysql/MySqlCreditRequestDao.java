@@ -134,12 +134,12 @@ public class MySqlCreditRequestDao implements CreditRequestDao {
     }
 
     @Override
-    public void updateRequestStatus(CreditRequest request) {
+    public void updateRequestStatus(CreditRequest request, int statusId) {
         Objects.requireNonNull(request);
 
         defaultDao.executeUpdate(
                 UPDATE_STATUS + WHERE_REQUEST_NUMBER,
-                request.getStatus().getId(),
+                statusId,
                 request.getRequestNumber()
         );
     }
@@ -199,7 +199,7 @@ public class MySqlCreditRequestDao implements CreditRequestDao {
             System.out.println(mySqlCreditRequestDao.findOne(creditRequest.getRequestNumber()));
 
             System.out.println("update status:");
-            mySqlCreditRequestDao.updateRequestStatus(creditRequest);
+            mySqlCreditRequestDao.updateRequestStatus(creditRequest,1);
 
             System.out.println("Find one:");
             System.out.println(mySqlCreditRequestDao.findOne(creditRequest.getRequestNumber()));

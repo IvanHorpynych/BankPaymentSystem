@@ -96,7 +96,7 @@ public class PaymentService {
             return inserted;
         }
     }
-
+    @SuppressWarnings("unchecked")
     public Payment createPaymentWithUpdate(Payment payment) {
         try (DaoConnection connection = daoFactory.getConnection()) {
             PaymentDao paymentDao = daoFactory.getPaymentDao(connection);

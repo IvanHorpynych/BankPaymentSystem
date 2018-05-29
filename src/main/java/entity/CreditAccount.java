@@ -113,4 +113,10 @@ public class CreditAccount extends Account{
         this.validityDate = validityDate;
     }
 
+    @Override
+    public boolean isActive(){
+        return (getStatus().getId() == Status.StatusIdentifier.ACTIVE_STATUS.getId() &&
+                new Date().compareTo(validityDate) < 0);
+    }
+
 }

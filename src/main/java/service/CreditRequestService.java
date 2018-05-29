@@ -43,6 +43,13 @@ public class CreditRequestService {
         }
     }
 
+    public Optional<CreditRequest> findCreditRequestByNumber(long requestNumber) {
+        try(DaoConnection connection = daoFactory.getConnection()) {
+            CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao(connection);
+            return creditRequestDao.findOne(requestNumber);
+        }
+    }
+
 
     public List<CreditRequest> findAllByUser(User user) {
         try(DaoConnection connection = daoFactory.getConnection()) {
@@ -51,10 +58,10 @@ public class CreditRequestService {
         }
     }
 
-    public void updateRequestStatus(CreditRequest creditRequest) {
+    public void updateRequestStatus(CreditRequest creditRequest, int statusId) {
         try(DaoConnection connection = daoFactory.getConnection()) {
             CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao(connection);
-            creditRequestDao.updateRequestStatus(creditRequest);
+            creditRequestDao.updateRequestStatus(creditRequest, statusId);
         }
     }
 

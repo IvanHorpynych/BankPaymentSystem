@@ -16,6 +16,7 @@ public interface Attributes {
     String DEBIT_ACCOUNT = "debitAccount";
     String DEPOSIT_ACCOUNTS = "depositAccounts";
     String CREDIT_REQUESTS = "creditRequests";
+    String CREDIT_REQUEST = "creditRequest";
     String VALIDITY_DATE = "validityDate";
     String CREDIT_LIMIT = "creditLimit";
     String INTEREST_RATE = "interestRate";

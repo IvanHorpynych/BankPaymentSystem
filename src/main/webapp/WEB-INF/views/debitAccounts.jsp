@@ -213,7 +213,10 @@
                 </div>
             </c:otherwise>
         </c:choose>
-
+        <form action="${pageContext.request.contextPath}/site/user/debit_accounts" method="post">
+            <input type="hidden" name="command" value="new.debit"/>
+            <button type="submit" class="btn btn-info"><fmt:message key="create.new"/></button>
+        </form>
     </div>
 </div>
 <jsp:include page="/WEB-INF/views/snippets/footer.jsp"/>

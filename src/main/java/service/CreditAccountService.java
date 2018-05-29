@@ -67,11 +67,11 @@ public class CreditAccountService {
         }
     }
 
-    public void updateAccountStatus(CreditAccount account, Status status) {
+    public void updateAccountStatus(CreditAccount account, int statusId) {
         try (DaoConnection connection = daoFactory.getConnection()) {
             connection.startSerializableTransaction();
             CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
-            creditAccountDao.updateAccountStatus(account, status);
+            creditAccountDao.updateAccountStatus(account, statusId);
             connection.commit();
         }
     }

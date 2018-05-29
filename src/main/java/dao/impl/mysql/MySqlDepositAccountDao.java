@@ -37,9 +37,8 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
 
     private final static String INSERT_DETAILS =
             "INSERT INTO deposit_account_details " +
-                    "(id, last_operation, " +
-                    "min_balance, annual_rate)" +
-                    "VALUES(?, ?, ?, ?) ";
+                    "(id, annual_rate) " +
+                    "VALUES(?, ?) ";
 
     private final static String UPDATE =
             "UPDATE deposit_account_details SET " +
@@ -115,8 +114,6 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
 
         defaultDao.executeUpdate(INSERT_DETAILS,
                 account.getAccountNumber(),
-                TimeConverter.toTimestamp(account.getLastOperationDate()),
-                account.getMinBalance(),
                 account.getAnnualRate()
         );
 
@@ -220,7 +217,7 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
 
             System.out.println("find dy user:");
             User user = User.newBuilder().addFirstName("first" + random).
-                    addId(3).
+                    addId(2).
                     addLastName("last" + random).
                     addEmail("test" + random + "@com").
                     addPassword("123").

@@ -63,6 +63,8 @@ public abstract class DaoFactory {
 
     public abstract StatusDao getStatusDao(DaoConnection connection);
 
+    public abstract RateDao getRateDao(DaoConnection connection);
+
     public abstract CardDao getCardDao(DaoConnection connection);
 
     public abstract PaymentDao getPaymentDao(DaoConnection connection);

@@ -31,9 +31,6 @@
     <c:if test="${not empty sessionScope.user and not sessionScope.user.isManager()}">
         <h1 class="title"><fmt:message key="credit.request"/></h1>
     </c:if>
-    <%--<c:if test="${not empty sessionScope.user and sessionScope.user.isAdmin()}">
-        <h1 class="title"><fmt:message key="accounts"/></h1>
-    </c:if>--%>
     <hr/>
 </div>
 <div class="container">
@@ -68,106 +65,17 @@
                                     </button>
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <form action="your_url" method="post">
-                                                <input type="hidden" name="command" value="login_post"/>
-                                                <button type="submit" class="btn-link"><fmt:message
-                                                        key="account.close"/></button>
+                                            <form action="${pageContext.request.contextPath}/site/user/close" method="post">
+                                                <input type="hidden" name="command" value="request.close"/>
+                                                <input type="hidden" name="creditRequest" value="${creditRequest.getRequestNumber()}"/>
+                                                <button type="submit" class="btn-link"><fmt:message key="cancel"/></button>
                                             </form>
                                         </li>
-
-                                            <%-- <c:if test="${card.isBlocked() and sessionScope.user.isManager()}">
-                                                 <li class="divider"></li>
-                                                 <li>
-                                                     <form action="your_url" method="post">
-                                                         <input type="hidden" name="command" value="login_post"/>
-                                                         <button type="submit" class="btn-link"><fmt:message
-                                                                 key="account.unblock"/></button>
-                                                     </form>
-                                                 </li>
-                                             </c:if>--%>
                                     </ul>
                                 </div>
                             </li>
                         </ul>
                     </c:if>
-                    <%--<tr>
-                        <td><c:out value="${debitAccounts.getAccountNumber()}"/></td>
-                        <td>
-                            <c:out value="${debitAccounts.getBalance()}"/>
-                            <fmt:message key="currency"/>
-                        </td>
-                        <td><c:out value="${debitAccounts.getCreditLimit()}"/>
-                            <fmt:message key="currency"/>
-                        </td>
-                        <td><c:out value="${debitAccounts.getInterestRate()}"/>%</td>
-                        <td><c:out value="${debitAccounts.getAccruedInterest()}"/>
-                            <fmt:message key="currency"/>
-                        </td>
-                        <td><c:out value="${debitAccounts.getStatus().getName()}"/></td>
-                        <td><div class="btn-group">
-                            <button type="button" class="btn btn-danger">Action</button>
-                            <button type="button" class="custom-btn btn btn-info dropdown-toggle"
-                                    data-toggle="dropdown">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                            </ul>
-                        </div>
-                        </td>
-                        &lt;%&ndash;<td>
-                            <c:if test="${not sessionScope.user.isManager()}">
-                                <c:if test="${account.isActive()}">
-                                    <form action="${pageContext.request.contextPath}/site/user/accounts/block"
-                                          method="POST">
-                                        <input type="hidden" name="account" value="${account.getAccountNumber()}">
-                                        <button type="submit" class='btn btn-info btn-xs'>
-                                            <fmt:message key="account.block"/>
-                                        </button>
-                                    </form>
-                                </c:if>
-                            </c:if>
-                            <c:if test="${sessionScope.user.isManager()}">
-                                <c:choose>
-                                    <c:when test="${account.isBlocked()}">
-                                        <form action="${pageContext.request.contextPath}/site/admin/accounts/unblock"
-                                              method="POST">
-                                            <input type="hidden" name="account"
-                                                   value="${account.getAccountNumber()}">
-                                            <button type="submit" class='btn btn-info btn-xs'>
-                                                <fmt:message key="account.unblock"/>
-                                            </button>
-                                        </form>
-                                    </c:when>
-                                    <c:when test="${account.isPending()}">
-                                        <form action="${pageContext.request.contextPath}/site/admin/accounts/confirm"
-                                              method="POST">
-                                            <input type="hidden" name="account"
-                                                   value="${account.getAccountNumber()}">
-                                            <button type="submit" class='btn btn-info btn-xs'>
-                                                <fmt:message key="account.confirm"/>
-                                            </button>
-                                        </form>
-                                    </c:when>
-                                    <c:when test="${account.isActive()}">
-                                        <form action="${pageContext.request.contextPath}/site/admin/accounts/block"
-                                              method="POST">
-                                            <input type="hidden" name="account"
-                                                   value="${account.getAccountNumber()}">
-                                            <button type="submit" class='btn btn-info btn-xs'>
-                                                <fmt:message key="account.block"/>
-                                            </button>
-                                        </form>
-                                    </c:when>
-                                </c:choose>
-                            </c:if>
-                        </td>&ndash;%&gt;
-                    </tr>--%>
                 </c:forEach>
             </c:when>
             <c:otherwise>
