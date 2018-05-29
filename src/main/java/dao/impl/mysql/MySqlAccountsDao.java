@@ -171,12 +171,12 @@ public class MySqlAccountsDao implements AccountsDao {
     }
 
     @Override
-    public void updateAccountStatus(Account account, Status status) {
+    public void updateAccountStatus(Account account, int statusId) {
         Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(
                 UPDATE_STATUS + WHERE_ACCOUNT_NUMBER,
-                status.getId(),
+                statusId,
                 account.getAccountNumber()
         );
     }
@@ -241,7 +241,7 @@ public class MySqlAccountsDao implements AccountsDao {
             ((MySqlAccountsDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
 
             System.out.println("update status:");
-            mySqlDebitAccountDao.updateAccountStatus(debitAccount,new Status(4,"PENDING"));
+            mySqlDebitAccountDao.updateAccountStatus(debitAccount,4);
 
             System.out.println("Find all:");
             ((MySqlAccountsDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());

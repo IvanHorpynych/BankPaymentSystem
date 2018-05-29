@@ -44,8 +44,8 @@ public interface GenericAccountDao<T extends Account> extends GenericDao<T, Long
      * Updates certain account status.
      *
      * @param account account which status will be updated.
-     * @param status new status of account to update
+     * @param statusId new status of account to update
      */
-    void updateAccountStatus(T account, Status status);
+    void updateAccountStatus(T account, int statusId);
 
 }

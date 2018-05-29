@@ -100,10 +100,11 @@
                                         </li>
                                     </c:if>
                                     <li class="divider"></li>
-                                    <c:if test="${creditAccount.isActive() and not sessionScope.user.isManager()}">
+                                    <c:if test="${not creditAccount.isClosed() and not sessionScope.user.isManager()}">
                                         <li>
-                                            <form action="your_url" method="post">
-                                                <input type="hidden" name="command" value="login_post"/>
+                                            <form action="${pageContext.request.contextPath}/site/user/close" method="post">
+                                                <input type="hidden" name="command" value="account.close"/>
+                                                <input type="hidden" name="account" value="${creditAccount.getAccountNumber()}"/>
                                                 <button type="submit" class="btn-link"><fmt:message key="account.close"/></button>
                                             </form>
                                         </li>

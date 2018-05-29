@@ -85,7 +85,7 @@ public class MySqlDebitAccountDao extends MySqlAccountsDao implements DebitAccou
             ((MySqlDebitAccountDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
 
             System.out.println("update status:");
-            mySqlDebitAccountDao.updateAccountStatus(debitAccount,new Status(4,"PENDING"));
+            mySqlDebitAccountDao.updateAccountStatus(debitAccount,4);
 
             System.out.println("Find all:");
             ((MySqlDebitAccountDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());

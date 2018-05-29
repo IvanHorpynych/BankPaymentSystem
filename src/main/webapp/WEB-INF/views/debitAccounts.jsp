@@ -98,10 +98,10 @@
                                     <c:if test="${debitAccount.isActive() and not sessionScope.user.isManager()}">
                                         <li class="divider"></li>
                                         <li>
-                                            <form action="your_url" method="post">
-                                                <input type="hidden" name="command" value="login_post"/>
-                                                <button type="submit" class="btn-link"><fmt:message
-                                                        key="account.close"/></button>
+                                            <form action="${pageContext.request.contextPath}/site/user/close" method="post">
+                                                <input type="hidden" name="command" value="account.close"/>
+                                                <input type="hidden" name="account" value="${debitAccount.getAccountNumber()}"/>
+                                                <button type="submit" class="btn-link"><fmt:message key="account.close"/></button>
                                             </form>
                                         </li>
                                     </c:if>

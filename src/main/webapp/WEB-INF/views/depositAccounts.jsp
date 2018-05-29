@@ -94,8 +94,9 @@
                                     <li class="divider"></li>
                                     <c:if test="${depositAccount.isActive() and not sessionScope.user.isManager()}">
                                         <li>
-                                            <form action="your_url" method="post">
-                                                <input type="hidden" name="command" value="login_post"/>
+                                            <form action="${pageContext.request.contextPath}/site/user/close" method="post">
+                                                <input type="hidden" name="command" value="account.close"/>
+                                                <input type="hidden" name="account" value="${depositAccount.getAccountNumber()}"/>
                                                 <button type="submit" class="btn-link"><fmt:message key="account.close"/></button>
                                             </form>
                                         </li>

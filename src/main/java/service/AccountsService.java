@@ -68,11 +68,11 @@ public class AccountsService {
         }
     }
 
-    public void updateAccountStatus(Account account, Status status) {
+    public void updateAccountStatus(Account account, int statusId) {
         try (DaoConnection connection = daoFactory.getConnection()) {
             connection.startSerializableTransaction();
             AccountsDao accountsDao = daoFactory.getAccountsDao(connection);
-            accountsDao.updateAccountStatus(account, status);
+            accountsDao.updateAccountStatus(account, statusId);
             connection.commit();
         }
     }

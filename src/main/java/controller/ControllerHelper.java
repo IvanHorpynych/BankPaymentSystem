@@ -1,9 +1,6 @@
 package controller;
 
-import controller.command.DefaultCommand;
-import controller.command.GetInfoCommand;
-import controller.command.HomeCommand;
-import controller.command.ICommand;
+import controller.command.*;
 import controller.command.authorization.*;
 import controller.command.user.*;
 import controller.util.constants.Views;
@@ -81,6 +78,8 @@ public class ControllerHelper {
                 new PostWithdrawDepositCommand());
         commands.put(buildKey(bundle.getString("user.replenish"), "withdraw.credit"),
                 new PostWithdrawCreditCommand());
+        commands.put(buildKey(bundle.getString("user.close"), "account.close"),
+                new CloseAccountCommand());
 
     }
 

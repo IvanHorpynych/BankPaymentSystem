@@ -191,12 +191,12 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
     }
 
     @Override
-    public void updateAccountStatus(CreditAccount account, Status status) {
+    public void updateAccountStatus(CreditAccount account, int statusId) {
         Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(
                 UPDATE_STATUS + WHERE_ACCOUNT_NUMBER,
-                status.getId(),
+                statusId,
                 account.getAccountNumber()
         );
     }
@@ -287,7 +287,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
             ((MySqlCreditAccountDao) mySqlCreditAccountDao).printAccount(mySqlCreditAccountDao.findAll());
 
             System.out.println("update status:");
-            mySqlCreditAccountDao.updateAccountStatus(creditAccount,new Status(4,"PENDING"));
+            mySqlCreditAccountDao.updateAccountStatus(creditAccount,4);
 
             System.out.println("Find all:");
             ((MySqlCreditAccountDao) mySqlCreditAccountDao).printAccount(mySqlCreditAccountDao.findAll());
