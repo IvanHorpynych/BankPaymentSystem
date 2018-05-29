@@ -116,8 +116,8 @@ public class PaymentService {
             accountDaoFrom.decreaseBalance(accountFrom, amount);
             accountDaoTo.increaseBalance(accountTo, amount);
 
-            accountDaoFrom.update(accountDaoFrom.castType(accountFrom));
-            accountDaoTo.update(accountDaoTo.castType(accountTo));
+            accountDaoFrom.update(accountFrom);
+            accountDaoTo.update(accountTo);
 
             Payment inserted = paymentDao.insert(payment);
 

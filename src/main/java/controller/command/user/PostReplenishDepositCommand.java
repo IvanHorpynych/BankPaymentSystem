@@ -7,10 +7,7 @@ import controller.util.constants.Views;
 import controller.util.validator.AccountNumberValidator;
 import controller.util.validator.AmountValidator;
 import entity.*;
-import service.AccountsService;
-import service.DebitAccountService;
-import service.PaymentService;
-import service.ServiceFactory;
+import service.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,21 +19,20 @@ import java.util.*;
 /**
  * Created by JohnUkraine on 26/5/2018.
  */
-public class PostReplenishCommand implements ICommand {
+public class PostReplenishDepositCommand implements ICommand {
     private final static String NO_SUCH_ACCOUNT = "account.not.exist";
     private final static String TRANSACTION_COMPLETE = "replenish.complete";
     private final static String NOT_ENOUGH_MONEY = "account.insufficient.funds";
-    private final static String CREDIT_POSITIVE_FUNDS = "credit.positive.funds";
-    private final static String ZERO_CREDIT_FUNDS = "zero.credit.funds";
     private final static String ZERO_AMOUNT = "zero.amount";
     private final static String NEGATIVE_AMOUNT = "negative.amount";
 
     private static final ResourceBundle bundle = ResourceBundle.
             getBundle(Views.PAGES_BUNDLE);
 
-    private final AccountsService accountsService = ServiceFactory.getAccountsService();
     private final PaymentService paymentService = ServiceFactory.getPaymentService();
     private final DebitAccountService debitAccountService = ServiceFactory.getDebitAccountService();
+    private final DepositAccountService depositAccountService = ServiceFactory.getDepositAccountService();
+
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response)
@@ -48,7 +44,7 @@ public class PostReplenishCommand implements ICommand {
         if (errors.isEmpty()) {
             Payment payment = createPayment(request);
 
-            checkChangingAccountData(payment, request);
+            checkChangingAccountData(payment);
 
             paymentService.createPaymentWithUpdate(payment);
 
@@ -77,21 +73,21 @@ public class PostReplenishCommand implements ICommand {
         Util.validateField(new AccountNumberValidator(),
                 getCleanAccountNumber(request,Attributes.SENDER_ACCOUNT), errors);
 
-        Util.validateField(new AmountValidator(),
-                request.getParameter(Attributes.AMOUNT), errors);
-
         Util.validateField(new AccountNumberValidator(),
                 request.getParameter(Attributes.REFILLABLE_ACCOUNT), errors);
+
+        Util.validateField(new AmountValidator(),
+                request.getParameter(Attributes.AMOUNT), errors);
 
         return errors;
     }
 
     private void validateAccountsBalance(HttpServletRequest request, List<String> errors) {
 
-        Optional<Account> senderAccountOptional = accountsService.findAccountByNumber(
+        Optional<Account> senderAccountOptional = debitAccountService.findAccountByNumber(
                 Long.valueOf(getCleanAccountNumber(request, Attributes.SENDER_ACCOUNT)));
 
-        Optional<Account> refillableAccountOptional = accountsService.findAccountByNumber(
+        Optional<DepositAccount> refillableAccountOptional = depositAccountService.findAccountByNumber(
                 Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT)));
 
         if (!senderAccountOptional.isPresent() ||
@@ -110,19 +106,15 @@ public class PostReplenishCommand implements ICommand {
         if (paymentAmount.compareTo(BigDecimal.ZERO) < 0)
             errors.add(NEGATIVE_AMOUNT);
 
-        if (refillableAccountOptional.get().getAccountType().getId() ==
-                AccountType.TypeIdentifier.CREDIT_TYPE.getId() &&
-                refillableAccountOptional.get().getBalance().compareTo(BigDecimal.ZERO) == 0)
-            errors.add(ZERO_CREDIT_FUNDS);
 
         if (senderAccountBalance.compareTo(paymentAmount) < 0)
             errors.add(NOT_ENOUGH_MONEY);
     }
 
     private Payment createPayment(HttpServletRequest request) {
-        Account senderAccount = accountsService.findAccountByNumber(
+        Account senderAccount = debitAccountService.findAccountByNumber(
                 Long.valueOf(getCleanAccountNumber(request, Attributes.SENDER_ACCOUNT))).get();
-        Account refillableAccount = accountsService.findAccountByNumber(
+        DepositAccount refillableAccount = depositAccountService.findAccountByNumber(
                 Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT))).get();
 
 
@@ -141,19 +133,8 @@ public class PostReplenishCommand implements ICommand {
                 .substring(0, request.getParameter(attribute).indexOf('(') - 1);
     }
 
-    private void checkChangingAccountData(Payment payment, HttpServletRequest request) {
-        if (payment.getAccountTo().getAccountType().getId() ==
-                AccountType.TypeIdentifier.CREDIT_TYPE.getId()) {
-            BigDecimal compareValue = payment.getAccountTo().getBalance().add(payment.getAmount());
-            if (compareValue.compareTo(BigDecimal.ZERO) > 0) {
-
-                payment.setAmount(payment.getAmount().subtract(compareValue));
-
-                request.getSession().setAttribute(Attributes.WARNING, CREDIT_POSITIVE_FUNDS);
-                request.getSession().setAttribute(Attributes.AMOUNT,
-                        payment.getAmount());
-            }
-        } else if (payment.getAccountTo().getAccountType().getId() ==
+    private void checkChangingAccountData(Payment payment) {
+         if (payment.getAccountTo().getAccountType().getId() ==
                 AccountType.TypeIdentifier.DEPOSIT_TYPE.getId()) {
             ((DepositAccount) payment.getAccountTo()).setMinBalance(
                     ((DepositAccount) payment.getAccountTo()).getMinBalance().
@@ -168,11 +149,11 @@ public class PostReplenishCommand implements ICommand {
 
         Long refillableAccountNumber = Long.valueOf(
                 request.getParameter(Attributes.REFILLABLE_ACCOUNT));
+        List<Account> refillableAccounts = new ArrayList<>();
+        refillableAccounts.add(depositAccountService.findAccountByNumber(
+                refillableAccountNumber).get());
 
         List<Account> senderAccounts = debitAccountService.findAllByUser(user);
-        List<Account> refillableAccounts = new ArrayList<>();
-        refillableAccounts.add(accountsService.findAccountByNumber(
-                refillableAccountNumber).get());
 
         request.setAttribute(Attributes.SENDER_ACCOUNTS, senderAccounts);
         request.setAttribute(Attributes.REFILLABLE_ACCOUNTS, refillableAccounts);

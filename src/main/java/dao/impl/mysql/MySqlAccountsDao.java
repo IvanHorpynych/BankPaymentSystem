@@ -181,10 +181,6 @@ public class MySqlAccountsDao implements AccountsDao {
         );
     }
 
-    @Override
-    public Account castType(Account account) {
-        return account;
-    }
 
 
     public static void main(String[] args) {

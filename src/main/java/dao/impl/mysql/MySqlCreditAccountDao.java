@@ -201,10 +201,6 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
         );
     }
 
-    @Override
-    public CreditAccount castType(Account account) {
-        return (CreditAccount)account;
-    }
 
     @Override
     public void increaseAccruedInterest(CreditAccount account, BigDecimal amount) {

@@ -39,6 +39,8 @@ public interface Attributes {
     String COMMAND = "command";
     String WITHDRAW_DEPOSIT = "withdraw.deposit";
     String WITHDRAW_CREDIT = "withdraw.credit";
+    String REPLENISH_DEPOSIT = "replenish.deposit";
+    String REPLENISH_CREDIT = "replenish.credit";
     String REPLENISH_DO = "replenish.do";
 
     String USER_LIST  ="activeUserList";

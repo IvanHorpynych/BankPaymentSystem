@@ -59,8 +59,10 @@ public class ControllerHelper {
                 new GetPaymentsByCardCommand());
         commands.put(buildKey(bundle.getString("user.replenish"), "replenish"),
                 new GetReplenishCommand());
-        commands.put(buildKey(bundle.getString("user.replenish"), "replenish.do"),
-                new PostReplenishCommand());
+        commands.put(buildKey(bundle.getString("user.replenish"), "replenish.credit"),
+                new PostReplenishCreditCommand());
+        commands.put(buildKey(bundle.getString("user.replenish"), "replenish.deposit"),
+                new PostReplenishDepositCommand());
         commands.put(buildKey(bundle.getString("user.create.payment"), null),
                 new GetNewPaymentCommand());
         commands.put(buildKey(bundle.getString("user.create.payment"), "payment.do"),

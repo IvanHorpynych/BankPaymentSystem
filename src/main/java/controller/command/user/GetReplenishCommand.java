@@ -6,6 +6,7 @@ import controller.util.constants.Attributes;
 import controller.util.constants.Views;
 import controller.util.validator.AccountNumberValidator;
 import entity.Account;
+import entity.AccountType;
 import entity.Card;
 import entity.User;
 import service.AccountsService;
@@ -43,14 +44,26 @@ public class GetReplenishCommand implements ICommand {
             User user = getUserFromSession(request.getSession());
             Long refillableAccountNumber = getAccountFromRequest(request);
 
-            List<Account> senderAccounts = debitAccountService.findAllByUser(user);
+            Account refillableAccount = accountsService.findAccountByNumber(
+                    refillableAccountNumber).get();
             List<Account> refillableAccounts = new ArrayList<>();
-            refillableAccounts.add(accountsService.findAccountByNumber(
-                    refillableAccountNumber).get());
+            refillableAccounts.add(refillableAccount);
+
+            List<Account> senderAccounts = debitAccountService.findAllByUser(user);
+
 
             request.setAttribute(Attributes.SENDER_ACCOUNTS, senderAccounts);
             request.setAttribute(Attributes.REFILLABLE_ACCOUNTS, refillableAccounts);
-            request.setAttribute(Attributes.COMMAND, Attributes.REPLENISH_DO);
+
+
+            if(refillableAccount.getAccountType().getId()==
+                    AccountType.TypeIdentifier.CREDIT_TYPE.getId())
+                request.setAttribute(Attributes.COMMAND, Attributes.REPLENISH_CREDIT);
+            else if(refillableAccount.getAccountType().getId()==
+                    AccountType.TypeIdentifier.DEPOSIT_TYPE.getId())
+                request.setAttribute(Attributes.COMMAND, Attributes.REPLENISH_DEPOSIT);
+
+
             return Views.REPLENISH_VIEW;
         }
         request.setAttribute(Attributes.ERRORS, errors);
