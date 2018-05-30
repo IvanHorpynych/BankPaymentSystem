@@ -34,6 +34,7 @@ public class PostNewPaymentCommand implements ICommand {
     private final static String RECIPIENT_ACCOUNT_ALREADY_CLOSED = "recipient.account.already.closed";
     private final static String TRANSACTION_COMPLETE = "payment.success";
     private final static String COINCIDENCE_ACCOUNTS  = "coincidence.accounts";
+    private final static String IMPOSSIBLE_TRANSACTION  = "impossible.transaction";
 
     private static final ResourceBundle bundle = ResourceBundle.
             getBundle(Views.PAGES_BUNDLE);
@@ -112,7 +113,7 @@ public class PostNewPaymentCommand implements ICommand {
             return errors;
         }
 
-        validateBalance(request, cardFromOptional.get(), errors);
+        validateBalance(request, cardFromOptional.get(),cardToOptional.get(), errors);
 
         return errors;
     }
@@ -154,16 +155,16 @@ public class PostNewPaymentCommand implements ICommand {
                                   List<String> errors) {
         Account senderAccount = cardFrom.getAccount();
 
-        Account recipientAccount = cardTo.getAccount();
+        Account refillableAccount = cardTo.getAccount();
 
         if (!senderAccount.isActive())
             errors.add(SENDER_ACCOUNT_NOT_ACTIVE);
-        if (recipientAccount.isClosed())
+        if (refillableAccount.isClosed())
             errors.add(RECIPIENT_ACCOUNT_ALREADY_CLOSED);
     }
 
     private void validateBalance(HttpServletRequest request,
-                                 Card cardFrom, List<String> errors) {
+                                 Card cardFrom, Card cardTo, List<String> errors) {
         Account senderAccount = cardFrom.getAccount();
 
         BigDecimal paymentAmount = new BigDecimal(request.getParameter(Attributes.AMOUNT));
@@ -172,10 +173,17 @@ public class PostNewPaymentCommand implements ICommand {
 
         if (accountBalance.compareTo(paymentAmount) < 0) {
             errors.add(NOT_ENOUGH_MONEY);
+            return;
         }
 
-        if (paymentAmount.compareTo(BigDecimal.ZERO) < 0)
+        if (paymentAmount.compareTo(BigDecimal.ZERO) < 0) {
             errors.add(NEGATIVE_AMOUNT);
+            return;
+        }
+
+        if(paymentAmount.add(cardTo.getAccount().getBalance()).compareTo(Account.MAX_BALANCE)>0){
+            errors.add(IMPOSSIBLE_TRANSACTION);
+        }
     }
 
     private void validateCoincidenceAccounts(Card cardFrom, Card cardTo,
@@ -220,7 +228,8 @@ public class PostNewPaymentCommand implements ICommand {
 
     private String getCleanCardNumber(HttpServletRequest request, String attribute) {
         return request.getParameter(attribute)
-                .substring(0, request.getParameter(attribute).indexOf('(') - 1);
+                .substring(0, request.getParameter(attribute).indexOf('(')).
+                        replaceAll("\\D+","");
     }
 
 

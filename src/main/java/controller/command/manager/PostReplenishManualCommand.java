@@ -1,4 +1,4 @@
-package controller.command.user;
+package controller.command.manager;
 
 import controller.command.ICommand;
 import controller.util.Util;
@@ -6,7 +6,10 @@ import controller.util.constants.Attributes;
 import controller.util.constants.Views;
 import controller.util.validator.AccountNumberValidator;
 import controller.util.validator.AmountValidator;
-import entity.*;
+import entity.Account;
+import entity.DepositAccount;
+import entity.Payment;
+import entity.User;
 import service.*;
 
 import javax.servlet.ServletException;
@@ -19,63 +22,78 @@ import java.util.*;
 /**
  * Created by JohnUkraine on 26/5/2018.
  */
-public class PostReplenishDepositCommand implements ICommand {
+public class PostReplenishManualCommand implements ICommand {
     private final static String NO_SUCH_ACCOUNT = "account.not.exist";
     private final static String TRANSACTION_COMPLETE = "replenish.complete";
-    private final static String NOT_ENOUGH_MONEY = "account.insufficient.funds";
     private final static String ZERO_AMOUNT = "zero.amount";
     private final static String NEGATIVE_AMOUNT = "negative.amount";
+    private final static String RECIPIENT_ACCOUNT_ALREADY_CLOSED = "recipient.account.already.closed";
+    private final static String ATM_ACCOUNT_NOT_ACTIVE = "atm.account.not.active";
     private final static String IMPOSSIBLE_TRANSACTION  = "impossible.transaction";
 
     private static final ResourceBundle bundle = ResourceBundle.
             getBundle(Views.PAGES_BUNDLE);
 
     private final PaymentService paymentService = ServiceFactory.getPaymentService();
-    private final DebitAccountService debitAccountService = ServiceFactory.getDebitAccountService();
-    private final DepositAccountService depositAccountService = ServiceFactory.getDepositAccountService();
+    private final AccountsService accountsService = ServiceFactory.getAccountsService();
 
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<String> errors = validateDataFromRequest(request);
-        validateAccountsBalance(request, errors);
+        List<String> errors = validateAllData(request);
 
-        if (errors.isEmpty()) {
-            Payment payment = createPayment(request);
+        if (!errors.isEmpty()) {
 
-            paymentService.createPayment(payment);
+            addMessageDataToRequest(request, Attributes.ERRORS, errors);
 
-            checkChangingAccountData(payment);
+            addDataToRequest(request);
 
-            List<String> messages = new ArrayList<>();
-            messages.add(TRANSACTION_COMPLETE);
-
-            addMessageDataToSession(request, Attributes.MESSAGES, messages);
-
-            Util.redirectTo(request, response,
-                    bundle.getString("user.info"));
-
-
-            return REDIRECTED;
+            return Views.REPLENISH_VIEW;
         }
 
-        addMessageDataToRequest(request, Attributes.ERRORS, errors);
+        Payment payment = createPayment(request);
 
-        addDataToRequest(request);
+        paymentService.createPayment(payment);
 
-        return Views.REPLENISH_VIEW;
+        List<String> messages = new ArrayList<>();
+        messages.add(TRANSACTION_COMPLETE);
+
+        addMessageDataToSession(request, Attributes.MESSAGES, messages);
+
+        Util.redirectTo(request, response,
+                bundle.getString("user.info"));
+
+        return REDIRECTED;
+
+    }
+
+    private List<String> validateAllData(HttpServletRequest request){
+        List<String> errors = validateDataFromRequest(request);
+
+        if(!errors.isEmpty()){
+            return errors;
+        }
+
+        validateAccounts(request, errors);
+        if(!errors.isEmpty()){
+            return errors;
+        }
+
+        validateAmount(request, errors);
+
+        return errors;
     }
 
     private List<String> validateDataFromRequest(HttpServletRequest request) {
         List<String> errors = new ArrayList<>();
 
         Util.validateField(new AccountNumberValidator(),
-                getCleanAccountNumber(request,Attributes.SENDER_ACCOUNT), errors);
+                request.getParameter(Attributes.REFILLABLE_ACCOUNT), errors);
 
         Util.validateField(new AccountNumberValidator(),
-                request.getParameter(Attributes.REFILLABLE_ACCOUNT), errors);
+                getCleanAccountNumber(request,Attributes.SENDER_ACCOUNT), errors);
 
         Util.validateField(new AmountValidator(),
                 request.getParameter(Attributes.AMOUNT), errors);
@@ -83,12 +101,12 @@ public class PostReplenishDepositCommand implements ICommand {
         return errors;
     }
 
-    private void validateAccountsBalance(HttpServletRequest request, List<String> errors) {
+    private void validateAccounts(HttpServletRequest request, List<String> errors) {
 
-        Optional<Account> senderAccountOptional = debitAccountService.findAccountByNumber(
+        Optional<Account> senderAccountOptional = accountsService.findAccountByNumber(
                 Long.valueOf(getCleanAccountNumber(request, Attributes.SENDER_ACCOUNT)));
 
-        Optional<DepositAccount> refillableAccountOptional = depositAccountService.findAccountByNumber(
+        Optional<Account> refillableAccountOptional = accountsService.findAccountByNumber(
                 Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT)));
 
         if (!senderAccountOptional.isPresent() ||
@@ -97,9 +115,20 @@ public class PostReplenishDepositCommand implements ICommand {
             return;
         }
 
+        if (!senderAccountOptional.get().isActive())
+            errors.add(ATM_ACCOUNT_NOT_ACTIVE);
+        if (refillableAccountOptional.get().isClosed())
+            errors.add(RECIPIENT_ACCOUNT_ALREADY_CLOSED);
+
+    }
+
+    private void validateAmount(HttpServletRequest request, List<String> errors){
+
+        Optional<Account> refillableAccountOptional = accountsService.findAccountByNumber(
+                Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT)));
+
         BigDecimal paymentAmount = new BigDecimal(request.getParameter(Attributes.AMOUNT));
 
-        BigDecimal senderAccountBalance = senderAccountOptional.get().getBalance();
 
         if (paymentAmount.compareTo(BigDecimal.ZERO) == 0)
             errors.add(ZERO_AMOUNT);
@@ -107,19 +136,15 @@ public class PostReplenishDepositCommand implements ICommand {
         if (paymentAmount.compareTo(BigDecimal.ZERO) < 0)
             errors.add(NEGATIVE_AMOUNT);
 
-
-        if (senderAccountBalance.compareTo(paymentAmount) < 0)
-            errors.add(NOT_ENOUGH_MONEY);
-
-        if (paymentAmount.add(refillableAccountOptional.get().getBalance()).compareTo(Account.MAX_BALANCE) > 0) {
+        if(paymentAmount.add(refillableAccountOptional.get().getBalance()).compareTo(Account.MAX_BALANCE)>0){
             errors.add(IMPOSSIBLE_TRANSACTION);
         }
     }
 
     private Payment createPayment(HttpServletRequest request) {
-        Account senderAccount = debitAccountService.findAccountByNumber(
+        Account senderAccount = accountsService.findAccountByNumber(
                 Long.valueOf(getCleanAccountNumber(request, Attributes.SENDER_ACCOUNT))).get();
-        DepositAccount refillableAccount = depositAccountService.findAccountByNumber(
+        Account refillableAccount = accountsService.findAccountByNumber(
                 Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT))).get();
 
 
@@ -139,30 +164,24 @@ public class PostReplenishDepositCommand implements ICommand {
                         replaceAll("\\D+","");
     }
 
-    private void checkChangingAccountData(Payment payment) {
-         /*if (payment.getAccountTo().getAccountType().getId() ==
-                AccountType.TypeIdentifier.DEPOSIT_TYPE.getId()) {
-            ((DepositAccount) payment.getAccountTo()).setMinBalance(
-                    ((DepositAccount) payment.getAccountTo()).getMinBalance().
-                            add(payment.getAmount())
-            );
-        }*/
-    }
-
 
     private void addDataToRequest(HttpServletRequest request) {
-        User user = (User) request.getSession().getAttribute(Attributes.USER);
 
         Long refillableAccountNumber = Long.valueOf(
                 request.getParameter(Attributes.REFILLABLE_ACCOUNT));
         List<Account> refillableAccounts = new ArrayList<>();
-        refillableAccounts.add(depositAccountService.findAccountByNumber(
+        refillableAccounts.add(accountsService.findAccountByNumber(
                 refillableAccountNumber).get());
 
-        List<Account> senderAccounts = debitAccountService.findAllByUser(user);
+        Long senderAccountNumber = Long.valueOf(getCleanAccountNumber(
+                request,Attributes.SENDER_ACCOUNT));
+        List<Account> senderAccounts = new ArrayList<>();
+        senderAccounts.add(accountsService.findAccountByNumber(
+                senderAccountNumber).get());
 
-        request.setAttribute(Attributes.SENDER_ACCOUNTS, senderAccounts);
+
         request.setAttribute(Attributes.REFILLABLE_ACCOUNTS, refillableAccounts);
+        request.setAttribute(Attributes.SENDER_ACCOUNTS, senderAccounts);
         request.setAttribute(Attributes.COMMAND,request.getParameter(Attributes.COMMAND));
     }
 

@@ -52,8 +52,10 @@
                         <li class="list-group-item">
                             <div class="btn-group group-style">
                                 <c:if test="${debitAccount.isActive() and sessionScope.user.isManager()}">
-                                    <form action="your_url" method="post" class="col-xs-8 main-btn">
-                                        <input type="hidden" name="command" value="login_post"/>
+                                    <form action="${pageContext.request.contextPath}/site/manager/replenish" method="get" class="col-xs-8 main-btn">
+                                        <input type="hidden" name="command" value="debit.replenish"/>
+                                        <input type="hidden" name="refillableAccount"
+                                               value="${debitAccount.getAccountNumber()}"/>
                                         <button type="submit" class="btn btn-info"><fmt:message key="replenish"/></button>
                                     </form>
                                 </c:if>

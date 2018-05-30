@@ -49,7 +49,14 @@
 <div class="container">
     <div class="row col-md-5">
         <c:if test="${empty requestScope.messages}">
+        <c:choose>
+        <c:when test="${not empty sessionScope.user and sessionScope.user.isManager()}">
+        <form class="form-inline" action="${pageContext.request.contextPath}/site/manager/replenish" method="post">
+            </c:when>
+            <c:when test="${not empty sessionScope.user and sessionScope.user.isUser()}">
             <form class="form-inline" action="${pageContext.request.contextPath}/site/user/replenish" method="post">
+                </c:when>
+                </c:choose>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <label for="refillableAccount">
@@ -69,9 +76,17 @@
                         </label>
                         <select name="senderAccount" class="form-control" id="senderAccount">
                             <c:forEach var="senderAccount" items="${requestScope.senderAccounts}">
+
                                 <c:if test="${senderAccount.isActive()}">
-                                    <option>${senderAccount.getAccountNumber()}&nbsp(${senderAccount.getBalance()}
-                                        <fmt:message key="currency"/>)
+                                    <option>${senderAccount.getAccountNumber()}&nbsp
+                                        <c:choose>
+                                            <c:when test="${senderAccount.isATM()}">
+                                                (ATM)
+                                            </c:when>
+                                            <c:otherwise>
+                                                (${senderAccount.getBalance()}<fmt:message key="currency"/>)
+                                            </c:otherwise>
+                                        </c:choose>
                                     </option>
                                 </c:if>
                             </c:forEach>
@@ -90,7 +105,7 @@
                     </li>
                 </ul>
             </form>
-        </c:if>
+            </c:if>
     </div>
 </div>
 <jsp:include page="/WEB-INF/views/snippets/footer.jsp"/>

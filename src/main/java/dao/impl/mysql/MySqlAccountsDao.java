@@ -33,6 +33,9 @@ public class MySqlAccountsDao implements AccountsDao {
     private final static String WHERE_STATUS =
             "WHERE status_id = ? ";
 
+    private final static String WHERE_TYPE =
+            "WHERE type_id = ? ";
+
     private final static String INSERT =
             "INSERT INTO account " +
                     "(user_id, type_id, status_id, balance) " +
@@ -181,6 +184,10 @@ public class MySqlAccountsDao implements AccountsDao {
         );
     }
 
+    @Override
+    public Optional<Account> findOneByType(int typeId) {
+        return defaultDao.findOne(SELECT_ALL+WHERE_TYPE, typeId);
+    }
 
 
     public static void main(String[] args) {

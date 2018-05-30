@@ -103,8 +103,10 @@ public class ControllerHelper {
                 new UnblockAccountCommand());
         commands.put(buildKey(bundle.getString("manager.card.block.path"), "card.block"),
                 new BlockCardCommand());
-
-
+        commands.put(buildKey(bundle.getString("manager.replenish.path"), "debit.replenish"),
+                new GetReplenishManualCommand());
+        commands.put(buildKey(bundle.getString("manager.replenish.path"), "replenish.manual"),
+                new PostReplenishManualCommand());
     }
 
     public ICommand getCommand(String path, String command) {

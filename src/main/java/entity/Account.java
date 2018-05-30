@@ -20,7 +20,7 @@ public class Account {
     private final static int DEFAULT_STATUS_ID = Status.StatusIdentifier.
             ACTIVE_STATUS.getId();
 
-    public final static Date DEFAULT_DATE = new Date();
+    public static final BigDecimal MAX_BALANCE = BigDecimal.valueOf(999999999.9999);
 
     private long accountNumber;
     private User accountHolder;
@@ -166,6 +166,10 @@ public class Account {
 
     public boolean isNotClosed(){
         return status.getId() != Status.StatusIdentifier.CLOSED_STATUS.getId();
+    }
+
+    public boolean isATM(){
+        return getAccountType().getId() == AccountType.TypeIdentifier.ATM_TYPE.getId();
     }
 
     @Override

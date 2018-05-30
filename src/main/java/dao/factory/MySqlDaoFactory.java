@@ -100,6 +100,9 @@ public class MySqlDaoFactory extends DaoFactory {
         else if (accountType.getId() == AccountType.TypeIdentifier.
                 DEBIT_TYPE.getId())
             return getDebitAccountDao(connection);
+        else if (accountType.getId() == AccountType.TypeIdentifier.
+                ATM_TYPE.getId())
+            return getDebitAccountDao(connection);
         return null;
     }
 

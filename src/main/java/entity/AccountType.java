@@ -8,7 +8,8 @@ public class AccountType extends Designation {
 
     public enum TypeIdentifier{
 
-        CREDIT_TYPE (4), DEPOSIT_TYPE (8), DEBIT_TYPE(16);
+        CREDIT_TYPE (4), DEPOSIT_TYPE (8),
+        DEBIT_TYPE(16), ATM_TYPE(32);
 
         private final int id;
         private TypeIdentifier(int id) {

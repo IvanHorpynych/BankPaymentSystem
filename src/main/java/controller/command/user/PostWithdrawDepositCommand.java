@@ -25,6 +25,7 @@ public class PostWithdrawDepositCommand implements ICommand {
     private final static String NOT_ENOUGH_MONEY = "account.insufficient.funds";
     private final static String ZERO_AMOUNT = "zero.amount";
     private final static String NEGATIVE_AMOUNT = "negative.amount";
+    private final static String IMPOSSIBLE_TRANSACTION  = "impossible.transaction";
 
     private static final ResourceBundle bundle = ResourceBundle.
             getBundle(Views.PAGES_BUNDLE);
@@ -105,6 +106,10 @@ public class PostWithdrawDepositCommand implements ICommand {
 
         if (senderAccountBalance.compareTo(paymentAmount) < 0)
             errors.add(NOT_ENOUGH_MONEY);
+
+        if(paymentAmount.add(refillableAccountOptional.get().getBalance()).compareTo(Account.MAX_BALANCE)>0){
+            errors.add(IMPOSSIBLE_TRANSACTION);
+        }
     }
 
     private Payment createPayment(HttpServletRequest request) {
@@ -159,6 +164,7 @@ public class PostWithdrawDepositCommand implements ICommand {
 
     private String getCleanAccountNumber(HttpServletRequest request, String attribute) {
         return request.getParameter(attribute)
-                .substring(0, request.getParameter(attribute).indexOf('(') - 1);
+                .substring(0, request.getParameter(attribute).indexOf('(')).
+                        replaceAll("\\D+","");
     }
 }

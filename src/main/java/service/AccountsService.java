@@ -5,6 +5,7 @@ import dao.abstraction.AccountsDao;
 import dao.factory.DaoFactory;
 import dao.factory.connection.DaoConnection;
 import entity.Account;
+import entity.AccountType;
 import entity.Status;
 import entity.User;
 
@@ -74,6 +75,12 @@ public class AccountsService {
             AccountsDao accountsDao = daoFactory.getAccountsDao(connection);
             accountsDao.updateAccountStatus(account, statusId);
             connection.commit();
+        }
+    }
+    public Optional<Account> findAtmAccount() {
+        try (DaoConnection connection = daoFactory.getConnection()) {
+            AccountsDao accountsDao = daoFactory.getAccountsDao(connection);
+            return accountsDao.findOneByType(AccountType.TypeIdentifier.ATM_TYPE.getId());
         }
     }
 

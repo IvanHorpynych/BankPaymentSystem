@@ -136,7 +136,8 @@ public class PostReplenishCreditCommand implements ICommand {
 
     private String getCleanAccountNumber(HttpServletRequest request, String attribute) {
         return request.getParameter(attribute)
-                .substring(0, request.getParameter(attribute).indexOf('(') - 1);
+                .substring(0, request.getParameter(attribute).indexOf('(')).
+                        replaceAll("\\D+","");
     }
 
     private void checkChangingAccountData(Payment payment, HttpServletRequest request) {
