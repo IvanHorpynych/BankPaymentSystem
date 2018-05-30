@@ -57,7 +57,7 @@
                         </label>
                         <select name="refillableAccount" class="form-control" id="refillableAccount">
                             <c:forEach var="refillableAccount" items="${requestScope.refillableAccounts}">
-                                <c:if test="${refillableAccount.isActive()}">
+                                <c:if test="${refillableAccount.isNotClosed()}">
                                     <option>${refillableAccount.getAccountNumber()}</option>
                                 </c:if>
                             </c:forEach>

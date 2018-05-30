@@ -2,6 +2,7 @@ package controller;
 
 import controller.command.*;
 import controller.command.authorization.*;
+import controller.command.manager.*;
 import controller.command.user.*;
 import controller.util.constants.Views;
 
@@ -52,11 +53,11 @@ public class ControllerHelper {
                 new PostCreateDepositCommand());
         commands.put(buildKey(bundle.getString("user.card.path"), null),
                 new GetCardsCommand());
-        commands.put(buildKey(bundle.getString("user.payment.path"), "accountPayments"),
+        commands.put(buildKey(bundle.getString("payment.path"), "accountPayments"),
                 new GetPaymentsByAccountCommand());
         commands.put(buildKey(bundle.getString("user.payment.path"), null),
                 new GetPaymentsByUserCommand());
-        commands.put(buildKey(bundle.getString("user.payment.path"), "cardPayments"),
+        commands.put(buildKey(bundle.getString("payment.path"), "cardPayments"),
                 new GetPaymentsByCardCommand());
         commands.put(buildKey(bundle.getString("user.replenish"), "replenish"),
                 new GetReplenishCommand());
@@ -86,6 +87,23 @@ public class ControllerHelper {
                 new CloseAccountCommand());
         commands.put(buildKey(bundle.getString("user.close"), "request.close"),
                 new CloseRequestCommand());
+        commands.put(buildKey(bundle.getString("manager.users.list"), null),
+                new GetUsersCommand());
+        commands.put(buildKey(bundle.getString("manager.debit.account.path"), "debit.get"),
+                new GetDebitAccByUserCommand());
+        commands.put(buildKey(bundle.getString("manager.deposit.account.path"), "deposit.get"),
+                new GetDepositAccByUserCommand());
+        commands.put(buildKey(bundle.getString("manager.credit.account.path"), "credit.get"),
+                new GetCreditAccByUserCommand());
+        commands.put(buildKey(bundle.getString("manager.card.path"), "card.get"),
+                new GetCardsByUserCommand());
+        commands.put(buildKey(bundle.getString("manager.block.path"), "account.block"),
+                new BlockAccountCommand());
+        commands.put(buildKey(bundle.getString("manager.unblock.path"), "account.unblock"),
+                new UnblockAccountCommand());
+        commands.put(buildKey(bundle.getString("manager.card.block.path"), "card.block"),
+                new BlockCardCommand());
+
 
     }
 

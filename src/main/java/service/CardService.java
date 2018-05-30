@@ -65,5 +65,12 @@ public class CardService {
         }
     }
 
+    public void updateCardStatus(Card card, int statusId) {
+        try(DaoConnection connection = daoFactory.getConnection()) {
+            CardDao cardDao = daoFactory.getCardDao(connection);
+            cardDao.updateCardStatus(card, statusId);
+        }
+    }
+
 
 }

@@ -39,7 +39,7 @@ public class UserDtoConverter implements DtoConverter<User>{
                 accountOrder);
 
         User user = User.newBuilder()
-                .addId(resultSet.getInt(
+                .addId(resultSet.getLong(
                         tablePrefix + ID_FIELD))
                 .addRole(role)
                 .addFirstName(resultSet.getString(

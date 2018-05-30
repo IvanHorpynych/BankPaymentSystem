@@ -1,5 +1,6 @@
-package controller.command;
+package controller.command.manager;
 
+import controller.command.ICommand;
 import controller.util.Util;
 import controller.util.constants.Attributes;
 import controller.util.constants.Views;
@@ -24,11 +25,11 @@ import java.util.ResourceBundle;
  * Created by JohnUkraine on 5/13/2018.
  */
 
-public class CloseAccountCommand implements ICommand {
-    private final static String ACCOUNT_CLOSED = "account.successfully.closed";
+public class BlockAccountCommand implements ICommand {
+    private final static String ACCOUNT_BLOCKED = "account.successfully.blocked";
     private final static String NO_SUCH_ACCOUNT = "account.not.exist";
-    private final static String CLOSED_ACCOUNT = "account.already.closed";
-    private final static String NOT_ZERO_BALANCE = "not.zero.balance";
+    private final static String CLOSED_ACCOUNT_EXSIST = "account.already.closed";
+    private final static String BLOCKED_ACCOUNT_EXSIST = "account.already.blocked";
 
     private static final ResourceBundle bundle = ResourceBundle.
             getBundle(Views.PAGES_BUNDLE);
@@ -42,7 +43,7 @@ public class CloseAccountCommand implements ICommand {
         validateAccount(request,errors);
 
         if(errors.isEmpty()) {
-            closeAccount(getAccountFromRequest(request).get());
+            blockAccount(getAccountFromRequest(request).get());
 
             addMessageToSession(request);
 
@@ -70,12 +71,13 @@ public class CloseAccountCommand implements ICommand {
         Account account = accountOpt.get();
 
         if(account.isClosed()){
-            errors.add(CLOSED_ACCOUNT);
+            errors.add(CLOSED_ACCOUNT_EXSIST);
             return;
         }
 
-        if(!(account.getBalance().compareTo(BigDecimal.ZERO) == 0)){
-            errors.add(NOT_ZERO_BALANCE);
+        if(account.isBlocked()){
+            errors.add(BLOCKED_ACCOUNT_EXSIST);
+            return;
         }
     }
 
@@ -84,14 +86,14 @@ public class CloseAccountCommand implements ICommand {
         return accountsService.findAccountByNumber(accountNumber);
     }
 
-    private void closeAccount(Account account) {
+    private void blockAccount(Account account) {
 
-        accountsService.updateAccountStatus(account, Status.StatusIdentifier.CLOSED_STATUS.getId());
+        accountsService.updateAccountStatus(account, Status.StatusIdentifier.BLOCKED_STATUS.getId());
     }
 
     private void addMessageToSession(HttpServletRequest request) {
         List<String> messages = new ArrayList<>();
-        messages.add(ACCOUNT_CLOSED);
+        messages.add(ACCOUNT_BLOCKED);
         request.getSession().setAttribute(Attributes.MESSAGES, messages);
     }
 

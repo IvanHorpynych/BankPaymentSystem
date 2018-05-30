@@ -1,4 +1,4 @@
-package controller.command.user;
+package controller.command;
 
 import controller.command.ICommand;
 import controller.util.constants.Attributes;

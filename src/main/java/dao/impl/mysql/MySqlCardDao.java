@@ -145,6 +145,16 @@ public class MySqlCardDao implements CardDao {
                         user.getId(), status.getId());
     }
 
+    @Override
+    public void updateCardStatus(Card card, int statusId) {
+        Objects.requireNonNull(card);
+
+        defaultDao.executeUpdate(
+                UPDATE_STATUS + WHERE_CARD_NUMBER,
+                statusId,
+                card.getCardNumber()
+        );
+    }
 
 
     public static void main(String[] args) {

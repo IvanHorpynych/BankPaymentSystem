@@ -1,6 +1,7 @@
-package controller.command;
+package controller.command.user;
 
 import com.sun.org.apache.regexp.internal.RE;
+import controller.command.ICommand;
 import controller.util.Util;
 import controller.util.constants.Attributes;
 import controller.util.constants.Views;

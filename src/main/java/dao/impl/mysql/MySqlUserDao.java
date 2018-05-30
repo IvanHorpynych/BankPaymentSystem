@@ -63,7 +63,7 @@ public class MySqlUserDao implements UserDao {
     }
 
     @Override
-    public Optional<User> findOne(Integer id) {
+    public Optional<User> findOne(Long id) {
         return defaultDao.findOne(SELECT_ALL + WHERE_ID, id);
     }
 
@@ -111,7 +111,7 @@ public class MySqlUserDao implements UserDao {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         defaultDao.executeUpdate(
                 DELETE + WHERE_ID, id);
     }
@@ -132,7 +132,7 @@ public class MySqlUserDao implements UserDao {
             }
             int random = (int)(Math.random()*100);
             System.out.println("Find one:");
-            System.out.println(mySqlUserDao.findOne(1));
+            System.out.println(mySqlUserDao.findOne(1L));
             System.out.println("find one dy email:");
             System.out.println(mySqlUserDao.findOneByEmail("test@test.com"));
             System.out.println("Insert:");

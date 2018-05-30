@@ -20,7 +20,7 @@ create table ROLE
 /*==============================================================*/
 create table USER
 (
-  ID           int unsigned     not null AUTO_INCREMENT,
+  ID           bigint unsigned     not null AUTO_INCREMENT,
   ROLE_ID      tinyint unsigned not null,
   FIRST_NAME   VARCHAR(100)     not null,
   LAST_NAME    VARCHAR(150)     not null,

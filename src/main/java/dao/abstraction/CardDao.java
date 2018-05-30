@@ -31,5 +31,7 @@ public interface CardDao extends GenericDao<Card, Long> {
      */
     List<Card> findByUserAndStatus(User user, Status status);
 
+    void updateCardStatus(Card card, int statusId);
+
 
 }

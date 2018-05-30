@@ -31,7 +31,7 @@ public class UserService {
         return Singleton.INSTANCE;
     }
 
-    public Optional<User> findById(Integer id) {
+    public Optional<User> findById(Long id) {
         try (DaoConnection connection = daoFactory.getConnection()) {
             UserDao userDao = daoFactory.getUserDao(connection);
             return userDao.findOne(id);

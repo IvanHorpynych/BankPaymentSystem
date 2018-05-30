@@ -5,7 +5,7 @@ package entity;
  */
 
 public class User {
-    private int id;
+    private long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -25,7 +25,7 @@ public class User {
             user = new User();
         }
 
-        public Builder addId(int id) {
+        public Builder addId(long id) {
             user.setId(id);
             return this;
         }
@@ -69,11 +69,11 @@ public class User {
         return new Builder();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -129,6 +129,10 @@ public class User {
         return role.getId() == Role.RoleIdentifier.MANAGER_ROLE.getId();
     }
 
+    public boolean isUser() {
+        return role.getId() == Role.RoleIdentifier.USER_ROLE.getId();
+    }
+
     public void setDefaultRole() {
        this.role = new Role(DEFAULT_ROLE_ID,
                DEFAULT_ROLE_NAME);
@@ -156,8 +160,4 @@ public class User {
         return (email.equals(user.email));
     }
 
-    @Override
-    public int hashCode() {
-        return id;
-    }
 }

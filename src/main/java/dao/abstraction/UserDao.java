@@ -4,7 +4,7 @@ import entity.User;
 
 import java.util.Optional;
 
-public interface UserDao extends GenericDao<User, Integer>{
+public interface UserDao extends GenericDao<User, Long>{
 
     /**
      * Retrieve user from database identified by email.

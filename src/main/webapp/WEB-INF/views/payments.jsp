@@ -14,16 +14,13 @@
 
 
 <div class="panel-title text-center row col-md-12">
-    <c:if test="${not empty sessionScope.user and not sessionScope.user.isManager()}">
+    <c:if test="${not empty sessionScope.user}">
         <h1 class="title"><fmt:message key="payments.history"/>
         <c:if test="${not empty requestScope.desiredAccount}">
             : <fmt:message key="account.number"/> <c:out value="${requestScope.desiredAccount}"/>
         </c:if>
         </h1>
     </c:if>
-    <%--<c:if test="${not empty sessionScope.user and sessionScope.user.isAdmin()}">
-        <h1 class="title"><fmt:message key="accounts"/></h1>
-    </c:if>--%>
     <hr/>
 </div>
 

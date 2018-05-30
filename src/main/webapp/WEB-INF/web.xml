@@ -60,7 +60,7 @@
 
     <filter-mapping>
         <filter-name>PRGFilter</filter-name>
-        <url-pattern>/site/user/info</url-pattern>
+        <url-pattern>/site/info</url-pattern>
     </filter-mapping>
 
     <error-page>

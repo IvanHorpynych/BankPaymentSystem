@@ -21,4 +21,5 @@ public interface Views {
     String REPLENISH_VIEW = FOLDER + "replenish.jsp";
     String CREDIT_REQUEST_VIEW = FOLDER + "creditRequests.jsp";
     String NEW_CREDIT_REQUEST_VIEW = FOLDER + "newCreditRequest.jsp";
+    String USERS_VIEW = FOLDER + "users.jsp";
 }

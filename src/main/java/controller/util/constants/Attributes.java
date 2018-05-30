@@ -21,8 +21,10 @@ public interface Attributes {
     String CREDIT_LIMIT = "creditLimit";
     String INTEREST_RATE = "interestRate";
     String CARDS = "cards";
+    String CARD = "card";
     String CARD_TYPE = "cardType";
     String PAYMENTS = "payments";
+    String USERS = "users";
     String ACCOUNT = "account";
     String CARD_NUMBER = "cardNumber";
     String CARD_TO = "cardTo";

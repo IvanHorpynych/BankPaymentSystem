@@ -10,13 +10,15 @@
 <c:set var="debitAccountsPage" scope="page" value="/WEB-INF/views/debitAccounts.jsp"/>
 <c:set var="depositAccountsPage" scope="page" value="/WEB-INF/views/depositAccounts.jsp"/>
 <c:set var="cardsPage" scope="page" value="/WEB-INF/views/cards.jsp"/>
-<c:set var="createPage" scope="page" value="/WEB-INF/views/newPayment.jsp"/>
+<c:set var="newPaymentPage" scope="page" value="/WEB-INF/views/newPayment.jsp"/>
 <c:set var="paymentsPage" scope="page" value="/WEB-INF/views/payments.jsp"/>
 <c:set var="loginPage" scope="page" value="/WEB-INF/views/login.jsp"/>
 <c:set var="signUpPage" scope="page" value="/WEB-INF/views/signup.jsp"/>
 <c:set var="replenishPage" scope="page" value="/WEB-INF/views/replenish.jsp"/>
 <c:set var="createRequest" scope="page" value="/WEB-INF/views/newRequest.jsp"/>
 <c:set var="creditRequestPage" scope="page" value="/WEB-INF/views/creditRequests.jsp"/>
+<c:set var="usersListPage" scope="page" value="/WEB-INF/views/users.jsp"/>
+<c:set var="ratePage" scope="page" value="/WEB-INF/views/rate.jsp"/>
 
 <c:set var="currPage" scope="page">
     <customTag:currPage/>
@@ -91,7 +93,7 @@
                 </li>
 
                 <c:choose>
-                    <c:when test="${createPage.equals(currPage)}">
+                    <c:when test="${newPaymentPage.equals(currPage)}">
                         <li class="active">
                     </c:when>
                     <c:otherwise>
@@ -133,14 +135,42 @@
 
             <c:if test="${not empty sessionScope.user and sessionScope.user.isManager()}">
                 <c:choose>
-                    <c:when test="${accountsPage.equals(currPage)}">
+                    <c:when test="${usersListPage.equals(currPage)}">
                         <li class="active">
                     </c:when>
                     <c:otherwise>
                         <li>
                     </c:otherwise>
                 </c:choose>
-                    <a href="${pageContext.request.contextPath}/site/admin/accounts">
+                    <a href="${pageContext.request.contextPath}/site/manager/users">
+                        <fmt:message key="users"/>
+                    </a>
+                </li>
+
+                <c:choose>
+                    <c:when test="${creditRequestPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
+                <a href="${pageContext.request.contextPath}/site/manager/credit_request">
+                    <fmt:message key="credit.requests"/>
+                </a>
+                </li>
+
+                <c:choose>
+                    <c:when test="${creditAccountsPage.equals(currPage)
+                    or debitAccountsPage.equals(currPage)
+                    or depositAccountsPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
+                    <a>
                         <fmt:message key="accounts"/>
                     </a>
                 </li>
@@ -153,9 +183,22 @@
                         <li>
                     </c:otherwise>
                 </c:choose>
-                    <a href="${pageContext.request.contextPath}/site/admin/cards">
+                    <a>
                         <fmt:message key="cards"/>
                     </a>
+                </li>
+
+                <c:choose>
+                    <c:when test="${replenishPage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
+                <a>
+                    <fmt:message key="account.replenish"/>
+                </a>
                 </li>
 
                 <c:choose>
@@ -166,9 +209,22 @@
                         <li>
                     </c:otherwise>
                 </c:choose>
-                    <a href="${pageContext.request.contextPath}/site/admin/payments">
-                        <fmt:message key="payment.histrory"/>
-                    </a>
+                <a>
+                    <fmt:message key="payment.histrory"/>
+                </a>
+                </li>
+
+                <c:choose>
+                    <c:when test="${ratePage.equals(currPage)}">
+                        <li class="active">
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
+                <a>
+                    <fmt:message key="rate"/>
+                </a>
                 </li>
             </c:if>
         </ul>
