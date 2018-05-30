@@ -17,6 +17,7 @@
 <c:set var="replenishPage" scope="page" value="/WEB-INF/views/replenish.jsp"/>
 <c:set var="createRequest" scope="page" value="/WEB-INF/views/newRequest.jsp"/>
 <c:set var="creditRequestPage" scope="page" value="/WEB-INF/views/creditRequests.jsp"/>
+<c:set var="creditRequestsListPage" scope="page" value="/WEB-INF/views/creditRequestsList.jsp"/>
 <c:set var="usersListPage" scope="page" value="/WEB-INF/views/users.jsp"/>
 <c:set var="ratePage" scope="page" value="/WEB-INF/views/rate.jsp"/>
 
@@ -148,14 +149,14 @@
                 </li>
 
                 <c:choose>
-                    <c:when test="${creditRequestPage.equals(currPage)}">
+                    <c:when test="${creditRequestsListPage.equals(currPage)}">
                         <li class="active">
                     </c:when>
                     <c:otherwise>
                         <li>
                     </c:otherwise>
                 </c:choose>
-                <a href="${pageContext.request.contextPath}/site/manager/credit_request">
+                <a href="${pageContext.request.contextPath}/site/manager/requests">
                     <fmt:message key="credit.requests"/>
                 </a>
                 </li>
@@ -222,7 +223,7 @@
                         <li>
                     </c:otherwise>
                 </c:choose>
-                <a>
+                <a href="${pageContext.request.contextPath}/site/manager/annual_rate">
                     <fmt:message key="rate"/>
                 </a>
                 </li>

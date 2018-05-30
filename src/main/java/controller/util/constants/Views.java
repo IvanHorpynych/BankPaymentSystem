@@ -20,6 +20,8 @@ public interface Views {
     String NEW_PAYMENT_VIEW = FOLDER + "newPayment.jsp";
     String REPLENISH_VIEW = FOLDER + "replenish.jsp";
     String CREDIT_REQUEST_VIEW = FOLDER + "creditRequests.jsp";
+    String CREDIT_REQUEST_LIST_VIEW = FOLDER + "creditRequestsList.jsp";
     String NEW_CREDIT_REQUEST_VIEW = FOLDER + "newCreditRequest.jsp";
     String USERS_VIEW = FOLDER + "users.jsp";
+    String RATE_VIEW = FOLDER + "rate.jsp";
 }

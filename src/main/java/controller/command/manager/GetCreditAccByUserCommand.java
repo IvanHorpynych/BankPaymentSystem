@@ -37,7 +37,7 @@ public class GetCreditAccByUserCommand extends ManagerHelper implements ICommand
 
             List<CreditAccount> creditAccounts = accountService.findAllByUser(user);
 
-            request.setAttribute(Attributes.DEPOSIT_ACCOUNTS, creditAccounts);
+            request.setAttribute(Attributes.CREDIT_ACCOUNTS, creditAccounts);
 
             return Views.CREDIT_ACCOUNTS_VIEW;
         }

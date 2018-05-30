@@ -2,12 +2,15 @@ package controller.command.manager;
 
 import controller.util.Util;
 import controller.util.constants.Attributes;
+import controller.util.validator.RequestNumberValidator;
 import controller.util.validator.UserIdentifierValidator;
+import entity.CreditRequest;
 import entity.User;
 import service.ServiceFactory;
 import service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

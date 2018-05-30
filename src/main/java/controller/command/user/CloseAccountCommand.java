@@ -30,6 +30,7 @@ public class CloseAccountCommand implements ICommand {
     private final static String NO_SUCH_ACCOUNT = "account.not.exist";
     private final static String CLOSED_ACCOUNT = "account.already.closed";
     private final static String NOT_ZERO_BALANCE = "not.zero.balance";
+    private final static String ACCOUNT_NOT_ACTIVE = "account.not.active";
 
     private static final ResourceBundle bundle = ResourceBundle.
             getBundle(Views.PAGES_BUNDLE);
@@ -72,6 +73,11 @@ public class CloseAccountCommand implements ICommand {
 
         if(account.isClosed()){
             errors.add(CLOSED_ACCOUNT);
+            return;
+        }
+
+        if(!account.isActive()){
+            errors.add(ACCOUNT_NOT_ACTIVE);
             return;
         }
 

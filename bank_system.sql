@@ -76,12 +76,12 @@ create table ACCOUNT
   ID        bigint unsigned  not null AUTO_INCREMENT,
   USER_ID   bigint unsigned  not null,
   TYPE_ID   tinyint unsigned not null,
-  BALANCE   DECIMAL(13, 4)   not null,
+  BALANCE   DECIMAL(13, 4)   not null default 0,
   STATUS_ID tinyint unsigned not null,
   primary key (ID),
   constraint ACCOUNT_FK_STATUS_ID foreign key (STATUS_ID) references STATUS (ID)
   on delete restrict
-  on update restrict,
+  on update cascade,
   constraint FK_USER_ID foreign key (USER_ID) references USER (ID)
   on delete restrict
   on update restrict,
@@ -99,7 +99,7 @@ create table CREDIT_ACCOUNT_DETAILS
   ID               bigint unsigned not null AUTO_INCREMENT,
   CREDIT_LIMIT     DECIMAL(13, 4)  not null,
   INTEREST_RATE    real            not null,
-  ACCRUED_INTEREST DECIMAL(13, 4)  not null,
+  ACCRUED_INTEREST DECIMAL(13, 4)  not null default 0,
   VALIDITY_DATE    timestamp       not null,
   primary key (ID),
   constraint CAD_FK_ACCOUNT_ID foreign key (ID) references ACCOUNT (ID)
@@ -138,7 +138,10 @@ create table CARD
   primary key (CARD_NUMBER),
   constraint CARD_FK_ACCOUNT_ID foreign key (ACCOUNT_ID) references ACCOUNT (ID)
   on delete restrict
-  on update restrict
+  on update restrict,
+  constraint CARD_FK_STATUS_ID foreign key (STATUS_ID) references STATUS (ID)
+  on delete restrict
+  on update cascade
 );
 ALTER TABLE CARD
 AUTO_INCREMENT = 1000000000000000;
@@ -157,7 +160,7 @@ create table CREDIT_REQUEST
   primary key (ID),
   constraint CR_FK_STATUS_ID foreign key (STATUS_ID) references STATUS (ID)
   on delete restrict
-  on update restrict,
+  on update cascade,
   constraint CR_FK_USER_ID foreign key (USER_ID) references USER (ID)
   on delete restrict
   on update restrict
@@ -182,7 +185,7 @@ create table PAYMENT
   on delete restrict
   on update restrict,
   constraint FK_CARD_FROM foreign key (CARD_NUMBER_FROM) references CARD (CARD_NUMBER)
-  on delete cascade
+  on delete restrict
     on update restrict
 );
 
@@ -463,7 +466,7 @@ insert into USER (ROLE_ID, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER, PASSWORD)
 
 insert into ACCOUNT_TYPE (ID, NAME) values (4, 'CREDIT'), (8, 'DEPOSIT'), (16, 'DEBIT'), (32, 'ATM');
 
-insert into STATUS (ID, NAME) values (1, 'ACTIVE'), (4, 'PENDING'), (8, 'REJECT'), (16, 'BLOCKED'), (20, 'CLOSED');
+insert into STATUS (ID, NAME) values (1, 'ACTIVE'), (4, 'PENDING'), (8, 'REJECT'), (16, 'BLOCKED'), (20, 'CLOSED'), (24, 'CONFIRM');
 
 insert into CURR_ANNUAL_RATE (ANNUAL_RATE) values (8.6);
 
@@ -483,7 +486,7 @@ insert into ACCOUNT (USER_ID, BALANCE, TYPE_ID, STATUS_ID) values ((select ID
                                                                     from USER
                                                                     where (select id
                                                                            from role
-                                                                           where NAME = 'USER') = ROLE_ID), 100000000,
+                                                                           where NAME = 'USER') = ROLE_ID), 3000,
                                                                    (select ID
                                                                     from ACCOUNT_TYPE
                                                                     where NAME = 'DEBIT'), (select ID

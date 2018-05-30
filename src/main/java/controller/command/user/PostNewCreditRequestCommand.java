@@ -28,7 +28,7 @@ public class PostNewCreditRequestCommand implements ICommand {
     Logger logger = Logger.getLogger(PostNewCreditRequestCommand.class);
     private final static String INVALID_CREDIT_LIMIT = "invalid.credit.limit";
     private final static String INVALID_DATE = "invalid.date";
-    private final static String INVALID_INTEREST_RATE = "invalid.credit.limit";
+    private final static String INVALID_INTEREST_RATE = "invalid.interest.rate";
     private final static String SUCCESSFUL_CREATION = "request.successful.creation";
 
     private static final ResourceBundle bundle = ResourceBundle.

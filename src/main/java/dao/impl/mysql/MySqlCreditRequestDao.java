@@ -124,12 +124,11 @@ public class MySqlCreditRequestDao implements CreditRequestDao {
     }
 
     @Override
-    public List<CreditRequest> findByStatus(Status status) {
-        Objects.requireNonNull(status);
+    public List<CreditRequest> findByStatus(long statusId) {
 
         return defaultDao.findAll(
                 SELECT_ALL + WHERE_STATUS,
-                status.getId()
+                statusId
         );
     }
 

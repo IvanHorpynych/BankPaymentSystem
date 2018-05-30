@@ -28,4 +28,11 @@ public class RateService {
             return rateDao.findLast();
         }
     }
+
+    public Rate updateAnnualRate(Rate rate){
+        try (DaoConnection connection = daoFactory.getConnection()) {
+            RateDao rateDao = daoFactory.getRateDao(connection);
+            return rateDao.insert(rate);
+        }
+    }
 }

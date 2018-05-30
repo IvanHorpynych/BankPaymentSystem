@@ -11,7 +11,7 @@ public class Status extends Designation {
 
         ACTIVE_STATUS(1), PENDING_STATUS(4),
         REJECT_STATUS(8), BLOCKED_STATUS(16),
-        CLOSED_STATUS(20);
+        CLOSED_STATUS(20), CONFIRM_STATUS(24);
 
         private final int id;
 

@@ -107,6 +107,16 @@ public class ControllerHelper {
                 new GetReplenishManualCommand());
         commands.put(buildKey(bundle.getString("manager.replenish.path"), "replenish.manual"),
                 new PostReplenishManualCommand());
+        commands.put(buildKey(bundle.getString("manager.requests.path"), null),
+                new GetRequestsListCommand());
+        commands.put(buildKey(bundle.getString("manager.confirm.path"), "confirm"),
+                new PostConfirmRequestCommand());
+        commands.put(buildKey(bundle.getString("manager.reject.path"), "reject"),
+                new PostRejectRequestCommand());
+        commands.put(buildKey(bundle.getString("manager.rate.path"), null),
+                new GetAnnualRateCommand());
+        commands.put(buildKey(bundle.getString("manager.rate.path"), "update.rate"),
+                new PostAnnualRateCommand());
     }
 
     public ICommand getCommand(String path, String command) {

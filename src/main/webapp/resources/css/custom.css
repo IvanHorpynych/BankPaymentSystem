@@ -25,3 +25,11 @@
 .default-min-input {
     width: 15% !important;
 }
+
+.th-custom{
+    text-align: center;
+}
+
+.rate-input {
+    width: 35% !important;
+}

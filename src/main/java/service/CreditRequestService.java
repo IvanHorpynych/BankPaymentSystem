@@ -1,6 +1,7 @@
 package service;
 
 import dao.abstraction.CardDao;
+import dao.abstraction.CreditAccountDao;
 import dao.abstraction.CreditRequestDao;
 import dao.factory.DaoFactory;
 import dao.factory.connection.DaoConnection;
@@ -36,10 +37,11 @@ public class CreditRequestService {
         }
     }
 
-    public List<CreditRequest> findAllCreditRequest() {
+    public List<CreditRequest> findAllPendingRequests() {
         try(DaoConnection connection = daoFactory.getConnection()) {
             CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao(connection);
-            return creditRequestDao.findAll();
+            return creditRequestDao.findByStatus(Status.StatusIdentifier.
+                    PENDING_STATUS.getId());
         }
     }
 
@@ -62,6 +64,22 @@ public class CreditRequestService {
         try(DaoConnection connection = daoFactory.getConnection()) {
             CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao(connection);
             creditRequestDao.updateRequestStatus(creditRequest, statusId);
+        }
+    }
+
+    public void confirmRequest(CreditRequest creditRequest, CreditAccount creditAccount) {
+        try(DaoConnection connection = daoFactory.getConnection()) {
+            CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao(connection);
+            CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
+
+            connection.startSerializableTransaction();
+
+            creditRequestDao.updateRequestStatus(creditRequest,
+                    creditRequest.getStatus().getId());
+
+            creditAccountDao.insert(creditAccount);
+
+            connection.commit();
         }
     }
 

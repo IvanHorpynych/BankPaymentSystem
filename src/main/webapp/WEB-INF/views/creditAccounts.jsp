@@ -28,12 +28,9 @@
     </div>
 </c:if>
 <div class="panel-title text-center row col-md-12">
-    <c:if test="${not empty sessionScope.user and not sessionScope.user.isManager()}">
+    <c:if test="${not empty sessionScope.user}">
         <h1 class="title"><fmt:message key="credit.accounts"/></h1>
     </c:if>
-    <%--<c:if test="${not empty sessionScope.user and sessionScope.user.isAdmin()}">
-        <h1 class="title"><fmt:message key="accounts"/></h1>
-    </c:if>--%>
     <hr/>
 </div>
 
@@ -68,7 +65,7 @@
                         </li>
                         <li class="list-group-item">
                             <div class="btn-group group-style">
-                                <c:if test="${creditAccount.isActive()}">
+                                <c:if test="${creditAccount.isActive() and not sessionScope.user.isManager()}">
                                     <form action="${pageContext.request.contextPath}/site/user/replenish" method="get" class="col-xs-8 main-btn">
                                         <input type="hidden" name="command" value="withdraw"/>
                                         <input type="hidden" name="senderAccount" value="${creditAccount.getAccountNumber()}"/>

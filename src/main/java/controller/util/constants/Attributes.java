@@ -22,6 +22,8 @@ public interface Attributes {
     String INTEREST_RATE = "interestRate";
     String CARDS = "cards";
     String CARD = "card";
+    String VALID_RATE = "validRate";
+    String ANNUAL_RATE = "annualRate";
     String CARD_TYPE = "cardType";
     String PAYMENTS = "payments";
     String USERS = "users";
