@@ -24,7 +24,8 @@ public class Util {
     public static void redirectTo(HttpServletRequest request,
                                   HttpServletResponse response,
                                   String pageToRedirect) throws IOException {
-        response.sendRedirect(request.getServletPath() + pageToRedirect);
+        response.sendRedirect(request.getContextPath()+
+                request.getServletPath() + pageToRedirect);
     }
 
     /**
