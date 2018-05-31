@@ -1,0 +1,78 @@
+/* --- Style --- */
+.navbar-default {
+    background-color: #2ecc71;
+    border-color: #27ae60;
+}
+.navbar-default .navbar-brand {
+    color: #000000;;
+}
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+    color: #d1ffed;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #000000;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+    color: #d1ffed;
+}
+.navbar-default .navbar-nav .active > a, .navbar-default .navbar-nav .active > a:hover, .navbar-default .navbar-nav .active > a:focus {
+    color: #d1ffed;
+    background-color: #27ae60;
+}
+.navbar-default .navbar-nav .open > a, .navbar-default .navbar-nav .open > a:hover, .navbar-default .navbar-nav .open > a:focus {
+    color: #d1ffed;
+    background-color: #27ae60;
+}
+.navbar-default .navbar-nav .open > a .caret, .navbar-default .navbar-nav .open > a:hover .caret, .navbar-default .navbar-nav .open > a:focus .caret {
+    border-top-color: #d1ffed;
+    border-bottom-color: #d1ffed;
+}
+.navbar-default .navbar-nav > .dropdown > a .caret {
+    border-top-color: #000000;
+    border-bottom-color: #000000;
+}
+.navbar-default .navbar-nav > .dropdown > a:hover .caret, .navbar-default .navbar-nav > .dropdown > a:focus .caret {
+    border-top-color: #d1ffed;
+    border-bottom-color: #d1ffed;
+}
+.navbar-default .navbar-toggle {
+    border-color: #27ae60;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+    background-color: #27ae60;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ecf0f1;
+}
+@media (max-width: 767px) {
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #ecf0f1;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: #d1ffed;
+        background-color: #27ae60;
+    }
+}
+/* Do not take in account */
+html {
+    padding-top: 30px;
+}
+a.solink {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    background: #f3f5f6;
+    color: #cfd6d9;
+    border: 1px solid #cfd6d9;
+    line-height: 30px;
+    text-decoration: none;
+    transition: all 0.3s;
+    z-index: 999;
+}
+a.solink::first-letter {
+    text-transform: capitalize;
+}
+a.solink:hover {
+    color: #428bca;
+}

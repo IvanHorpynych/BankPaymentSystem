@@ -25,7 +25,7 @@
     <customTag:currPage/>
 </c:set>
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand fas fa-credit-card" href="${pageContext.request.contextPath}/site/home">&nbspBPS</a>

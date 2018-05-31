@@ -4,12 +4,9 @@ import controller.command.ICommand;
 import controller.util.Util;
 import controller.util.constants.Attributes;
 import controller.util.constants.Views;
-import controller.util.validator.AccountNumberValidator;
 import controller.util.validator.CardNumberValidator;
-import entity.Account;
 import entity.Card;
 import entity.Status;
-import service.AccountsService;
 import service.CardService;
 import service.ServiceFactory;
 

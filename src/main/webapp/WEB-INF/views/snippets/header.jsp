@@ -19,3 +19,6 @@
 
 <link href="${pageContext.request.contextPath}/resources/css/custom.css"
       rel="stylesheet">
+
+<link href="${pageContext.request.contextPath}/resources/css/navbar-default.css"
+      rel="stylesheet">

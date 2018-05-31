@@ -7,9 +7,7 @@ import controller.util.constants.Views;
 import controller.util.validator.AccountNumberValidator;
 import controller.util.validator.AmountValidator;
 import entity.Account;
-import entity.DepositAccount;
 import entity.Payment;
-import entity.User;
 import service.*;
 
 import javax.servlet.ServletException;

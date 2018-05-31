@@ -3,11 +3,9 @@ package controller.command.manager;
 import controller.command.ICommand;
 import controller.util.constants.Attributes;
 import controller.util.constants.Views;
-import entity.Account;
 import entity.Card;
 import entity.User;
 import service.CardService;
-import service.DebitAccountService;
 import service.ServiceFactory;
 
 import javax.servlet.ServletException;

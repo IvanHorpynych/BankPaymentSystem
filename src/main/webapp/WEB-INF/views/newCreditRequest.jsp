@@ -31,9 +31,6 @@
     <c:if test="${not empty sessionScope.user and not sessionScope.user.isManager()}">
         <h1 class="title"><fmt:message key="create.new"/>&nbsp<fmt:message key="request"/></h1>
     </c:if>
-    <%--<c:if test="${not empty sessionScope.user and sessionScope.user.isAdmin()}">
-        <h1 class="title"><fmt:message key="accounts"/></h1>
-    </c:if>--%>
     <hr/>
 </div>
 <div class="container">

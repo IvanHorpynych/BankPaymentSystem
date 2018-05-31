@@ -3,11 +3,8 @@ package controller.command.user;
 import controller.command.ICommand;
 import controller.util.constants.Attributes;
 import controller.util.constants.Views;
-import dao.abstraction.CreditRequestDao;
-import entity.Card;
 import entity.CreditRequest;
 import entity.User;
-import service.CardService;
 import service.CreditRequestService;
 import service.ServiceFactory;
 

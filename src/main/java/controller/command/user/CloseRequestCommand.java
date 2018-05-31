@@ -1,15 +1,12 @@
 package controller.command.user;
 
-import com.sun.org.apache.regexp.internal.RE;
 import controller.command.ICommand;
 import controller.util.Util;
 import controller.util.constants.Attributes;
 import controller.util.constants.Views;
 import controller.util.validator.AccountNumberValidator;
-import entity.Account;
 import entity.CreditRequest;
 import entity.Status;
-import service.AccountsService;
 import service.CreditRequestService;
 import service.ServiceFactory;
 
@@ -17,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

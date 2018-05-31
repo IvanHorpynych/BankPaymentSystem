@@ -3,9 +3,7 @@ package controller.command.manager;
 import controller.command.ICommand;
 import controller.util.constants.Attributes;
 import controller.util.constants.Views;
-import entity.Payment;
 import entity.User;
-import service.PaymentService;
 import service.ServiceFactory;
 import service.UserService;
 
