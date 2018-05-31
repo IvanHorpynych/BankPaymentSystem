@@ -54,12 +54,6 @@ public class AccountsService {
         }
     }
 
-    public List<Account> findAllByStatus(Status status) {
-        try (DaoConnection connection = daoFactory.getConnection()) {
-            AccountsDao accountsDao = daoFactory.getAccountsDao(connection);
-            return accountsDao.findByStatus(status);
-        }
-    }
 
     public Account createAccount(Account account) {
         try (DaoConnection connection = daoFactory.getConnection()) {

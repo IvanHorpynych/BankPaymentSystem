@@ -7,6 +7,7 @@ import entity.DepositAccount;
 import entity.Status;
 import entity.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,10 +53,10 @@ public class DepositAccountService {
         }
     }
 
-    public List<DepositAccount> findAllByStatus(Status status) {
+    public List<DepositAccount> findAllNotClosed() {
         try (DaoConnection connection = daoFactory.getConnection()) {
             DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(connection);
-            return depositAccountDao.findByStatus(status);
+            return depositAccountDao.findAllNotClosed();
         }
     }
 
@@ -72,6 +73,16 @@ public class DepositAccountService {
             connection.startSerializableTransaction();
             DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(connection);
             depositAccountDao.updateAccountStatus(account, statusId);
+            connection.commit();
+        }
+    }
+
+    public void accrue(DepositAccount account, BigDecimal interestCharges) {
+        try (DaoConnection connection = daoFactory.getConnection()) {
+            connection.startSerializableTransaction();
+            DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(connection);
+            depositAccountDao.update(account);
+            depositAccountDao.increaseBalance(account,interestCharges);
             connection.commit();
         }
     }

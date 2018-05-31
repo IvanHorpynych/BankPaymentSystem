@@ -7,6 +7,7 @@ import entity.CreditAccount;
 import entity.Status;
 import entity.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,10 +53,10 @@ public class CreditAccountService {
         }
     }
 
-    public List<CreditAccount> findAllByStatus(Status status) {
+    public List<CreditAccount> findAllNotClosed() {
         try (DaoConnection connection = daoFactory.getConnection()) {
             CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
-            return creditAccountDao.findByStatus(status);
+            return creditAccountDao.findAllNotClosed();
         }
     }
 
@@ -72,6 +73,16 @@ public class CreditAccountService {
             connection.startSerializableTransaction();
             CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
             creditAccountDao.updateAccountStatus(account, statusId);
+            connection.commit();
+        }
+    }
+
+    public void accrue(CreditAccount creditAccount, BigDecimal accruedInterest) {
+        try (DaoConnection connection = daoFactory.getConnection()) {
+            connection.startSerializableTransaction();
+            CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
+            creditAccountDao.increaseBalance(creditAccount, accruedInterest);
+            creditAccountDao.increaseAccruedInterest(creditAccount, accruedInterest.abs());
             connection.commit();
         }
     }

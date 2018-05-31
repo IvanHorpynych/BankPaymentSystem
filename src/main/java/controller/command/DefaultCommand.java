@@ -1,7 +1,6 @@
 package controller.command;
 
 import controller.util.Util;
-import controller.util.constants.PagesPaths;
 import controller.util.constants.Views;
 
 import javax.servlet.ServletException;

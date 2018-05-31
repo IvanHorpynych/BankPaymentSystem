@@ -19,10 +19,9 @@ public interface GenericAccountDao<T extends Account> extends GenericDao<T, Long
     /**
      * Retrieves all accounts associated with certain account status.
      *
-     * @param status status of account
      * @return list of retrieved accounts
      */
-    List<T> findByStatus(Status status);
+    List<T> findAllNotClosed();
 
     /**
      * increase balance of certain amount.

@@ -54,10 +54,10 @@ public class DebitAccountService {
         }
     }
 
-    public List<Account> findAllByStatus(Status status) {
+    public List<Account> findAllNotClosed() {
         try (DaoConnection connection = daoFactory.getConnection()) {
             DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(connection);
-            return debitAccountDao.findByStatus(status);
+            return debitAccountDao.findAllNotClosed();
         }
     }
 

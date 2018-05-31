@@ -26,8 +26,9 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
     private final static String WHERE_USER =
             "WHERE user_id = ? ";
 
-    private final static String WHERE_STATUS =
-            "WHERE status_id = ? ";
+    private final static String WHERE_NOT_CLOSED =
+            "WHERE status_id != " +
+                    "(SELECT id FROM status where name = 'CLOSED') ";
 
     private final static String INSERT =
             "INSERT INTO account " +
@@ -160,14 +161,10 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
     }
 
     @Override
-    public List<CreditAccount> findByStatus(Status status) {
-        Objects.requireNonNull(status);
-
+    public List<CreditAccount> findAllNotClosed() {
         return defaultDao.findAll(
-                SELECT_ALL + WHERE_STATUS,
-                status.getId()
+                SELECT_ALL + WHERE_NOT_CLOSED
         );
-
     }
 
     @Override
@@ -208,7 +205,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
 
         defaultDao.executeUpdate(
                 INCREASE_ACCRUED_INTEREST + WHERE_ACCOUNT_NUMBER,
-                account,
+                amount,
                 account.getAccountNumber()
         );
     }
@@ -219,7 +216,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
 
         defaultDao.executeUpdate(
                 DECREASE_ACCRUED_INTEREST + WHERE_ACCOUNT_NUMBER,
-                account,
+                amount,
                 account.getAccountNumber()
         );
     }

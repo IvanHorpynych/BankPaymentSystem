@@ -2,6 +2,7 @@ package controller;
 
 import controller.command.ICommand;
 import controller.i18n.SupportedLocale;
+import controller.schedulers.SchedulerInit;
 import controller.util.constants.Attributes;
 import controller.util.constants.Views;
 import entity.User;
@@ -35,6 +36,7 @@ public class Controller extends HttpServlet {
                 SupportedLocale.getSupportedLanguages());
         getServletContext().setAttribute(Attributes.USER_LIST,
                 new ArrayList<User>());
+        SchedulerInit.getInstance();
     }
 
     @Override
