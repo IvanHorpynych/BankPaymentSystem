@@ -47,7 +47,7 @@
                     </li>
                     <li class="list-group-item"><b><fmt:message key="interest.rate"/></b>:
                         <input name="interestRate" type="number" class="form-control" id="interestRate"
-                               step="0.1" pattern="^\d{1,3}.?\d{1,1}$"
+                               step="0.1" pattern="^\d{1,3}.?\d$"
                                title="<fmt:message key="interest.rate.title"/>"
                                placeholder="<fmt:message key="interest.rate"/>"
                                value="<c:out value="${requestScope.interestRate}"/>">&nbsp%

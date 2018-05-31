@@ -36,7 +36,7 @@ public class Controller extends HttpServlet {
                 SupportedLocale.getSupportedLanguages());
         getServletContext().setAttribute(Attributes.USER_LIST,
                 new ArrayList<User>());
-        //SchedulerInit.getInstance();
+        SchedulerInit.getInstance();
     }
 
     @Override
