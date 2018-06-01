@@ -67,7 +67,7 @@ public class Controller extends HttpServlet {
 
     private String getPath(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        return uri.replaceAll(ResourceBundle.
+        return uri.replaceAll(request.getContextPath()+ResourceBundle.
                 getBundle(Views.PAGES_BUNDLE).
                 getString("site.prefix"), "");
     }
