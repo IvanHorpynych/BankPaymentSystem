@@ -23,4 +23,7 @@ How to launch and configure system for start working:
 
 6.Execute in Maven:mvn tomcat7:deploy;
 
-7.Enjoy =)
+7.Credentials for user: test@test.com, qwerty 
+ Credentials for manager: test@email.com, qwerty 
+
+8.Enjoy =)
