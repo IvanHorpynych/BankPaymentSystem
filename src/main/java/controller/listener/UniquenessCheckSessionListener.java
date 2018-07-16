@@ -8,6 +8,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class UniquenessCheckSessionListener implements HttpSessionListener {
@@ -33,11 +34,11 @@ public class UniquenessCheckSessionListener implements HttpSessionListener {
         ServletContext context = sessionEvent.getSession().getServletContext();
         User user = (User) sessionEvent.getSession().getAttribute(Attributes.USER);
         @SuppressWarnings("unchecked")
-        List<User> activeUserList = (List<User>)
+        Map<String,User> activeUserList = (Map<String,User>)
                 context.getAttribute(Attributes.USER_LIST);
         logger.debug("Destroyed session: " + sessionEvent.getSession().getId()+
                 (Objects.nonNull(user)? "; User: "+user.getEmail()+";":";"));
-        activeUserList.remove(user);
+        activeUserList.remove(user.getEmail());
     }
 }
 

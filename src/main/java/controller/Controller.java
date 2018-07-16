@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Provide a centralized request handling mechanism to
@@ -35,8 +36,8 @@ public class Controller extends HttpServlet {
         getServletContext().setAttribute(SUPPORTED_LOCALES,
                 SupportedLocale.getSupportedLanguages());
         getServletContext().setAttribute(Attributes.USER_LIST,
-                new ArrayList<User>());
-        SchedulerInit.getInstance();
+                new ConcurrentHashMap<String, User>());
+        //SchedulerInit.getInstance();
     }
 
     @Override

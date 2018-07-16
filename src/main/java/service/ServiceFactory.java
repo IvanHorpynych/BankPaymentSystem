@@ -11,17 +11,25 @@ import entity.CreditRequest;
  * @author JohnUkraine
  */
 public class ServiceFactory {
-    private static ServiceFactory instance;
+    private static volatile ServiceFactory instance;
 
     private ServiceFactory() {}
-
+    
     public static ServiceFactory getInstance() {
-        if(instance == null) {
-            instance = new ServiceFactory();
+        ServiceFactory localInstance = instance;
+        if (localInstance == null) {
+            synchronized (ServiceFactory.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new ServiceFactory();
+                }
+            }
         }
-
-        return instance;
+        return localInstance;
     }
+
+
+
 
 
     public static UserService getUserService() {

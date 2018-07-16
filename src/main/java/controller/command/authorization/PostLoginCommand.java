@@ -15,10 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by JohnUkraine on 5/13/2018.
@@ -93,9 +91,9 @@ public class PostLoginCommand implements ICommand {
     public List<String> validateUniquenessActiveUser(HttpSession session, User user){
         List<String> errors = new ArrayList<>();
         @SuppressWarnings("unchecked")
-        List<User> activeUserList = (List<User>) session.getServletContext().
+        Map<String, User> activeUserList = (Map<String, User>) session.getServletContext().
                 getAttribute(Attributes.USER_LIST);
-        if (activeUserList.contains(user))
+        if (activeUserList.get(user.getEmail()) != null)
             errors.add(ACTIVE_ACCOUNT_IS_EXIST);
         return errors;
     }
@@ -113,9 +111,9 @@ public class PostLoginCommand implements ICommand {
     private void addUserToContext(HttpSession session, User user)
             throws IOException {
         @SuppressWarnings("unchecked")
-        List<User> activeUserList = (List<User>) session.getServletContext().
+        Map<String, User> activeUserList = (Map<String, User>) session.getServletContext().
                         getAttribute(Attributes.USER_LIST);
-        activeUserList.add(user);
+        activeUserList.put(user.getEmail(), user);
     }
 
     private void addInvalidDataToRequest(HttpServletRequest request,
