@@ -1,16 +1,26 @@
 package entity;
 
+import javax.persistence.*;
+
 /**
  * Created by JohnUkraine on 5/06/2018.
  */
+@Entity
 
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(name = "FIRST_NAME")
     private String firstName;
+    @Column(name = "LAST_NAME")
     private String lastName;
     private String email;
+    @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
     private String password;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
 
     private final static String DEFAULT_ROLE_NAME = "USER";

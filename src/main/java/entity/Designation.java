@@ -1,8 +1,16 @@
 package entity;
 
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
+import java.util.List;
+
+@MappedSuperclass
 public abstract class Designation {
+    @Id
     private int id;
     private String name;
+
 
     public Designation() {
     }

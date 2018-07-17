@@ -1,10 +1,12 @@
 package entity;
 
 
+import javax.persistence.Entity;
+
 /**
  * Created by JohnUkraine on 5/06/2018.
  */
-
+@Entity
 public class Status extends Designation {
 
     public enum StatusIdentifier{

@@ -1,9 +1,11 @@
 package entity;
 
+import javax.persistence.Entity;
+
 /**
  * Created by JohnUkraine on 5/06/2018.
  */
-
+@Entity
 public class AccountType extends Designation {
 
     public enum TypeIdentifier{

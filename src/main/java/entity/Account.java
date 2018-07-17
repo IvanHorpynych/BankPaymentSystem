@@ -1,13 +1,15 @@
 package entity;
 
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * Created by JohnUkraine on 5/06/2018.
  */
-
+@Entity
+@MappedSuperclass
 public class Account {
     public final static BigDecimal DEFAULT_BALANCE = BigDecimal.ZERO;
     public final static long DEFAULT_NUMBER = 0L;
@@ -22,10 +24,19 @@ public class Account {
 
     public static final BigDecimal MAX_BALANCE = BigDecimal.valueOf(999999999.9999);
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private long accountNumber;
+    @ManyToOne
+    @JoinColumn(name="user_id")
     private User accountHolder;
+    @ManyToOne
+    @JoinColumn(name="TYPE_ID")
     private AccountType accountType;
     private BigDecimal balance;
+    @ManyToOne
+    @JoinColumn(name="STATUS_ID")
     private Status status;
 
 
