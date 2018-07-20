@@ -44,7 +44,6 @@ public abstract class DaoFactory {
 
     public abstract DaoConnection getConnection();
 
-    public abstract RoleDao getRoleDao(DaoConnection connection);
 
     public abstract UserDao getUserDao(DaoConnection connection);
 
@@ -58,10 +57,6 @@ public abstract class DaoFactory {
     public abstract DebitAccountDao getDebitAccountDao(DaoConnection connection);
 
     public abstract AccountsDao getAccountsDao(DaoConnection connection);
-
-    public abstract AccountTypeDao getAccountTypeDao(DaoConnection connection);
-
-    public abstract StatusDao getStatusDao(DaoConnection connection);
 
     public abstract RateDao getRateDao(DaoConnection connection);
 

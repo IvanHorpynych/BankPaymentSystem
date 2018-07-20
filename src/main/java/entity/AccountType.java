@@ -1,11 +1,13 @@
 package entity;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by JohnUkraine on 5/06/2018.
  */
 @Entity
+@Table(name = "ACCOUNT_TYPE")
 public class AccountType extends Designation {
 
     public enum TypeIdentifier{

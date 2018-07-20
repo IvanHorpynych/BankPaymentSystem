@@ -4,17 +4,25 @@ package entity;
  * Created by JohnUkraine on 5/06/2018.
  */
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Date;
-
+@Entity
+@Table(name = "credit_account_details")
 public class CreditAccount extends Account{
     public final static String DEFAULT_TYPE = "CREDIT";
     private final static int DEFAULT_TYPE_ID = AccountType.TypeIdentifier.
             CREDIT_TYPE.getId();
 
+    @Column(name = "credit_Limit")
     private BigDecimal creditLimit;
+    @Column(name = "interest_Rate")
     private float interestRate;
+    @Column(name = "accrued_Interest")
     private BigDecimal accruedInterest;
+    @Column(name = "validity_Date")
     private Date validityDate;
 
 

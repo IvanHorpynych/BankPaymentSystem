@@ -29,10 +29,6 @@ public class MySqlDaoFactory extends DaoFactory {
         }
     }
 
-    @Override
-    public RoleDao getRoleDao(DaoConnection connection) {
-        return new MySqlRoleDao(getOwnSqlConnection(connection));
-    }
 
     public UserDao getUserDao(DaoConnection connection) {
         return new MySqlUserDao(getOwnSqlConnection(connection));
@@ -57,16 +53,6 @@ public class MySqlDaoFactory extends DaoFactory {
     @Override
     public AccountsDao getAccountsDao(DaoConnection connection) {
         return new MySqlAccountsDao(getOwnSqlConnection(connection));
-    }
-
-    @Override
-    public AccountTypeDao getAccountTypeDao(DaoConnection connection) {
-        return new MySqlAccountTypeDao(getOwnSqlConnection(connection));
-    }
-
-    @Override
-    public StatusDao getStatusDao(DaoConnection connection) {
-        return new MySqlStatusDao(getOwnSqlConnection(connection));
     }
 
     @Override

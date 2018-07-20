@@ -9,7 +9,7 @@ use bank_system;
 /*==============================================================*/
 create table ROLE
 (
-  ID   tinyint unsigned not null AUTO_INCREMENT,
+  ID   int unsigned not null AUTO_INCREMENT,
   NAME VARCHAR(50)      not null,
   primary key (ID)
 );
@@ -40,7 +40,7 @@ create table USER
 
 create table ACCOUNT_TYPE
 (
-  ID   tinyint unsigned not null AUTO_INCREMENT,
+  ID   int unsigned not null AUTO_INCREMENT,
   NAME VARCHAR(50)      not null,
   primary key (ID)
 );
@@ -51,7 +51,7 @@ create table ACCOUNT_TYPE
 
 create table STATUS
 (
-  ID   tinyint unsigned not null AUTO_INCREMENT,
+  ID   int unsigned not null AUTO_INCREMENT,
   NAME VARCHAR(50)      not null,
   primary key (ID)
 );

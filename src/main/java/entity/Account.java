@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by JohnUkraine on 5/06/2018.
  */
 @Entity
-@MappedSuperclass
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Account {
     public final static BigDecimal DEFAULT_BALANCE = BigDecimal.ZERO;
     public final static long DEFAULT_NUMBER = 0L;
@@ -29,7 +29,7 @@ public class Account {
     @Column(name = "ID")
     private long accountNumber;
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="USER_ID")
     private User accountHolder;
     @ManyToOne
     @JoinColumn(name="TYPE_ID")

@@ -2,72 +2,22 @@
 package dao.hibernate.impl;
 
 import dao.abstraction.AccountsDao;
-import dao.datasource.PooledConnection;
 import dao.hibernate.HibernateUtil;
-import dao.impl.mysql.DefaultDaoImpl;
-import dao.impl.mysql.converter.AccountDtoConverter;
-import dao.impl.mysql.converter.DtoConverter;
 import entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 
 public class HibernateAccountsDao implements AccountsDao {
-
-
-    /*private String SELECT_ALL;
-
-    private final static String MAIN_QUERY =
-            "SELECT * FROM account_details ";
-
-    private final static String WHERE_ACCOUNT_NUMBER =
-            "WHERE id = ? ";
-
-    private final static String WHERE_USER =
-            "WHERE user_id = ? ";
-
-    private final static String WHERE_NOT_CLOSED =
-            "WHERE status_id != " +
-                    "(SELECT id FROM status where name = 'CLOSED') ";
-
-    private final static String WHERE_TYPE =
-            "WHERE type_id = ? ";
-
-    private final static String INSERT =
-            "INSERT INTO account " +
-                    "(user_id, type_id, status_id, balance) " +
-                    "VALUES(?, ?, ?, ?) ";
-
-
-    private final static String UPDATE =
-            "UPDATE account SET " +
-                    "balance = ? ";
-
-    private final static String UPDATE_STATUS =
-            "UPDATE account SET " +
-                    "status_id = ? ";
-
-    private final static String INCREASE_BALANCE =
-            "UPDATE account SET " +
-                    "balance = balance + ? ";
-
-    private final static String DECREASE_BALANCE =
-            "UPDATE account SET " +
-                    "balance = balance - ? ";
-
-    private final static String DELETE =
-            "DELETE FROM account ";*/
 
 
     @Override
@@ -77,7 +27,7 @@ public class HibernateAccountsDao implements AccountsDao {
             CriteriaQuery<Account> query = criteriaBuilder.createQuery(Account.class);
             Root<Account> root = query.from(Account.class);
             query.select(root);
-            query.where(criteriaBuilder.equal(root.get("id"), accountNumber));
+            query.where(criteriaBuilder.equal(root.get("accountNumber"), accountNumber));
             return Optional.ofNullable(session.createQuery(query).getSingleResult());
         }
     }
@@ -128,7 +78,7 @@ public class HibernateAccountsDao implements AccountsDao {
             CriteriaQuery<Account> query = criteriaBuilder.createQuery(Account.class);
             Root<Account> root = query.from(Account.class);
             query.select(root);
-            query.where(criteriaBuilder.equal(root.get("user_id"), user.getId()));
+            query.where(criteriaBuilder.equal(root.get("accountHolder"), user.getId()));
             return session.createQuery(query).getResultList();
         }
     }
@@ -136,69 +86,60 @@ public class HibernateAccountsDao implements AccountsDao {
     @Override
     public List<Account> findAllNotClosed() {
         try (Session session = HibernateUtil.getInstance()) {
-            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-
-            CriteriaQuery<Status> secondQuery = criteriaBuilder.createQuery(Status.class);
-            Root<Status> secondRoot = secondQuery.from(Status.class);
-
-            CriteriaQuery<Account> query = criteriaBuilder.createQuery(Account.class);
-            Root<Account> root = query.from(Account.class);
-
-            query.select(root);
-            query.where(criteriaBuilder.equal(root.get("status"),secondRoot.get());
-            return session.createQuery(query).getResultList();
+            Query query = session.createQuery("from Account where status = :statusId", Account.class);
+            query.setParameter("statusId", session.createQuery("from Status where name != 'CLOSED'").getParameterValue("id"));
+           return query.getResultList();
         }
     }
 
     @Override
     public void increaseBalance(Account account, BigDecimal amount) {
         Objects.requireNonNull(account);
-
-        defaultDao.executeUpdate(
-                INCREASE_BALANCE + WHERE_ACCOUNT_NUMBER,
-                amount, account.getAccountNumber()
-        );
+        account = findOne(account.getAccountNumber()).get();
+        account.setBalance(account.getBalance().add(amount));
+        update(account);
     }
 
     @Override
     public void decreaseBalance(Account account, BigDecimal amount) {
         Objects.requireNonNull(account);
-
-        defaultDao.executeUpdate(
-                DECREASE_BALANCE + WHERE_ACCOUNT_NUMBER,
-                amount, account.getAccountNumber()
-        );
+        account = findOne(account.getAccountNumber()).get();
+        account.setBalance(account.getBalance().subtract(amount));
+        update(account);
     }
 
     @Override
     public void updateAccountStatus(Account account, int statusId) {
         Objects.requireNonNull(account);
 
-        defaultDao.executeUpdate(
-                UPDATE_STATUS + WHERE_ACCOUNT_NUMBER,
-                statusId,
-                account.getAccountNumber()
-        );
+        Objects.requireNonNull(account);
+        account = findOne(account.getAccountNumber()).get();
+        account.setStatus(new Status(statusId,"empty"));
+        update(account);
     }
 
     @Override
     public Optional<Account> findOneByType(int typeId) {
-        return defaultDao.findOne(SELECT_ALL+WHERE_TYPE, typeId);
+        try (Session session = HibernateUtil.getInstance()) {
+            Query query = session.createQuery("from Account where accountType = :accountType", Account.class);
+            query.setParameter("accountType",typeId);
+            query.setMaxResults(1);
+            return Optional.ofNullable((Account) query.getSingleResult());
+        }
     }
 
 
-    public static void main(String[] args) {
-        DataSource dataSource = PooledConnection.getInstance();
+    /*public static void main(String[] args) {
         AccountsDao mySqlDebitAccountDao;
-        try {
+
             System.out.println("Find all:");
-            mySqlDebitAccountDao = new HibernateAccountsDao(dataSource.getConnection());
+        mySqlDebitAccountDao = new HibernateAccountsDao();
             ((HibernateAccountsDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
 
             int random = (int) (Math.random() * 100);
 
             System.out.println("Find one:");
-            System.out.println(mySqlDebitAccountDao.findOne(3L));
+            System.out.println(mySqlDebitAccountDao.findOne(2L));
 
             System.out.println("find dy user:");
             User user = User.newBuilder().addFirstName("first" + random).
@@ -255,9 +196,7 @@ public class HibernateAccountsDao implements AccountsDao {
 
             System.out.println("Find all:");
             ((HibernateAccountsDao) mySqlDebitAccountDao).printAccount(mySqlDebitAccountDao.findAll());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
 
     }
 
@@ -267,6 +206,6 @@ public class HibernateAccountsDao implements AccountsDao {
             System.out.println("Balance: "+debitAccount.getBalance()+";");
             System.out.println();
         }
-    }
+    }*/
 
 }

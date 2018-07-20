@@ -1,9 +1,7 @@
 package dao.hibernate.impl;
 
 import dao.abstraction.UserDao;
-import dao.datasource.PooledConnection;
 import dao.hibernate.HibernateUtil;
-import entity.Role;
 import entity.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,44 +9,13 @@ import org.hibernate.Transaction;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
  * Created by JohnUkraine on 5/07/2018.
  */
 public class HibernateUserDao implements UserDao {
-   /* private final static String SELECT_ALL =
-            "SELECT user.id AS user_id, user.role_id," +
-                    "user.first_name," +
-                    "user.last_name, user.email," +
-                    "user.password,user.phone_number," +
-                    "role.id AS role_id, role.name AS role_name " +
-                    "FROM user JOIN role ON user.role_id = role.id ";
-
-    private final static String WHERE_ID =
-            "WHERE user.id = ? ";
-
-    private final static String WHERE_EMAIL =
-            "WHERE user.email = ? ";
-
-    private final static String INSERT =
-            "INSERT into user (role_id, first_name, last_name," +
-                    "email, phone_number, password)" +
-                    "VALUES(?, ?, ?, ?, ?, ?) ";
-
-    private final static String UPDATE =
-            "UPDATE user SET " +
-                    "first_name = ?, " +
-                    "last_name = ?, email = ?, " +
-                    "phone_number = ?, password = ? ";
-
-    private final static String DELETE =
-            "DELETE FROM user ";*/
 
 
     @Override
@@ -119,7 +86,7 @@ public class HibernateUserDao implements UserDao {
         return findOneByEmail(email).isPresent();
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
 
         System.out.println("Find all:");
         HibernateUserDao mySqlUserDao = new HibernateUserDao();
@@ -158,5 +125,5 @@ public class HibernateUserDao implements UserDao {
         for (User user : mySqlUserDao.findAll()) {
             System.out.println(user);
         }
-    }
+    }*/
 }
