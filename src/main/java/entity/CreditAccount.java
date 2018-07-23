@@ -19,7 +19,7 @@ public class CreditAccount extends Account{
     @Column(name = "credit_Limit")
     private BigDecimal creditLimit;
     @Column(name = "interest_Rate")
-    private float interestRate;
+    private double interestRate;
     @Column(name = "accrued_Interest")
     private BigDecimal accruedInterest;
     @Column(name = "validity_Date")
@@ -96,7 +96,7 @@ public class CreditAccount extends Account{
         this.creditLimit = creditLimit;
     }
 
-    public float getInterestRate() {
+    public double getInterestRate() {
         return interestRate;
     }
 

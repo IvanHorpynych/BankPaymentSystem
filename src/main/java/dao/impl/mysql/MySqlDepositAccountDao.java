@@ -160,7 +160,7 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
     }
 
     @Override
-    public void increaseBalance(Account account, BigDecimal amount) {
+    public void increaseBalance(DepositAccount account, BigDecimal amount) {
         Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(
@@ -170,7 +170,7 @@ public class MySqlDepositAccountDao implements DepositAccountDao {
     }
 
     @Override
-    public void decreaseBalance(Account account, BigDecimal amount) {
+    public void decreaseBalance(DepositAccount account, BigDecimal amount) {
         Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(

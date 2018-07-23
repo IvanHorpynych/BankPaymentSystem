@@ -7,6 +7,7 @@ import entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -25,7 +26,12 @@ public class HibernateCreditAccountDao implements CreditAccountDao {
             Query query = session.createQuery("from CreditAccount where accountNumber = :accountNumber", CreditAccount.class);
             query.setParameter("accountNumber", accountNumber);
             query.setMaxResults(1);
-            return Optional.ofNullable((CreditAccount) query.getSingleResult());
+            try{
+                return Optional.ofNullable((CreditAccount) query.getSingleResult());
+            } catch (NoResultException e){
+                return Optional.empty();
+            }
+
         }
     }
 
@@ -70,49 +76,47 @@ public class HibernateCreditAccountDao implements CreditAccountDao {
     @Override
     public List<CreditAccount> findByUser(User user) {
         Objects.requireNonNull(user);
-
-        return defaultDao.findAll(
-                SELECT_ALL + WHERE_USER,
-                user.getId()
-        );
+        try (Session session = HibernateUtil.getInstance()) {
+            Query query = session.createQuery("from CreditAccount where accountHolder = :accountHolder", CreditAccount.class);
+            query.setParameter("accountHolder", user);
+            query.setMaxResults(1);
+            return  query.getResultList();
+        }
     }
 
     @Override
     public List<CreditAccount> findAllNotClosed() {
-        return defaultDao.findAll(
-                SELECT_ALL + WHERE_NOT_CLOSED
-        );
+        try (Session session = HibernateUtil.getInstance()) {
+            Query query = session.createQuery("from CreditAccount where status = :statusId", CreditAccount.class);
+            query.setParameter("statusId", session.createQuery("from Status where name != 'CLOSED'").getParameterValue("id"));
+            return query.getResultList();
+        }
     }
 
     @Override
-    public void increaseBalance(Account account, BigDecimal amount) {
+    public void increaseBalance(CreditAccount account, BigDecimal amount) {
         Objects.requireNonNull(account);
-
-        defaultDao.executeUpdate(
-                INCREASE_BALANCE + WHERE_ACCOUNT_NUMBER,
-                amount, account.getAccountNumber()
-        );
+        account = findOne(account.getAccountNumber()).get();
+        account.setBalance(account.getBalance().add(amount));
+        update(account);
     }
 
     @Override
-    public void decreaseBalance(Account account, BigDecimal amount) {
+    public void decreaseBalance(CreditAccount account, BigDecimal amount) {
         Objects.requireNonNull(account);
-
-        defaultDao.executeUpdate(
-                DECREASE_BALANCE + WHERE_ACCOUNT_NUMBER,
-                amount, account.getAccountNumber()
-        );
+        account = findOne(account.getAccountNumber()).get();
+        account.setBalance(account.getBalance().subtract(amount));
+        update(account);
     }
 
     @Override
     public void updateAccountStatus(CreditAccount account, int statusId) {
         Objects.requireNonNull(account);
 
-        defaultDao.executeUpdate(
-                UPDATE_STATUS + WHERE_ACCOUNT_NUMBER,
-                statusId,
-                account.getAccountNumber()
-        );
+        Objects.requireNonNull(account);
+        account = findOne(account.getAccountNumber()).get();
+        account.setStatus(new Status(statusId,"empty"));
+        update(account);
     }
 
 
@@ -120,31 +124,27 @@ public class HibernateCreditAccountDao implements CreditAccountDao {
     public void increaseAccruedInterest(CreditAccount account, BigDecimal amount) {
         Objects.requireNonNull(account);
 
-        defaultDao.executeUpdate(
-                INCREASE_ACCRUED_INTEREST + WHERE_ACCOUNT_NUMBER,
-                amount,
-                account.getAccountNumber()
-        );
+        account = findOne(account.getAccountNumber()).get();
+        account.setAccruedInterest(account.getAccruedInterest().add(amount));
+        update(account);
     }
 
     @Override
     public void decreaseAccruedInterest(CreditAccount account, BigDecimal amount) {
         Objects.requireNonNull(account);
 
-        defaultDao.executeUpdate(
-                DECREASE_ACCRUED_INTEREST + WHERE_ACCOUNT_NUMBER,
-                amount,
-                account.getAccountNumber()
-        );
+        Objects.requireNonNull(account);
+
+        account = findOne(account.getAccountNumber()).get();
+        account.setAccruedInterest(account.getAccruedInterest().divide(amount));
+        update(account);
     }
 
 
     public static void main(String[] args) {
-        DataSource dataSource = PooledConnection.getInstance();
-        CreditAccountDao mySqlCreditAccountDao;
-        try {
+        HibernateCreditAccountDao mySqlCreditAccountDao;
             System.out.println("Find all:");
-            mySqlCreditAccountDao = new HibernateCreditAccountDao(dataSource.getConnection());
+            mySqlCreditAccountDao = new HibernateCreditAccountDao();
             ((HibernateCreditAccountDao) mySqlCreditAccountDao).printAccount(mySqlCreditAccountDao.findAll());
 
             int random = (int) (Math.random() * 100);
@@ -211,9 +211,6 @@ public class HibernateCreditAccountDao implements CreditAccountDao {
 
             System.out.println("Find all:");
             ((HibernateCreditAccountDao) mySqlCreditAccountDao).printAccount(mySqlCreditAccountDao.findAll());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
     }
 

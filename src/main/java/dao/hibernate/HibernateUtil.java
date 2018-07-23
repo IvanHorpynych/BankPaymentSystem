@@ -15,6 +15,7 @@ public class HibernateUtil {
                 .addAnnotatedClass(Status.class)
                 .addAnnotatedClass(AccountType.class)
                 .addAnnotatedClass(Account.class)
+                .addAnnotatedClass(CreditAccount.class)
                 /*.addAnnotatedClass(Designation.class)*/;
 
         SESSION_FACTORY = config.buildSessionFactory();

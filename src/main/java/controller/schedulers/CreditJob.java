@@ -34,7 +34,7 @@ public class CreditJob implements Job {
         }
     }
 
-    private BigDecimal percentage(BigDecimal base, float pct) {
+    private BigDecimal percentage(BigDecimal base, double pct) {
         return base.multiply(BigDecimal.valueOf(pct)).divide(ONE_HUNDRED);
     }
 }

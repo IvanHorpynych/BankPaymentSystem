@@ -168,7 +168,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
     }
 
     @Override
-    public void increaseBalance(Account account, BigDecimal amount) {
+    public void increaseBalance(CreditAccount account, BigDecimal amount) {
         Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(
@@ -178,7 +178,7 @@ public class MySqlCreditAccountDao implements CreditAccountDao {
     }
 
     @Override
-    public void decreaseBalance(Account account, BigDecimal amount) {
+    public void decreaseBalance(CreditAccount account, BigDecimal amount) {
         Objects.requireNonNull(account);
 
         defaultDao.executeUpdate(
