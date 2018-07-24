@@ -1,4 +1,4 @@
-package dao.hibernate.impl;
+package dao.impl.hibernate;
 
 import dao.abstraction.UserDao;
 import dao.hibernate.HibernateUtil;

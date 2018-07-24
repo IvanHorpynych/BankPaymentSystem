@@ -1,5 +1,5 @@
 
-package dao.hibernate.impl;
+package dao.impl.hibernate;
 
 import dao.abstraction.AccountsDao;
 import dao.hibernate.HibernateUtil;

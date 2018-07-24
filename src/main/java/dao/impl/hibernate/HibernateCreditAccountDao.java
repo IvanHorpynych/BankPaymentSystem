@@ -1,7 +1,6 @@
-package dao.hibernate.impl;
+package dao.impl.hibernate;
 
 import dao.abstraction.CreditAccountDao;
-import dao.datasource.PooledConnection;
 import dao.hibernate.HibernateUtil;
 import entity.*;
 import org.hibernate.Session;
@@ -9,9 +8,7 @@ import org.hibernate.Transaction;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
