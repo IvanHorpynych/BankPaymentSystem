@@ -21,21 +21,21 @@ import java.util.List;
  */
 public class GetDebitAccountsCommand implements ICommand {
 
-    private final DebitAccountService accountService = ServiceFactory.getDebitAccountService();
+  private final DebitAccountService accountService = ServiceFactory.getDebitAccountService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        User user = getUserFromSession(request.getSession());
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    User user = getUserFromSession(request.getSession());
 
-        List<Account> debitAccounts = accountService.findAllByUser(user);
+    List<Account> debitAccounts = accountService.findAllByUser(user);
 
-        request.setAttribute(Attributes.DEBIT_ACCOUNTS, debitAccounts);
+    request.setAttribute(Attributes.DEBIT_ACCOUNTS, debitAccounts);
 
-        return Views.DEBIT_ACCOUNTS_VIEW;
-    }
+    return Views.DEBIT_ACCOUNTS_VIEW;
+  }
 
-    private User getUserFromSession(HttpSession session) {
-        return (User) session.getAttribute(Attributes.USER);
-    }
+  private User getUserFromSession(HttpSession session) {
+    return (User) session.getAttribute(Attributes.USER);
+  }
 }

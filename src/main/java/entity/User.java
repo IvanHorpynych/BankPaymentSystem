@@ -8,166 +8,161 @@ import javax.persistence.*;
 @Entity
 
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @Column(name = "FIRST_NAME")
-    private String firstName;
-    @Column(name = "LAST_NAME")
-    private String lastName;
-    private String email;
-    @Column(name = "PHONE_NUMBER")
-    private String phoneNumber;
-    private String password;
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
+  @Column(name = "FIRST_NAME")
+  private String firstName;
+  @Column(name = "LAST_NAME")
+  private String lastName;
+  private String email;
+  @Column(name = "PHONE_NUMBER")
+  private String phoneNumber;
+  private String password;
+  @ManyToOne
+  @JoinColumn(name = "role_id")
+  private Role role;
 
-    private final static String DEFAULT_ROLE_NAME = "USER";
+  private final static String DEFAULT_ROLE_NAME = "USER";
 
-    private final static int DEFAULT_ROLE_ID = Role.RoleIdentifier.
-            USER_ROLE.getId();
+  private final static int DEFAULT_ROLE_ID = Role.RoleIdentifier.USER_ROLE.getId();
 
-    public static class Builder{
-        private final User user;
+  public static class Builder {
+    private final User user;
 
-        public Builder() {
-            user = new User();
-        }
-
-        public Builder addId(long id) {
-            user.setId(id);
-            return this;
-        }
-
-        public Builder addFirstName(String firstName) {
-            user.setFirstName(firstName);
-            return this;
-        }
-
-        public Builder addLastName(String lastName) {
-            user.setLastName(lastName);
-            return this;
-        }
-
-        public Builder addEmail(String email) {
-            user.setEmail(email);
-            return this;
-        }
-
-        public Builder addPhoneNumber(String phoneNumber) {
-            user.setPhoneNumber(phoneNumber);
-            return this;
-        }
-
-        public Builder addPassword(String password) {
-            user.setPassword(password);
-            return this;
-        }
-
-        public Builder addRole(Role role) {
-            user.setRole(role);
-            return this;
-        }
-
-        public User build() {
-            return user;
-        }
+    public Builder() {
+      user = new User();
     }
 
-    public static Builder newBuilder() {
-        return new Builder();
+    public Builder addId(long id) {
+      user.setId(id);
+      return this;
     }
 
-    public long getId() {
-        return id;
+    public Builder addFirstName(String firstName) {
+      user.setFirstName(firstName);
+      return this;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public Builder addLastName(String lastName) {
+      user.setLastName(lastName);
+      return this;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public Builder addEmail(String email) {
+      user.setEmail(email);
+      return this;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public Builder addPhoneNumber(String phoneNumber) {
+      user.setPhoneNumber(phoneNumber);
+      return this;
     }
 
-    public String getLastName() {
-        return lastName;
+    public Builder addPassword(String password) {
+      user.setPassword(password);
+      return this;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public Builder addRole(Role role) {
+      user.setRole(role);
+      return this;
     }
 
-    public String getEmail() {
-        return email;
+    public User build() {
+      return user;
     }
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public static Builder newBuilder() {
+    return new Builder();
+  }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+  public void setId(long id) {
+    this.id = id;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public String getFirstName() {
+    return firstName;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-    public Role getRole() {
-        return role;
-    }
+  public String getLastName() {
+    return lastName;
+  }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-    public boolean isManager() {
-        return role.getId() == Role.RoleIdentifier.MANAGER_ROLE.getId();
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public boolean isUser() {
-        return role.getId() == Role.RoleIdentifier.USER_ROLE.getId();
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public void setDefaultRole() {
-       this.role = new Role(DEFAULT_ROLE_ID,
-               DEFAULT_ROLE_NAME);
-    }
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email=" + email  +
-                ", phoneNumber=" + phoneNumber  +
-                ", password=" + password  +
-                ", role=" + role  +
-                '}';
-    }
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+  public String getPassword() {
+    return password;
+  }
 
-        User user = (User) o;
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-        return (email.equals(user.email));
-    }
+  public Role getRole() {
+    return role;
+  }
+
+  public void setRole(Role role) {
+    this.role = role;
+  }
+
+  public boolean isManager() {
+    return role.getId() == Role.RoleIdentifier.MANAGER_ROLE.getId();
+  }
+
+  public boolean isUser() {
+    return role.getId() == Role.RoleIdentifier.USER_ROLE.getId();
+  }
+
+  public void setDefaultRole() {
+    this.role = new Role(DEFAULT_ROLE_ID, DEFAULT_ROLE_NAME);
+  }
+
+  @Override
+  public String toString() {
+    return "User{" + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\''
+        + ", email=" + email + ", phoneNumber=" + phoneNumber + ", password=" + password + ", role="
+        + role + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+
+    User user = (User) o;
+
+    return (email.equals(user.email));
+  }
 
 }

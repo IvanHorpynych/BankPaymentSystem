@@ -22,30 +22,28 @@ import java.util.List;
  */
 public class PostAnnualRateCommand implements ICommand {
 
-    private final RateService rateService = ServiceFactory.getRateService();
+  private final RateService rateService = ServiceFactory.getRateService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-        List<String> errors = new ArrayList<>();
+    List<String> errors = new ArrayList<>();
 
-        Util.validateField(new RateValidator(),
-                request.getParameter(Attributes.ANNUAL_RATE), errors);
+    Util.validateField(new RateValidator(), request.getParameter(Attributes.ANNUAL_RATE), errors);
 
-        if(errors.isEmpty()){
-            float annualRate = Float.valueOf(
-                    request.getParameter(Attributes.ANNUAL_RATE));
+    if (errors.isEmpty()) {
+      float annualRate = Float.valueOf(request.getParameter(Attributes.ANNUAL_RATE));
 
-            Rate rate = new Rate(annualRate, new Date());
+      Rate rate = new Rate(annualRate, new Date());
 
-            rateService.updateAnnualRate(rate);
-        }
-
-        request.setAttribute(Attributes.ERRORS,errors);
-        request.setAttribute(Attributes.VALID_RATE,rateService.findValidAnnualRate().get());
-
-        return Views.RATE_VIEW;
+      rateService.updateAnnualRate(rate);
     }
+
+    request.setAttribute(Attributes.ERRORS, errors);
+    request.setAttribute(Attributes.VALID_RATE, rateService.findValidAnnualRate().get());
+
+    return Views.RATE_VIEW;
+  }
 
 }

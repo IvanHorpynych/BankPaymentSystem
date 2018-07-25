@@ -20,20 +20,21 @@ import java.util.List;
  * Created by JohnUkraine on 27/5/2018.
  */
 public class GetNewPaymentCommand implements ICommand {
-    private final CardService cardService = ServiceFactory.getCardService();
+  private final CardService cardService = ServiceFactory.getCardService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = getUserFromSession(request.getSession());
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    User user = getUserFromSession(request.getSession());
 
-        List<Card> cards = cardService.findAllByUser(user);
+    List<Card> cards = cardService.findAllByUser(user);
 
-        request.setAttribute(Attributes.CARDS, cards);
+    request.setAttribute(Attributes.CARDS, cards);
 
-        return Views.NEW_PAYMENT_VIEW;
-    }
+    return Views.NEW_PAYMENT_VIEW;
+  }
 
-    private User getUserFromSession(HttpSession session) {
-        return (User) session.getAttribute(Attributes.USER);
-    }
+  private User getUserFromSession(HttpSession session) {
+    return (User) session.getAttribute(Attributes.USER);
+  }
 }

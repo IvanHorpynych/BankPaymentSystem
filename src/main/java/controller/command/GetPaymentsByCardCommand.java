@@ -17,21 +17,21 @@ import java.util.List;
  * Created by JohnUkraine on 26/5/2018.
  */
 public class GetPaymentsByCardCommand implements ICommand {
-    private final PaymentService paymentService = ServiceFactory.getPaymentService();
+  private final PaymentService paymentService = ServiceFactory.getPaymentService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        Long cardNumber = getCardFromRequest(request);
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    Long cardNumber = getCardFromRequest(request);
 
-        List<Payment> payments = paymentService.findAllByCard(cardNumber);
+    List<Payment> payments = paymentService.findAllByCard(cardNumber);
 
-        request.setAttribute(Attributes.PAYMENTS, payments);
+    request.setAttribute(Attributes.PAYMENTS, payments);
 
-        return Views.PAYMENTS_VIEW;
-    }
+    return Views.PAYMENTS_VIEW;
+  }
 
-    private Long getCardFromRequest(HttpServletRequest request) {
-        return Long.valueOf(request.getParameter(Attributes.CARD_NUMBER));
-    }
+  private Long getCardFromRequest(HttpServletRequest request) {
+    return Long.valueOf(request.getParameter(Attributes.CARD_NUMBER));
+  }
 }

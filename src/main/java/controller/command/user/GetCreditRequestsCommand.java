@@ -19,20 +19,22 @@ import java.util.List;
  * Created by JohnUkraine on 27/5/2018.
  */
 public class GetCreditRequestsCommand implements ICommand {
-    private final CreditRequestService creditRequestService = ServiceFactory.getCreditRequestService();
+  private final CreditRequestService creditRequestService =
+      ServiceFactory.getCreditRequestService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = getUserFromSession(request.getSession());
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    User user = getUserFromSession(request.getSession());
 
-        List<CreditRequest> creditRequests = creditRequestService.findAllByUser(user);
+    List<CreditRequest> creditRequests = creditRequestService.findAllByUser(user);
 
-        request.setAttribute(Attributes.CREDIT_REQUESTS, creditRequests);
+    request.setAttribute(Attributes.CREDIT_REQUESTS, creditRequests);
 
-        return Views.CREDIT_REQUEST_VIEW;
-    }
+    return Views.CREDIT_REQUEST_VIEW;
+  }
 
-    private User getUserFromSession(HttpSession session) {
-        return (User) session.getAttribute(Attributes.USER);
-    }
+  private User getUserFromSession(HttpSession session) {
+    return (User) session.getAttribute(Attributes.USER);
+  }
 }

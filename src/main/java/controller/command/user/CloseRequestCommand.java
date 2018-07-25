@@ -25,73 +25,72 @@ import java.util.ResourceBundle;
  */
 
 public class CloseRequestCommand implements ICommand {
-    private final static String REQUEST_CLOSED = "request.successfully.closed";
-    private final static String NO_SUCH_REQUEST = "request.not.exist";
-    private final static String CLOSED_REQUEST = "request.cant.closed";
+  private final static String REQUEST_CLOSED = "request.successfully.closed";
+  private final static String NO_SUCH_REQUEST = "request.not.exist";
+  private final static String CLOSED_REQUEST = "request.cant.closed";
 
-    private static final ResourceBundle bundle = ResourceBundle.
-            getBundle(Views.PAGES_BUNDLE);
+  private static final ResourceBundle bundle = ResourceBundle.getBundle(Views.PAGES_BUNDLE);
 
-    private final CreditRequestService creditRequestService = ServiceFactory.getCreditRequestService();
+  private final CreditRequestService creditRequestService =
+      ServiceFactory.getCreditRequestService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<String> errors = new ArrayList<>();
-        validateRequest(request,errors);
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    List<String> errors = new ArrayList<>();
+    validateRequest(request, errors);
 
-        if(errors.isEmpty()) {
-            CreditRequest creditRequest = getCreditRequestFromRequest(request).get();
+    if (errors.isEmpty()) {
+      CreditRequest creditRequest = getCreditRequestFromRequest(request).get();
 
-            creditRequestService.updateRequestStatus(creditRequest,
-                    Status.StatusIdentifier.CLOSED_STATUS.getId());
+      creditRequestService.updateRequestStatus(creditRequest,
+          Status.StatusIdentifier.CLOSED_STATUS.getId());
 
-            addMessageToSession(request);
+      addMessageToSession(request);
 
-            Util.redirectTo(request, response,
-                    bundle.getString("user.info"));
+      Util.redirectTo(request, response, bundle.getString("user.info"));
 
-            return REDIRECTED;
-        }
-
-        request.setAttribute(Attributes.ERRORS,errors);
-
-        return Views.INFO_VIEW;
+      return REDIRECTED;
     }
 
-    private void validateRequest(HttpServletRequest request, List<String> errors){
-        Util.validateField(new AccountNumberValidator(),
-                request.getParameter(Attributes.CREDIT_REQUEST), errors);
+    request.setAttribute(Attributes.ERRORS, errors);
 
-        Optional<CreditRequest> requestOpt = getCreditRequestFromRequest(request);
-        if(!requestOpt.isPresent()) {
-            errors.add(NO_SUCH_REQUEST);
-        return;
-        }
+    return Views.INFO_VIEW;
+  }
 
-        CreditRequest creditRequest = requestOpt.get();
+  private void validateRequest(HttpServletRequest request, List<String> errors) {
+    Util.validateField(new AccountNumberValidator(),
+        request.getParameter(Attributes.CREDIT_REQUEST), errors);
 
-        if(!creditRequest.isPending()){
-            errors.add(REQUEST_CLOSED);
-            return;
-        }
+    Optional<CreditRequest> requestOpt = getCreditRequestFromRequest(request);
+    if (!requestOpt.isPresent()) {
+      errors.add(NO_SUCH_REQUEST);
+      return;
     }
 
-    private Optional<CreditRequest> getCreditRequestFromRequest(HttpServletRequest request) {
-        long requestNumber = Long.valueOf(request.getParameter(Attributes.CREDIT_REQUEST));
-        return creditRequestService.findCreditRequestByNumber(requestNumber);
-    }
+    CreditRequest creditRequest = requestOpt.get();
 
-    private void closeAccount(CreditRequest request) {
-
-        ;
+    if (!creditRequest.isPending()) {
+      errors.add(REQUEST_CLOSED);
+      return;
     }
+  }
 
-    private void addMessageToSession(HttpServletRequest request) {
-        List<String> messages = new ArrayList<>();
-        messages.add(REQUEST_CLOSED);
-        request.getSession().setAttribute(Attributes.MESSAGES, messages);
-    }
+  private Optional<CreditRequest> getCreditRequestFromRequest(HttpServletRequest request) {
+    long requestNumber = Long.valueOf(request.getParameter(Attributes.CREDIT_REQUEST));
+    return creditRequestService.findCreditRequestByNumber(requestNumber);
+  }
+
+  private void closeAccount(CreditRequest request) {
+
+    ;
+  }
+
+  private void addMessageToSession(HttpServletRequest request) {
+    List<String> messages = new ArrayList<>();
+    messages.add(REQUEST_CLOSED);
+    request.getSession().setAttribute(Attributes.MESSAGES, messages);
+  }
 
 }
 

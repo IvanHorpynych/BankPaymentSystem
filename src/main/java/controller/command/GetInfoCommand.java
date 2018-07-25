@@ -13,13 +13,13 @@ import java.io.IOException;
  * Created by JohnUkraine on 5/28/2018.
  */
 public class GetInfoCommand implements ICommand {
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-        request.getAttribute(Attributes.MESSAGES);
-        request.getAttribute(Attributes.ERRORS);
+    request.getAttribute(Attributes.MESSAGES);
+    request.getAttribute(Attributes.ERRORS);
 
-        return Views.INFO_VIEW;
-    }
+    return Views.INFO_VIEW;
+  }
 }

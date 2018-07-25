@@ -18,17 +18,17 @@ import java.util.List;
  */
 public class GetUsersCommand implements ICommand {
 
-    private final UserService userService = ServiceFactory.getUserService();
+  private final UserService userService = ServiceFactory.getUserService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-        List<User> users = userService.findAllUsers();
+    List<User> users = userService.findAllUsers();
 
-        request.setAttribute(Attributes.USERS, users);
+    request.setAttribute(Attributes.USERS, users);
 
-        return Views.USERS_VIEW;
-    }
+    return Views.USERS_VIEW;
+  }
 
 }

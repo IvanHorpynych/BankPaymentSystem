@@ -17,16 +17,17 @@ import java.io.IOException;
  */
 public class GetAnnualRateCommand implements ICommand {
 
-    private final RateService rateService = ServiceFactory.getRateService();
+  private final RateService rateService = ServiceFactory.getRateService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-        Rate rate = rateService.findValidAnnualRate().get();
+    Rate rate = rateService.findValidAnnualRate().get();
 
-        request.setAttribute(Attributes.VALID_RATE,rate);
+    request.setAttribute(Attributes.VALID_RATE, rate);
 
-        return Views.RATE_VIEW;
-    }
+    return Views.RATE_VIEW;
+  }
 
 }

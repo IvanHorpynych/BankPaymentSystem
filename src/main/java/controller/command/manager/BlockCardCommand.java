@@ -25,69 +25,66 @@ import java.util.ResourceBundle;
  */
 
 public class BlockCardCommand implements ICommand {
-    private final static String CARD_BLOCKED = "card.successfully.blocked";
-    private final static String BLOCKED_CARD_EXSIST = "card.already.blocked";
-    private final static String NO_SHUCH_CARD = "card.not.exist";
+  private final static String CARD_BLOCKED = "card.successfully.blocked";
+  private final static String BLOCKED_CARD_EXSIST = "card.already.blocked";
+  private final static String NO_SHUCH_CARD = "card.not.exist";
 
-    private static final ResourceBundle bundle = ResourceBundle.
-            getBundle(Views.PAGES_BUNDLE);
+  private static final ResourceBundle bundle = ResourceBundle.getBundle(Views.PAGES_BUNDLE);
 
-    private final CardService cardService = ServiceFactory.getCardService();
+  private final CardService cardService = ServiceFactory.getCardService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<String> errors = new ArrayList<>();
-        validateCard(request,errors);
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    List<String> errors = new ArrayList<>();
+    validateCard(request, errors);
 
-        if(errors.isEmpty()) {
-            blockCard(getCardFromRequest(request).get());
+    if (errors.isEmpty()) {
+      blockCard(getCardFromRequest(request).get());
 
-            addMessageToSession(request);
+      addMessageToSession(request);
 
-            Util.redirectTo(request, response,
-                    bundle.getString("user.info"));
+      Util.redirectTo(request, response, bundle.getString("user.info"));
 
-            return REDIRECTED;
-        }
-
-        request.setAttribute(Attributes.ERRORS,errors);
-
-        return Views.INFO_VIEW;
+      return REDIRECTED;
     }
 
-    private void validateCard(HttpServletRequest request, List<String> errors){
-        Util.validateField(new CardNumberValidator(),
-                request.getParameter(Attributes.CARD), errors);
+    request.setAttribute(Attributes.ERRORS, errors);
 
-        Optional<Card> cardOpt = getCardFromRequest(request);
-        if(!cardOpt.isPresent()) {
-            errors.add(NO_SHUCH_CARD);
-        return;
-        }
+    return Views.INFO_VIEW;
+  }
 
-        Card card = cardOpt.get();
+  private void validateCard(HttpServletRequest request, List<String> errors) {
+    Util.validateField(new CardNumberValidator(), request.getParameter(Attributes.CARD), errors);
 
-        if(card.isBlocked())
-            errors.add(BLOCKED_CARD_EXSIST);
-
+    Optional<Card> cardOpt = getCardFromRequest(request);
+    if (!cardOpt.isPresent()) {
+      errors.add(NO_SHUCH_CARD);
+      return;
     }
 
-    private Optional<Card> getCardFromRequest(HttpServletRequest request) {
-        long cardNumber = Long.valueOf(request.getParameter(Attributes.CARD));
-        return cardService.findCardByNumber(cardNumber);
-    }
+    Card card = cardOpt.get();
 
-    private void blockCard(Card card) {
+    if (card.isBlocked())
+      errors.add(BLOCKED_CARD_EXSIST);
 
-        cardService.updateCardStatus(card, Status.StatusIdentifier.BLOCKED_STATUS.getId());
-    }
+  }
 
-    private void addMessageToSession(HttpServletRequest request) {
-        List<String> messages = new ArrayList<>();
-        messages.add(CARD_BLOCKED);
-        request.getSession().setAttribute(Attributes.MESSAGES, messages);
-    }
+  private Optional<Card> getCardFromRequest(HttpServletRequest request) {
+    long cardNumber = Long.valueOf(request.getParameter(Attributes.CARD));
+    return cardService.findCardByNumber(cardNumber);
+  }
+
+  private void blockCard(Card card) {
+
+    cardService.updateCardStatus(card, Status.StatusIdentifier.BLOCKED_STATUS.getId());
+  }
+
+  private void addMessageToSession(HttpServletRequest request) {
+    List<String> messages = new ArrayList<>();
+    messages.add(CARD_BLOCKED);
+    request.getSession().setAttribute(Attributes.MESSAGES, messages);
+  }
 
 }
 

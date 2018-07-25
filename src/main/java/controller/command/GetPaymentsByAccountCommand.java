@@ -20,22 +20,22 @@ import java.util.List;
  * Created by JohnUkraine on 25/5/2018.
  */
 public class GetPaymentsByAccountCommand implements ICommand {
-    private final PaymentService paymentService = ServiceFactory.getPaymentService();
+  private final PaymentService paymentService = ServiceFactory.getPaymentService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        Long accountNumber = getAccountFromRequest(request);
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    Long accountNumber = getAccountFromRequest(request);
 
-        List<Payment> payments = paymentService.findAllByAccount(accountNumber);
+    List<Payment> payments = paymentService.findAllByAccount(accountNumber);
 
-        request.setAttribute(Attributes.PAYMENTS, payments);
-        request.setAttribute(Attributes.DESIRED_ACCOUNT, accountNumber);
+    request.setAttribute(Attributes.PAYMENTS, payments);
+    request.setAttribute(Attributes.DESIRED_ACCOUNT, accountNumber);
 
-        return Views.PAYMENTS_VIEW;
-    }
+    return Views.PAYMENTS_VIEW;
+  }
 
-    private Long getAccountFromRequest(HttpServletRequest request) {
-        return Long.valueOf(request.getParameter(Attributes.ACCOUNT));
-    }
+  private Long getAccountFromRequest(HttpServletRequest request) {
+    return Long.valueOf(request.getParameter(Attributes.ACCOUNT));
+  }
 }

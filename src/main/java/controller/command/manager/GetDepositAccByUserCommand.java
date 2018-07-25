@@ -19,31 +19,30 @@ import java.util.List;
  * Created by JohnUkraine on 25/5/2018.
  */
 public class GetDepositAccByUserCommand extends ManagerHelper implements ICommand {
-    private final DepositAccountService accountService = ServiceFactory.getDepositAccountService();
+  private final DepositAccountService accountService = ServiceFactory.getDepositAccountService();
 
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<String> errors = new ArrayList<>();
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    List<String> errors = new ArrayList<>();
 
-        validateUser(request,errors);
+    validateUser(request, errors);
 
-        if (errors.isEmpty()) {
-            User user = userService.findById(
-                    Long.valueOf(request.getParameter(Attributes.USER))).get();
+    if (errors.isEmpty()) {
+      User user = userService.findById(Long.valueOf(request.getParameter(Attributes.USER))).get();
 
-            List<DepositAccount> depositAccounts = accountService.findAllByUser(user);
+      List<DepositAccount> depositAccounts = accountService.findAllByUser(user);
 
-            request.setAttribute(Attributes.DEPOSIT_ACCOUNTS, depositAccounts);
+      request.setAttribute(Attributes.DEPOSIT_ACCOUNTS, depositAccounts);
 
-            return Views.DEPOSIT_ACCOUNTS_VIEW;
-        }
-
-        request.setAttribute(Attributes.ERRORS,errors);
-
-        return Views.INFO_VIEW;
+      return Views.DEPOSIT_ACCOUNTS_VIEW;
     }
+
+    request.setAttribute(Attributes.ERRORS, errors);
+
+    return Views.INFO_VIEW;
+  }
 
 
 }

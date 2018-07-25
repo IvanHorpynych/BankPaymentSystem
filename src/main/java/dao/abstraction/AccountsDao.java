@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-public interface AccountsDao extends GenericAccountDao<Account>{
+public interface AccountsDao extends GenericAccountDao<Account> {
 
-    Optional<Account> findOneByType(int typeId);
+  Optional<Account> findOneByType(int typeId);
 
 }

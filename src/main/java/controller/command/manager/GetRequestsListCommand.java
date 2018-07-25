@@ -17,18 +17,19 @@ import java.util.List;
  * Created by JohnUkraine on 27/5/2018.
  */
 public class GetRequestsListCommand implements ICommand {
-    private final CreditRequestService creditRequestService = ServiceFactory.getCreditRequestService();
+  private final CreditRequestService creditRequestService =
+      ServiceFactory.getCreditRequestService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
 
-        List<CreditRequest> creditRequests = creditRequestService.
-                findAllPendingRequests();
+    List<CreditRequest> creditRequests = creditRequestService.findAllPendingRequests();
 
-        request.setAttribute(Attributes.CREDIT_REQUESTS, creditRequests);
+    request.setAttribute(Attributes.CREDIT_REQUESTS, creditRequests);
 
-        return Views.CREDIT_REQUEST_LIST_VIEW;
-    }
+    return Views.CREDIT_REQUEST_LIST_VIEW;
+  }
 
 }

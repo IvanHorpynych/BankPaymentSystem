@@ -20,28 +20,27 @@ import java.util.List;
  */
 public class GetCardsByUserCommand extends ManagerHelper implements ICommand {
 
-    private final CardService cardService = ServiceFactory.getCardService();
+  private final CardService cardService = ServiceFactory.getCardService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<String> errors = new ArrayList<>();
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    List<String> errors = new ArrayList<>();
 
-        validateUser(request,errors);
+    validateUser(request, errors);
 
-        if (errors.isEmpty()) {
-            User user = userService.findById(
-                    Long.valueOf(request.getParameter(Attributes.USER))).get();
+    if (errors.isEmpty()) {
+      User user = userService.findById(Long.valueOf(request.getParameter(Attributes.USER))).get();
 
-            List<Card> cards = cardService.findAllByUser(user);
+      List<Card> cards = cardService.findAllByUser(user);
 
-            request.setAttribute(Attributes.CARDS, cards);
+      request.setAttribute(Attributes.CARDS, cards);
 
-            return Views.CARDS_VIEW;
-        }
-
-        request.setAttribute(Attributes.ERRORS,errors);
-
-        return Views.INFO_VIEW;
+      return Views.CARDS_VIEW;
     }
+
+    request.setAttribute(Attributes.ERRORS, errors);
+
+    return Views.INFO_VIEW;
+  }
 }

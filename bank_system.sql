@@ -21,7 +21,7 @@ create table ROLE
 create table USER
 (
   ID           bigint unsigned  not null AUTO_INCREMENT,
-  ROLE_ID      tinyint unsigned not null,
+  ROLE_ID      int unsigned not null,
   FIRST_NAME   VARCHAR(100)     not null,
   LAST_NAME    VARCHAR(150)     not null,
   EMAIL        VARCHAR(200),
@@ -29,8 +29,8 @@ create table USER
   PASSWORD     VARCHAR(255)     not null,
   primary key (ID),
   constraint FK_ROLE_ID foreign key (ROLE_ID) references ROLE (ID)
-  on delete restrict
-  on update restrict
+    on delete restrict
+    on update restrict
 );
 
 
@@ -75,19 +75,19 @@ create table ACCOUNT
 (
   ID        bigint unsigned  not null AUTO_INCREMENT,
   USER_ID   bigint unsigned  not null,
-  TYPE_ID   tinyint unsigned not null,
+  TYPE_ID   int unsigned not null,
   BALANCE   DECIMAL(13, 4)   not null default 0,
-  STATUS_ID tinyint unsigned not null,
+  STATUS_ID int unsigned not null,
   primary key (ID),
   constraint ACCOUNT_FK_STATUS_ID foreign key (STATUS_ID) references STATUS (ID)
-  on delete restrict
+    on delete restrict
   on update cascade,
   constraint FK_USER_ID foreign key (USER_ID) references USER (ID)
-  on delete restrict
-  on update restrict,
+    on delete restrict
+    on update restrict,
   constraint FK_TYPE_ID foreign key (TYPE_ID) references ACCOUNT_TYPE (ID)
-  on delete restrict
-  on update restrict
+    on delete restrict
+    on update restrict
 );
 
 
@@ -103,8 +103,8 @@ create table CREDIT_ACCOUNT_DETAILS
   VALIDITY_DATE    timestamp       not null,
   primary key (ID),
   constraint CAD_FK_ACCOUNT_ID foreign key (ID) references ACCOUNT (ID)
-  on delete restrict
-  on update restrict
+    on delete restrict
+    on update restrict
 );
 
 /*==============================================================*/
@@ -118,8 +118,8 @@ create table DEPOSIT_ACCOUNT_DETAILS
   ANNUAL_RATE    real            not null,
   primary key (ID),
   constraint DPAD_FK_ACCOUNT_ID foreign key (ID) references ACCOUNT (ID)
-  on delete restrict
-  on update restrict
+    on delete restrict
+    on update restrict
 );
 
 
@@ -134,13 +134,13 @@ create table CARD
   CVV         SMALLINT(3) unsigned not null,
   EXPIRE_DATE timestamp            not null,
   TYPE        VARCHAR(20)          not null,
-  STATUS_ID   tinyint unsigned     not null,
+  STATUS_ID   int unsigned     not null,
   primary key (CARD_NUMBER),
   constraint CARD_FK_ACCOUNT_ID foreign key (ACCOUNT_ID) references ACCOUNT (ID)
-  on delete restrict
-  on update restrict,
+    on delete restrict
+    on update restrict,
   constraint CARD_FK_STATUS_ID foreign key (STATUS_ID) references STATUS (ID)
-  on delete restrict
+    on delete restrict
   on update cascade
 );
 ALTER TABLE CARD
@@ -156,14 +156,14 @@ create table CREDIT_REQUEST
   INTEREST_RATE real             not null,
   VALIDITY_DATE timestamp        not null,
   CREDIT_LIMIT  DECIMAL(13, 4)   not null,
-  STATUS_ID     tinyint unsigned not null,
+  STATUS_ID     int unsigned not null,
   primary key (ID),
   constraint CR_FK_STATUS_ID foreign key (STATUS_ID) references STATUS (ID)
-  on delete restrict
+    on delete restrict
   on update cascade,
   constraint CR_FK_USER_ID foreign key (USER_ID) references USER (ID)
-  on delete restrict
-  on update restrict
+    on delete restrict
+    on update restrict
 );
 
 /*==============================================================*/
@@ -179,13 +179,10 @@ create table PAYMENT
   OPERATION_DATE   timestamp       not null,
   primary key (ID),
   constraint FK_ACCOUNT_ID_FROM foreign key (ACCOUNT_FROM) references ACCOUNT (ID)
-  on delete restrict
-  on update restrict,
+    on delete restrict
+    on update restrict,
   constraint FK_ACCOUNT_ID_TO foreign key (ACCOUNT_TO) references ACCOUNT (ID)
-  on delete restrict
-  on update restrict,
-  constraint FK_CARD_FROM foreign key (CARD_NUMBER_FROM) references CARD (CARD_NUMBER)
-  on delete restrict
+    on delete restrict
     on update restrict
 );
 
@@ -253,27 +250,27 @@ CREATE view payment_details AS
     acc2_dpad.min_balance     AS acc2_deposit_min_balance
   FROM payment
     JOIN account AS acc1_account ON account_from = acc1_account.id
-JOIN user AS acc1_user ON acc1_account.user_id = acc1_user.id
-JOIN role AS acc1_role ON acc1_user.role_id = acc1_role.id
-JOIN account_type AS acc1_type ON acc1_account.type_id = acc1_type.id
-LEFT JOIN credit_account_details AS acc1_cad
-ON acc1_account.id = acc1_cad.id
-LEFT JOIN deposit_account_details AS acc1_dpad
-ON acc1_account.id = acc1_dpad.id
-LEFT JOIN status AS acc1_status
-ON acc1_account.status_id = acc1_status.id
+    JOIN user AS acc1_user ON acc1_account.user_id = acc1_user.id
+    JOIN role AS acc1_role ON acc1_user.role_id = acc1_role.id
+    JOIN account_type AS acc1_type ON acc1_account.type_id = acc1_type.id
+    LEFT JOIN credit_account_details AS acc1_cad
+      ON acc1_account.id = acc1_cad.id
+    LEFT JOIN deposit_account_details AS acc1_dpad
+      ON acc1_account.id = acc1_dpad.id
+    LEFT JOIN status AS acc1_status
+      ON acc1_account.status_id = acc1_status.id
 
-JOIN account AS acc2_account ON account_to = acc2_account.id
-JOIN user AS acc2_user ON acc2_account.user_id = acc2_user.id
-JOIN role AS acc2_role ON acc2_user.role_id = acc2_role.id
-JOIN account_type AS acc2_type ON acc2_account.type_id = acc2_type.id
-LEFT JOIN credit_account_details AS acc2_cad
-ON acc2_account.id = acc2_cad.id
-LEFT JOIN deposit_account_details AS acc2_dpad
-ON acc2_account.id = acc2_dpad.id
-LEFT JOIN status AS acc2_status
-ON acc2_account.status_id = acc2_status.id
-ORDER BY payment.id DESC;
+    JOIN account AS acc2_account ON account_to = acc2_account.id
+    JOIN user AS acc2_user ON acc2_account.user_id = acc2_user.id
+    JOIN role AS acc2_role ON acc2_user.role_id = acc2_role.id
+    JOIN account_type AS acc2_type ON acc2_account.type_id = acc2_type.id
+    LEFT JOIN credit_account_details AS acc2_cad
+      ON acc2_account.id = acc2_cad.id
+    LEFT JOIN deposit_account_details AS acc2_dpad
+      ON acc2_account.id = acc2_dpad.id
+    LEFT JOIN status AS acc2_status
+      ON acc2_account.status_id = acc2_status.id
+  ORDER BY payment.id DESC;
 
 /*==============================================================*/
 
@@ -306,13 +303,13 @@ CREATE VIEW card_details AS
     JOIN user ON account.user_id = user.id
     JOIN role ON user.role_id = role.id
     JOIN account_type AS type ON account.type_id = type.id
-JOIN status
-ON account.status_id = status.id
-JOIN status AS card_status
-ON card.status_id = card_status.id
-where type.id = (select id
-from account_type
-where name like 'DEBIT');
+    JOIN status
+      ON account.status_id = status.id
+    JOIN status AS card_status
+      ON card.status_id = card_status.id
+  where type.id = (select id
+                   from account_type
+                   where name like 'DEBIT');
 
 /*==============================================================*/
 
@@ -340,11 +337,11 @@ CREATE VIEW credit_details AS
     JOIN user ON user_id = user.id
     JOIN role ON role_id = role.id
     JOIN account_type AS type ON type_id = type.id
-LEFT JOIN credit_account_details AS cad ON account.id = cad.id
-LEFT JOIN status ON account.status_id = status.id
-WHERE type_id = (select id
-from account_type
-where name like 'CREDIT');
+    LEFT JOIN credit_account_details AS cad ON account.id = cad.id
+    LEFT JOIN status ON account.status_id = status.id
+  WHERE type_id = (select id
+                   from account_type
+                   where name like 'CREDIT');
 
 /*==============================================================*/
 
@@ -371,11 +368,11 @@ CREATE VIEW deposit_details AS
     JOIN user ON user_id = user.id
     JOIN role ON role_id = role.id
     JOIN account_type AS type ON type_id = type.id
-JOIN deposit_account_details AS dpad ON account.id = dpad.id
-JOIN status ON account.status_id = status.id
-WHERE type_id = (select id
-from account_type
-where name like 'DEPOSIT');
+    JOIN deposit_account_details AS dpad ON account.id = dpad.id
+    JOIN status ON account.status_id = status.id
+  WHERE type_id = (select id
+                   from account_type
+                   where name like 'DEPOSIT');
 
 /*==============================================================*/
 
@@ -399,10 +396,10 @@ CREATE VIEW debit_details AS
     JOIN user ON user_id = user.id
     JOIN role ON role_id = role.id
     JOIN account_type AS type ON type_id = type.id
-JOIN status ON account.status_id = status.id
-WHERE type_id = (select id
-from account_type
-where name like 'DEBIT');
+    JOIN status ON account.status_id = status.id
+  WHERE type_id = (select id
+                   from account_type
+                   where name like 'DEBIT');
 
 /*==============================================================*/
 
@@ -426,7 +423,7 @@ CREATE VIEW account_details AS
     JOIN user ON user_id = user.id
     JOIN role ON role_id = role.id
     JOIN account_type AS type ON type_id = type.id
-JOIN status ON account.status_id = status.id;
+    JOIN status ON account.status_id = status.id;
 
 /*==============================================================*/
 
@@ -459,10 +456,10 @@ insert into ROLE (ID, NAME) VALUES (1, 'ADMINISTRATOR'), (2, 'MANAGER'), (10, 'U
 insert into USER (ROLE_ID, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER, PASSWORD) values
   (1, 'Admin', 'account', 'noreply@email.com', '-',
    '65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5'),
-(2, 'Ivan', 'Horpynych-Raduzhenko', 'test@email.com', '+806612345678',
-'65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5'),
-(10, 'John', 'Tester', 'test@test.com', '+123456789123',
-'65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5');
+  (2, 'Ivan', 'Horpynych-Raduzhenko', 'test@email.com', '+806612345678',
+   '65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5'),
+  (10, 'John', 'Tester', 'test@test.com', '+123456789123',
+   '65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5');
 
 insert into ACCOUNT_TYPE (ID, NAME) values (4, 'CREDIT'), (8, 'DEPOSIT'), (16, 'DEBIT'), (32, 'ATM');
 

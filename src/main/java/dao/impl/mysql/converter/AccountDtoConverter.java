@@ -9,47 +9,38 @@ import java.sql.SQLException;
 /**
  * Created by JohnUkraine on 5/07/2018.
  */
-public class AccountDtoConverter implements DtoConverter<Account>{
-    private final static String ACCOUNT_NUMBER_FIELD = "id";
-    private final static String BALANCE_FIELD = "balance";
+public class AccountDtoConverter implements DtoConverter<Account> {
+  private final static String ACCOUNT_NUMBER_FIELD = "id";
+  private final static String BALANCE_FIELD = "balance";
 
-    private final DtoConverter<User> userConverter;
-    private final DtoConverter<AccountType> accountTypeConverter;
-    private final DtoConverter<Status> statusConverter;
-    private String accountOrder;
-    public AccountDtoConverter() {
-        this(new UserDtoConverter(), new AccountTypeDtoConverter(),
-                new StatusDtoConverter());
-    }
+  private final DtoConverter<User> userConverter;
+  private final DtoConverter<AccountType> accountTypeConverter;
+  private final DtoConverter<Status> statusConverter;
+  private String accountOrder;
 
-    public AccountDtoConverter(DtoConverter<User> userConverter,
-                               DtoConverter<AccountType> accountTypeConverter,
-                               DtoConverter<Status> statusConverter) {
-        this.userConverter = userConverter;
-        this.accountTypeConverter = accountTypeConverter;
-        this.statusConverter = statusConverter;
-    }
+  public AccountDtoConverter() {
+    this(new UserDtoConverter(), new AccountTypeDtoConverter(), new StatusDtoConverter());
+  }
 
-    @Override
-    public Account convertToObject(ResultSet resultSet, String tablePrefix)
-            throws SQLException {
+  public AccountDtoConverter(DtoConverter<User> userConverter,
+      DtoConverter<AccountType> accountTypeConverter, DtoConverter<Status> statusConverter) {
+    this.userConverter = userConverter;
+    this.accountTypeConverter = accountTypeConverter;
+    this.statusConverter = statusConverter;
+  }
 
-        accountOrder = accountOrderIdentifier(tablePrefix);
+  @Override
+  public Account convertToObject(ResultSet resultSet, String tablePrefix) throws SQLException {
 
-        User accountHolder = userConverter.convertToObject(resultSet,
-                accountOrder);
-        AccountType accountType = accountTypeConverter.convertToObject(resultSet,
-                accountOrder);
-        Status status = statusConverter.convertToObject(resultSet,
-                accountOrder);
+    accountOrder = accountOrderIdentifier(tablePrefix);
 
-        return Account.newBuilder().
-                addAccountNumber(resultSet.
-                        getLong(tablePrefix+ACCOUNT_NUMBER_FIELD)).
-                addAccountHolder(accountHolder).
-                addAccountType(accountType).
-                addBalance(resultSet.getBigDecimal(tablePrefix+BALANCE_FIELD)).
-                addStatus(status).
-                build();
-    }
+    User accountHolder = userConverter.convertToObject(resultSet, accountOrder);
+    AccountType accountType = accountTypeConverter.convertToObject(resultSet, accountOrder);
+    Status status = statusConverter.convertToObject(resultSet, accountOrder);
+
+    return Account.newBuilder()
+        .addAccountNumber(resultSet.getLong(tablePrefix + ACCOUNT_NUMBER_FIELD))
+        .addAccountHolder(accountHolder).addAccountType(accountType)
+        .addBalance(resultSet.getBigDecimal(tablePrefix + BALANCE_FIELD)).addStatus(status).build();
+  }
 }

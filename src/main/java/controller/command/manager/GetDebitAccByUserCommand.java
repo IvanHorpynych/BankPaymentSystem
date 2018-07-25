@@ -18,29 +18,28 @@ import java.util.List;
  * Created by JohnUkraine on 25/5/2018.
  */
 public class GetDebitAccByUserCommand extends ManagerHelper implements ICommand {
-    private final DebitAccountService accountService = ServiceFactory.getDebitAccountService();
+  private final DebitAccountService accountService = ServiceFactory.getDebitAccountService();
 
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<String> errors = new ArrayList<>();
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    List<String> errors = new ArrayList<>();
 
-        validateUser(request,errors);
+    validateUser(request, errors);
 
-        if (errors.isEmpty()) {
-            User user = userService.findById(
-                    Long.valueOf(request.getParameter(Attributes.USER))).get();
+    if (errors.isEmpty()) {
+      User user = userService.findById(Long.valueOf(request.getParameter(Attributes.USER))).get();
 
-            List<Account> debitAccounts = accountService.findAllByUser(user);
+      List<Account> debitAccounts = accountService.findAllByUser(user);
 
-            request.setAttribute(Attributes.DEBIT_ACCOUNTS, debitAccounts);
+      request.setAttribute(Attributes.DEBIT_ACCOUNTS, debitAccounts);
 
-            return Views.DEBIT_ACCOUNTS_VIEW;
-        }
-
-        request.setAttribute(Attributes.ERRORS,errors);
-
-        return Views.INFO_VIEW;
+      return Views.DEBIT_ACCOUNTS_VIEW;
     }
+
+    request.setAttribute(Attributes.ERRORS, errors);
+
+    return Views.INFO_VIEW;
+  }
 }

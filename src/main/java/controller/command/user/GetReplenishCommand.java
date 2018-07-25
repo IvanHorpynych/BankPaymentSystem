@@ -27,74 +27,75 @@ import java.util.ResourceBundle;
  * Created by JohnUkraine on 26/5/2018.
  */
 public class GetReplenishCommand implements ICommand {
-    private final static String NO_SUCH_ACCOUNT = "account.not.exist";
-    private final static String ACCOUNT_STATUS_NOT_ACTIVE = "account.not.active";
+  private final static String NO_SUCH_ACCOUNT = "account.not.exist";
+  private final static String ACCOUNT_STATUS_NOT_ACTIVE = "account.not.active";
 
-    private final DebitAccountService debitAccountService = ServiceFactory.getDebitAccountService();
-    private final AccountsService accountsService = ServiceFactory.getAccountsService();
+  private final DebitAccountService debitAccountService = ServiceFactory.getDebitAccountService();
+  private final AccountsService accountsService = ServiceFactory.getAccountsService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-        List<String> errors = new ArrayList<>();
-        validateRequestData(request, errors);
-        validateAccount(request, errors);
+    List<String> errors = new ArrayList<>();
+    validateRequestData(request, errors);
+    validateAccount(request, errors);
 
-        if (errors.isEmpty()) {
-            User user = getUserFromSession(request.getSession());
-            Long refillableAccountNumber = getAccountFromRequest(request);
+    if (errors.isEmpty()) {
+      User user = getUserFromSession(request.getSession());
+      Long refillableAccountNumber = getAccountFromRequest(request);
 
-            Account refillableAccount = accountsService.findAccountByNumber(
-                    refillableAccountNumber).get();
-            List<Account> refillableAccounts = new ArrayList<>();
-            refillableAccounts.add(refillableAccount);
+      Account refillableAccount =
+          accountsService.findAccountByNumber(refillableAccountNumber).get();
+      List<Account> refillableAccounts = new ArrayList<>();
+      refillableAccounts.add(refillableAccount);
 
-            List<Account> senderAccounts = debitAccountService.findAllByUser(user);
-
-
-            request.setAttribute(Attributes.SENDER_ACCOUNTS, senderAccounts);
-            request.setAttribute(Attributes.REFILLABLE_ACCOUNTS, refillableAccounts);
+      List<Account> senderAccounts = debitAccountService.findAllByUser(user);
 
 
-            if(refillableAccount.getAccountType().getId()==
-                    AccountType.TypeIdentifier.CREDIT_TYPE.getId())
-                request.setAttribute(Attributes.COMMAND, Attributes.REPLENISH_CREDIT);
-            else if(refillableAccount.getAccountType().getId()==
-                    AccountType.TypeIdentifier.DEPOSIT_TYPE.getId())
-                request.setAttribute(Attributes.COMMAND, Attributes.REPLENISH_DEPOSIT);
+      request.setAttribute(Attributes.SENDER_ACCOUNTS, senderAccounts);
+      request.setAttribute(Attributes.REFILLABLE_ACCOUNTS, refillableAccounts);
 
 
-            return Views.REPLENISH_VIEW;
-        }
-        request.setAttribute(Attributes.ERRORS, errors);
+      if (refillableAccount.getAccountType().getId() == AccountType.TypeIdentifier.CREDIT_TYPE
+          .getId())
+        request.setAttribute(Attributes.COMMAND, Attributes.REPLENISH_CREDIT);
+      else if (refillableAccount.getAccountType().getId() == AccountType.TypeIdentifier.DEPOSIT_TYPE
+          .getId())
+        request.setAttribute(Attributes.COMMAND, Attributes.REPLENISH_DEPOSIT);
 
-        return Views.INFO_VIEW;
+
+      return Views.REPLENISH_VIEW;
+    }
+    request.setAttribute(Attributes.ERRORS, errors);
+
+    return Views.INFO_VIEW;
+  }
+
+  private void validateRequestData(HttpServletRequest request, List<String> errors) {
+    Util.validateField(new AccountNumberValidator(),
+        request.getParameter(Attributes.REFILLABLE_ACCOUNT), errors);
+  }
+
+  private void validateAccount(HttpServletRequest request, List<String> errors) {
+    Optional<Account> account = accountsService
+        .findAccountByNumber(Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT)));
+
+    if (!account.isPresent()) {
+      errors.add(NO_SUCH_ACCOUNT);
+      return;
     }
 
-    private void validateRequestData(HttpServletRequest request, List<String> errors) {
-        Util.validateField(new AccountNumberValidator(),
-                request.getParameter(Attributes.REFILLABLE_ACCOUNT), errors);
+    if (!account.get().isNotClosed()) {
+      errors.add(ACCOUNT_STATUS_NOT_ACTIVE);
     }
+  }
 
-    private void validateAccount(HttpServletRequest request, List<String> errors) {
-        Optional<Account> account = accountsService.findAccountByNumber(
-                Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT)));
+  private Long getAccountFromRequest(HttpServletRequest request) {
+    return Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT));
+  }
 
-        if (!account.isPresent()) {
-            errors.add(NO_SUCH_ACCOUNT);
-            return;
-        }
-
-        if (!account.get().isNotClosed()) {
-            errors.add(ACCOUNT_STATUS_NOT_ACTIVE);
-        }
-    }
-
-    private Long getAccountFromRequest(HttpServletRequest request) {
-        return Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT));
-    }
-
-    private User getUserFromSession(HttpSession session) {
-        return (User) session.getAttribute(Attributes.USER);
-    }
+  private User getUserFromSession(HttpSession session) {
+    return (User) session.getAttribute(Attributes.USER);
+  }
 }

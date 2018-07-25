@@ -26,36 +26,39 @@ import java.util.List;
  * Created by JohnUkraine on 28/5/2018.
  */
 public class GetNewCreditRequestCommand implements ICommand {
-    private final static String ACTIVE_CREDIT_OR_REQUEST = "active.credit.or.request";
+  private final static String ACTIVE_CREDIT_OR_REQUEST = "active.credit.or.request";
 
-    private final CreditRequestService creditRequestService = ServiceFactory.getCreditRequestService();
-    private final CreditAccountService creditAccountService = ServiceFactory.getCreditAccountService();
+  private final CreditRequestService creditRequestService =
+      ServiceFactory.getCreditRequestService();
+  private final CreditAccountService creditAccountService =
+      ServiceFactory.getCreditAccountService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = getUserFromSession(request.getSession());
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    User user = getUserFromSession(request.getSession());
 
-        List<CreditRequest> creditRequests = creditRequestService.findAllByUser(user);
-        List<CreditAccount> creditAccounts = creditAccountService.findAllByUser(user);
+    List<CreditRequest> creditRequests = creditRequestService.findAllByUser(user);
+    List<CreditAccount> creditAccounts = creditAccountService.findAllByUser(user);
 
 
-        if (creditRequests.stream().anyMatch(CreditRequest::isPending) ||
-                creditAccounts.stream().anyMatch(Account::isNotClosed)) {
+    if (creditRequests.stream().anyMatch(CreditRequest::isPending)
+        || creditAccounts.stream().anyMatch(Account::isNotClosed)) {
 
-            List<String> messages = new ArrayList<>();
-            messages.add(ACTIVE_CREDIT_OR_REQUEST);
+      List<String> messages = new ArrayList<>();
+      messages.add(ACTIVE_CREDIT_OR_REQUEST);
 
-            request.setAttribute(Attributes.MESSAGES, messages);
-            request.setAttribute(Attributes.CREDIT_REQUESTS,creditRequests);
-            return Views.CREDIT_REQUEST_VIEW;
-        }
-
-        request.setAttribute(Attributes.VALIDITY_DATE, new Date());
-
-        return Views.NEW_CREDIT_REQUEST_VIEW;
+      request.setAttribute(Attributes.MESSAGES, messages);
+      request.setAttribute(Attributes.CREDIT_REQUESTS, creditRequests);
+      return Views.CREDIT_REQUEST_VIEW;
     }
 
-    private User getUserFromSession(HttpSession session) {
-        return (User) session.getAttribute(Attributes.USER);
-    }
+    request.setAttribute(Attributes.VALIDITY_DATE, new Date());
+
+    return Views.NEW_CREDIT_REQUEST_VIEW;
+  }
+
+  private User getUserFromSession(HttpSession session) {
+    return (User) session.getAttribute(Attributes.USER);
+  }
 }

@@ -20,168 +20,157 @@ import java.util.*;
  * Created by JohnUkraine on 26/5/2018.
  */
 public class PostReplenishCreditCommand implements ICommand {
-    private final static String NO_SUCH_ACCOUNT = "account.not.exist";
-    private final static String TRANSACTION_COMPLETE = "replenish.complete";
-    private final static String NOT_ENOUGH_MONEY = "account.insufficient.funds";
-    private final static String CREDIT_POSITIVE_FUNDS = "credit.positive.funds";
-    private final static String ZERO_CREDIT_FUNDS = "zero.credit.funds";
-    private final static String ZERO_AMOUNT = "zero.amount";
-    private final static String NEGATIVE_AMOUNT = "negative.amount";
+  private final static String NO_SUCH_ACCOUNT = "account.not.exist";
+  private final static String TRANSACTION_COMPLETE = "replenish.complete";
+  private final static String NOT_ENOUGH_MONEY = "account.insufficient.funds";
+  private final static String CREDIT_POSITIVE_FUNDS = "credit.positive.funds";
+  private final static String ZERO_CREDIT_FUNDS = "zero.credit.funds";
+  private final static String ZERO_AMOUNT = "zero.amount";
+  private final static String NEGATIVE_AMOUNT = "negative.amount";
 
-    private static final ResourceBundle bundle = ResourceBundle.
-            getBundle(Views.PAGES_BUNDLE);
+  private static final ResourceBundle bundle = ResourceBundle.getBundle(Views.PAGES_BUNDLE);
 
-    private final PaymentService paymentService = ServiceFactory.getPaymentService();
-    private final DebitAccountService debitAccountService = ServiceFactory.getDebitAccountService();
-    private final CreditAccountService creditAccountService = ServiceFactory.getCreditAccountService();
-
-
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        List<String> errors = validateDataFromRequest(request);
-        validateAccountsBalance(request, errors);
-
-        if (errors.isEmpty()) {
-            Payment payment = createPayment(request);
-
-            checkChangingAccountData(payment, request);
-
-            paymentService.createPayment(payment);
-
-            List<String> messages = new ArrayList<>();
-            messages.add(TRANSACTION_COMPLETE);
-
-            addMessageDataToSession(request, Attributes.MESSAGES, messages);
-
-            Util.redirectTo(request, response,
-                    bundle.getString("user.info"));
+  private final PaymentService paymentService = ServiceFactory.getPaymentService();
+  private final DebitAccountService debitAccountService = ServiceFactory.getDebitAccountService();
+  private final CreditAccountService creditAccountService =
+      ServiceFactory.getCreditAccountService();
 
 
-            return REDIRECTED;
-        }
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-        addMessageDataToRequest(request, Attributes.ERRORS, errors);
+    List<String> errors = validateDataFromRequest(request);
+    validateAccountsBalance(request, errors);
 
-        addDataToRequest(request);
+    if (errors.isEmpty()) {
+      Payment payment = createPayment(request);
 
-        return Views.REPLENISH_VIEW;
+      checkChangingAccountData(payment, request);
+
+      paymentService.createPayment(payment);
+
+      List<String> messages = new ArrayList<>();
+      messages.add(TRANSACTION_COMPLETE);
+
+      addMessageDataToSession(request, Attributes.MESSAGES, messages);
+
+      Util.redirectTo(request, response, bundle.getString("user.info"));
+
+
+      return REDIRECTED;
     }
 
-    private List<String> validateDataFromRequest(HttpServletRequest request) {
-        List<String> errors = new ArrayList<>();
+    addMessageDataToRequest(request, Attributes.ERRORS, errors);
 
-        Util.validateField(new AccountNumberValidator(),
-                getCleanAccountNumber(request,Attributes.SENDER_ACCOUNT), errors);
+    addDataToRequest(request);
 
-        Util.validateField(new AmountValidator(),
-                request.getParameter(Attributes.AMOUNT), errors);
+    return Views.REPLENISH_VIEW;
+  }
 
-        Util.validateField(new AccountNumberValidator(),
-                request.getParameter(Attributes.REFILLABLE_ACCOUNT), errors);
+  private List<String> validateDataFromRequest(HttpServletRequest request) {
+    List<String> errors = new ArrayList<>();
 
-        return errors;
+    Util.validateField(new AccountNumberValidator(),
+        getCleanAccountNumber(request, Attributes.SENDER_ACCOUNT), errors);
+
+    Util.validateField(new AmountValidator(), request.getParameter(Attributes.AMOUNT), errors);
+
+    Util.validateField(new AccountNumberValidator(),
+        request.getParameter(Attributes.REFILLABLE_ACCOUNT), errors);
+
+    return errors;
+  }
+
+  private void validateAccountsBalance(HttpServletRequest request, List<String> errors) {
+
+    Optional<Account> senderAccountOptional = debitAccountService.findAccountByNumber(
+        Long.valueOf(getCleanAccountNumber(request, Attributes.SENDER_ACCOUNT)));
+
+    Optional<CreditAccount> refillableAccountOptional = creditAccountService
+        .findAccountByNumber(Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT)));
+
+    if (!senderAccountOptional.isPresent() || !refillableAccountOptional.isPresent()) {
+      errors.add(NO_SUCH_ACCOUNT);
+      return;
     }
 
-    private void validateAccountsBalance(HttpServletRequest request, List<String> errors) {
+    BigDecimal paymentAmount = new BigDecimal(request.getParameter(Attributes.AMOUNT));
 
-        Optional<Account> senderAccountOptional = debitAccountService.findAccountByNumber(
-                Long.valueOf(getCleanAccountNumber(request, Attributes.SENDER_ACCOUNT)));
+    BigDecimal senderAccountBalance = senderAccountOptional.get().getBalance();
 
-        Optional<CreditAccount> refillableAccountOptional = creditAccountService.findAccountByNumber(
-                Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT)));
+    if (paymentAmount.compareTo(BigDecimal.ZERO) == 0)
+      errors.add(ZERO_AMOUNT);
 
-        if (!senderAccountOptional.isPresent() ||
-                !refillableAccountOptional.isPresent()) {
-            errors.add(NO_SUCH_ACCOUNT);
-            return;
-        }
+    if (paymentAmount.compareTo(BigDecimal.ZERO) < 0)
+      errors.add(NEGATIVE_AMOUNT);
 
-        BigDecimal paymentAmount = new BigDecimal(request.getParameter(Attributes.AMOUNT));
+    if (refillableAccountOptional.get().getAccountType()
+        .getId() == AccountType.TypeIdentifier.CREDIT_TYPE.getId()
+        && refillableAccountOptional.get().getBalance().compareTo(BigDecimal.ZERO) == 0)
+      errors.add(ZERO_CREDIT_FUNDS);
 
-        BigDecimal senderAccountBalance = senderAccountOptional.get().getBalance();
+    if (senderAccountBalance.compareTo(paymentAmount) < 0)
+      errors.add(NOT_ENOUGH_MONEY);
+  }
 
-        if (paymentAmount.compareTo(BigDecimal.ZERO) == 0)
-            errors.add(ZERO_AMOUNT);
+  private Payment createPayment(HttpServletRequest request) {
+    Account senderAccount = debitAccountService.findAccountByNumber(
+        Long.valueOf(getCleanAccountNumber(request, Attributes.SENDER_ACCOUNT))).get();
+    CreditAccount refillableAccount = creditAccountService
+        .findAccountByNumber(Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT)))
+        .get();
 
-        if (paymentAmount.compareTo(BigDecimal.ZERO) < 0)
-            errors.add(NEGATIVE_AMOUNT);
 
-        if (refillableAccountOptional.get().getAccountType().getId() ==
-                AccountType.TypeIdentifier.CREDIT_TYPE.getId() &&
-                refillableAccountOptional.get().getBalance().compareTo(BigDecimal.ZERO) == 0)
-            errors.add(ZERO_CREDIT_FUNDS);
+    BigDecimal amount = new BigDecimal(request.getParameter(Attributes.AMOUNT));
 
-        if (senderAccountBalance.compareTo(paymentAmount) < 0)
-            errors.add(NOT_ENOUGH_MONEY);
+    return Payment.newBuilder().addAccountFrom(senderAccount).addAccountTo(refillableAccount)
+        .addAmount(amount).addDate(new Date()).build();
+  }
+
+  private String getCleanAccountNumber(HttpServletRequest request, String attribute) {
+    return request.getParameter(attribute)
+        .substring(0, request.getParameter(attribute).indexOf('(')).replaceAll("\\D+", "");
+  }
+
+  private void checkChangingAccountData(Payment payment, HttpServletRequest request) {
+    if (payment.getAccountTo().getAccountType().getId() == AccountType.TypeIdentifier.CREDIT_TYPE
+        .getId()) {
+      BigDecimal compareValue = payment.getAccountTo().getBalance().add(payment.getAmount());
+      if (compareValue.compareTo(BigDecimal.ZERO) > 0) {
+
+        payment.setAmount(payment.getAmount().subtract(compareValue));
+
+        request.getSession().setAttribute(Attributes.WARNING, CREDIT_POSITIVE_FUNDS);
+        request.getSession().setAttribute(Attributes.AMOUNT, payment.getAmount());
+      }
     }
-
-    private Payment createPayment(HttpServletRequest request) {
-        Account senderAccount = debitAccountService.findAccountByNumber(
-                Long.valueOf(getCleanAccountNumber(request, Attributes.SENDER_ACCOUNT))).get();
-        CreditAccount refillableAccount = creditAccountService.findAccountByNumber(
-                Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT))).get();
+  }
 
 
-        BigDecimal amount = new BigDecimal(request.getParameter(Attributes.AMOUNT));
+  private void addDataToRequest(HttpServletRequest request) {
+    User user = (User) request.getSession().getAttribute(Attributes.USER);
 
-        return Payment.newBuilder()
-                .addAccountFrom(senderAccount)
-                .addAccountTo(refillableAccount)
-                .addAmount(amount)
-                .addDate(new Date())
-                .build();
-    }
+    Long refillableAccountNumber =
+        Long.valueOf(request.getParameter(Attributes.REFILLABLE_ACCOUNT));
 
-    private String getCleanAccountNumber(HttpServletRequest request, String attribute) {
-        return request.getParameter(attribute)
-                .substring(0, request.getParameter(attribute).indexOf('(')).
-                        replaceAll("\\D+","");
-    }
+    List<Account> senderAccounts = debitAccountService.findAllByUser(user);
+    List<Account> refillableAccounts = new ArrayList<>();
+    refillableAccounts.add(creditAccountService.findAccountByNumber(refillableAccountNumber).get());
 
-    private void checkChangingAccountData(Payment payment, HttpServletRequest request) {
-        if (payment.getAccountTo().getAccountType().getId() ==
-                AccountType.TypeIdentifier.CREDIT_TYPE.getId()) {
-            BigDecimal compareValue = payment.getAccountTo().getBalance().add(payment.getAmount());
-            if (compareValue.compareTo(BigDecimal.ZERO) > 0) {
-
-                payment.setAmount(payment.getAmount().subtract(compareValue));
-
-                request.getSession().setAttribute(Attributes.WARNING, CREDIT_POSITIVE_FUNDS);
-                request.getSession().setAttribute(Attributes.AMOUNT,
-                        payment.getAmount());
-            }
-        }
-    }
+    request.setAttribute(Attributes.SENDER_ACCOUNTS, senderAccounts);
+    request.setAttribute(Attributes.REFILLABLE_ACCOUNTS, refillableAccounts);
+    request.setAttribute(Attributes.COMMAND, request.getParameter(Attributes.COMMAND));
+  }
 
 
-    private void addDataToRequest(HttpServletRequest request) {
-        User user = (User) request.getSession().getAttribute(Attributes.USER);
+  private void addMessageDataToRequest(HttpServletRequest request, String attribute,
+      List<String> messages) {
+    request.setAttribute(attribute, messages);
+  }
 
-        Long refillableAccountNumber = Long.valueOf(
-                request.getParameter(Attributes.REFILLABLE_ACCOUNT));
-
-        List<Account> senderAccounts = debitAccountService.findAllByUser(user);
-        List<Account> refillableAccounts = new ArrayList<>();
-        refillableAccounts.add(creditAccountService.findAccountByNumber(
-                refillableAccountNumber).get());
-
-        request.setAttribute(Attributes.SENDER_ACCOUNTS, senderAccounts);
-        request.setAttribute(Attributes.REFILLABLE_ACCOUNTS, refillableAccounts);
-        request.setAttribute(Attributes.COMMAND,request.getParameter(Attributes.COMMAND));
-    }
-
-
-    private void addMessageDataToRequest(HttpServletRequest request,
-                                         String attribute,
-                                         List<String> messages) {
-        request.setAttribute(attribute, messages);
-    }
-
-    private void addMessageDataToSession(HttpServletRequest request,
-                                         String attribute,
-                                         List<String> messages) {
-        request.getSession().setAttribute(attribute, messages);
-    }
+  private void addMessageDataToSession(HttpServletRequest request, String attribute,
+      List<String> messages) {
+    request.getSession().setAttribute(attribute, messages);
+  }
 }

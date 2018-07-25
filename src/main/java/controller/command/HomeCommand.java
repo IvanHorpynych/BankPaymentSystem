@@ -11,9 +11,9 @@ import static controller.util.constants.Views.HOME_VIEW;
  * Created by JohnUkraine on 5/13/2018.
  */
 public class HomeCommand implements ICommand {
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        return HOME_VIEW;
-    }
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    return HOME_VIEW;
+  }
 }

@@ -25,41 +25,36 @@ import java.util.*;
  * Created by JohnUkraine on 28/5/2018.
  */
 public class PostCreateDebitCommand implements ICommand {
-    private final static String ACCOUNT_CREATE_SUCCESS = "account.create.success";
+  private final static String ACCOUNT_CREATE_SUCCESS = "account.create.success";
 
-    private static final ResourceBundle bundle = ResourceBundle.
-            getBundle(Views.PAGES_BUNDLE);
+  private static final ResourceBundle bundle = ResourceBundle.getBundle(Views.PAGES_BUNDLE);
 
-    private final DebitAccountService debitAccountService = ServiceFactory.getDebitAccountService();
+  private final DebitAccountService debitAccountService = ServiceFactory.getDebitAccountService();
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-            Account debitAccount = createDefaultAccount(request);
-            debitAccountService.createAccount(debitAccount);
+    Account debitAccount = createDefaultAccount(request);
+    debitAccountService.createAccount(debitAccount);
 
-            request.getSession().setAttribute(Attributes.MESSAGES, ACCOUNT_CREATE_SUCCESS);
+    request.getSession().setAttribute(Attributes.MESSAGES, ACCOUNT_CREATE_SUCCESS);
 
-            Util.redirectTo(request, response,
-                    bundle.getString("user.info"));
+    Util.redirectTo(request, response, bundle.getString("user.info"));
 
-            return REDIRECTED;
+    return REDIRECTED;
 
-    }
+  }
 
 
-    private Account createDefaultAccount(HttpServletRequest request) {
-        User accountHolder =  getUserFromSession(request.getSession());
+  private Account createDefaultAccount(HttpServletRequest request) {
+    User accountHolder = getUserFromSession(request.getSession());
 
-        return  Account.newBuilder().
-                addAccountHolder(accountHolder).
-                addDefaultAccountType().
-                addDefaultStatus().
-                addBalance(BigDecimal.ZERO).
-                build();
-    }
+    return Account.newBuilder().addAccountHolder(accountHolder).addDefaultAccountType()
+        .addDefaultStatus().addBalance(BigDecimal.ZERO).build();
+  }
 
-    private User getUserFromSession(HttpSession session) {
-        return (User) session.getAttribute(Attributes.USER);
-    }
+  private User getUserFromSession(HttpSession session) {
+    return (User) session.getAttribute(Attributes.USER);
+  }
 }

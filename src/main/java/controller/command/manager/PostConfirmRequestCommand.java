@@ -20,79 +20,67 @@ import java.util.*;
  */
 public class PostConfirmRequestCommand extends RequestCommand implements ICommand {
 
-    private final static String SUCCESSFUL_CONFIRMED = "request.successful.confirmed";
+  private final static String SUCCESSFUL_CONFIRMED = "request.successful.confirmed";
 
-    private static final ResourceBundle bundle = ResourceBundle.
-            getBundle(Views.PAGES_BUNDLE);
+  private static final ResourceBundle bundle = ResourceBundle.getBundle(Views.PAGES_BUNDLE);
 
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<String> errors = validateRequest(request);
+  @Override
+  public String execute(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    List<String> errors = validateRequest(request);
 
-        if (errors.isEmpty()) {
-            long creditRequestNumber = Long.valueOf(
-                    request.getParameter(Attributes.CREDIT_REQUEST));
+    if (errors.isEmpty()) {
+      long creditRequestNumber = Long.valueOf(request.getParameter(Attributes.CREDIT_REQUEST));
 
-            CreditRequest creditRequest = creditRequestService.
-                    findCreditRequestByNumber(creditRequestNumber).get();
+      CreditRequest creditRequest =
+          creditRequestService.findCreditRequestByNumber(creditRequestNumber).get();
 
-            CreditAccount creditAccount = createCreditAccount(creditRequest);
+      CreditAccount creditAccount = createCreditAccount(creditRequest);
 
-            creditRequest.setStatus(
-                    new Status(Status.StatusIdentifier.CONFIRM_STATUS.getId(),
-                            Status.StatusIdentifier.CONFIRM_STATUS.toString()));
+      creditRequest.setStatus(new Status(Status.StatusIdentifier.CONFIRM_STATUS.getId(),
+          Status.StatusIdentifier.CONFIRM_STATUS.toString()));
 
-            creditRequestService.confirmRequest(creditRequest, creditAccount);
+      creditRequestService.confirmRequest(creditRequest, creditAccount);
 
-            List<String> messages = new ArrayList<>();
-            messages.add(SUCCESSFUL_CONFIRMED);
+      List<String> messages = new ArrayList<>();
+      messages.add(SUCCESSFUL_CONFIRMED);
 
-            addMessageDataToSession(request, Attributes.MESSAGES, messages);
+      addMessageDataToSession(request, Attributes.MESSAGES, messages);
 
-            Util.redirectTo(request, response, bundle.
-                    getString("user.info"));
+      Util.redirectTo(request, response, bundle.getString("user.info"));
 
-            return REDIRECTED;
-        }
-
-        addMessageDataToRequest(request, Attributes.ERRORS, errors);
-
-        List<CreditRequest> creditRequests = creditRequestService.
-                findAllPendingRequests();
-
-        request.setAttribute(Attributes.CREDIT_REQUESTS, creditRequests);
-
-        return Views.CREDIT_REQUEST_LIST_VIEW;
+      return REDIRECTED;
     }
 
+    addMessageDataToRequest(request, Attributes.ERRORS, errors);
+
+    List<CreditRequest> creditRequests = creditRequestService.findAllPendingRequests();
+
+    request.setAttribute(Attributes.CREDIT_REQUESTS, creditRequests);
+
+    return Views.CREDIT_REQUEST_LIST_VIEW;
+  }
 
 
-    private CreditAccount createCreditAccount(CreditRequest creditRequest) {
 
-        return CreditAccount.newCreditBuilder().
-                addAccountHolder(creditRequest.getAccountHolder()).
-                addDefaultAccountType().
-                addDefaultStatus().
-                addBalance(BigDecimal.ZERO).
-                addInterestRate(creditRequest.getInterestRate()).
-                addAccruedInterest(BigDecimal.ZERO).
-                addValidityDate(creditRequest.getValidityDate()).
-                addCreditLimit(creditRequest.getCreditLimit()).
-                build();
-    }
+  private CreditAccount createCreditAccount(CreditRequest creditRequest) {
+
+    return CreditAccount.newCreditBuilder().addAccountHolder(creditRequest.getAccountHolder())
+        .addDefaultAccountType().addDefaultStatus().addBalance(BigDecimal.ZERO)
+        .addInterestRate(creditRequest.getInterestRate()).addAccruedInterest(BigDecimal.ZERO)
+        .addValidityDate(creditRequest.getValidityDate())
+        .addCreditLimit(creditRequest.getCreditLimit()).build();
+  }
 
 
-    private void addMessageDataToRequest(HttpServletRequest request,
-                                         String attribute,
-                                         List<String> messages) {
-        request.setAttribute(attribute, messages);
-    }
+  private void addMessageDataToRequest(HttpServletRequest request, String attribute,
+      List<String> messages) {
+    request.setAttribute(attribute, messages);
+  }
 
-    private void addMessageDataToSession(HttpServletRequest request,
-                                         String attribute,
-                                         List<String> messages) {
-        request.getSession().setAttribute(attribute, messages);
-    }
+  private void addMessageDataToSession(HttpServletRequest request, String attribute,
+      List<String> messages) {
+    request.getSession().setAttribute(attribute, messages);
+  }
 }
