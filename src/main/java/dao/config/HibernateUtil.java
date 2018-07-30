@@ -23,9 +23,5 @@ public class HibernateUtil {
   public static Session getInstance() {
     return SESSION_FACTORY.openSession();
   }
-
-  public static Session getCurrentInstance() {
-    return SESSION_FACTORY.openSession();
-  }
 }
 
