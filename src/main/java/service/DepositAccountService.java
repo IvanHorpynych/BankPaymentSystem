@@ -2,10 +2,10 @@ package service;
 
 import dao.abstraction.DepositAccountDao;
 import dao.factory.DaoFactory;
-import dao.factory.connection.DaoConnection;
+import dao.config.HibernateUtil;
 import entity.DepositAccount;
-import entity.Status;
 import entity.User;
+import org.hibernate.Session;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,8 +19,11 @@ import java.util.Optional;
  */
 public class DepositAccountService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
+  Session session = HibernateUtil.getInstance();
 
-  private DepositAccountService() {}
+  private DepositAccountService() {
+
+  }
 
   private static class Singleton {
     private final static DepositAccountService INSTANCE = new DepositAccountService();
@@ -31,58 +34,38 @@ public class DepositAccountService {
   }
 
   public List<DepositAccount> findAllDepositAccounts() {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(connection);
-      return depositAccountDao.findAll();
-    }
+    return daoFactory.getDepositAccountDao(session).findAll();
   }
 
   public Optional<DepositAccount> findAccountByNumber(long accountNumber) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(connection);
-      return depositAccountDao.findOne(accountNumber);
-    }
+    return daoFactory.getDepositAccountDao(session).findOne(accountNumber);
   }
 
   public List<DepositAccount> findAllByUser(User user) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(connection);
-      return depositAccountDao.findByUser(user);
-    }
+    return daoFactory.getDepositAccountDao(session).findByUser(user);
   }
 
   public List<DepositAccount> findAllNotClosed() {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(connection);
-      return depositAccountDao.findAllNotClosed();
-    }
+    return daoFactory.getDepositAccountDao(session).findAllNotClosed();
   }
 
   public DepositAccount createAccount(DepositAccount account) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      DepositAccountDao depositAccountsDao = daoFactory.getDepositAccountDao(connection);
-      DepositAccount inserted = depositAccountsDao.insert(account);
-      return inserted;
-    }
+    DepositAccount inserted = daoFactory.getDepositAccountDao(session).insert(account);
+    return inserted;
   }
 
   public void updateAccountStatus(DepositAccount account, int statusId) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      connection.startSerializableTransaction();
-      DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(connection);
-      depositAccountDao.updateAccountStatus(account, statusId);
-      connection.commit();
-    }
+    session.beginTransaction();
+    daoFactory.getDepositAccountDao(session).updateAccountStatus(account, statusId);
+    session.getTransaction().commit();
+
   }
 
   public void accrue(DepositAccount account, BigDecimal interestCharges) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      connection.startSerializableTransaction();
-      DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(connection);
-      depositAccountDao.update(account);
-      depositAccountDao.increaseBalance(account, interestCharges);
-      connection.commit();
-    }
+    session.beginTransaction();
+    DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(session);
+    depositAccountDao.update(account);
+    depositAccountDao.increaseBalance(account, interestCharges);
+    session.getTransaction().commit();
   }
-
 }

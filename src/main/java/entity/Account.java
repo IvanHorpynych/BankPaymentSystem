@@ -25,17 +25,17 @@ public class Account {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ID")
-  private long accountNumber;
+  protected long accountNumber;
   @ManyToOne
   @JoinColumn(name = "USER_ID")
-  private User accountHolder;
+  protected User accountHolder;
   @ManyToOne
   @JoinColumn(name = "TYPE_ID")
-  private AccountType accountType;
-  private BigDecimal balance;
+  protected AccountType accountType;
+  protected BigDecimal balance;
   @ManyToOne
   @JoinColumn(name = "STATUS_ID")
-  private Status status;
+  protected Status status;
 
 
   public Account() {}

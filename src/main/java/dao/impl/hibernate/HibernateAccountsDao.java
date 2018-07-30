@@ -2,7 +2,6 @@
 package dao.impl.hibernate;
 
 import dao.abstraction.AccountsDao;
-import dao.hibernate.HibernateUtil;
 import entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -19,79 +18,71 @@ import java.util.Optional;
 
 public class HibernateAccountsDao implements AccountsDao {
 
+  Session session;
+
+  public HibernateAccountsDao(Session session) {
+    this.session = session;
+  }
+
 
   @Override
   public Optional<Account> findOne(Long accountNumber) {
-    try (Session session = HibernateUtil.getInstance()) {
-      CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-      CriteriaQuery<Account> query = criteriaBuilder.createQuery(Account.class);
-      Root<Account> root = query.from(Account.class);
-      query.select(root);
-      query.where(criteriaBuilder.equal(root.get("accountNumber"), accountNumber));
-      return Optional.ofNullable(session.createQuery(query).getSingleResult());
-    }
+    CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+    CriteriaQuery<Account> query = criteriaBuilder.createQuery(Account.class);
+    Root<Account> root = query.from(Account.class);
+    query.select(root);
+    query.where(criteriaBuilder.equal(root.get("accountNumber"), accountNumber));
+    return Optional.ofNullable(session.createQuery(query).getSingleResult());
   }
 
   @Override
   public List<Account> findAll() {
-    try (Session session = HibernateUtil.getInstance()) {
-      CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-      CriteriaQuery<Account> query = criteriaBuilder.createQuery(Account.class);
-      Root<Account> root = query.from(Account.class);
-      query.select(root);
-      return session.createQuery(query).getResultList();
-    }
+    CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+    CriteriaQuery<Account> query = criteriaBuilder.createQuery(Account.class);
+    Root<Account> root = query.from(Account.class);
+    query.select(root);
+    return session.createQuery(query).getResultList();
   }
 
   @Override
   public Account insert(Account account) {
-    try (Session session = HibernateUtil.getInstance()) {
-      session.save(account);
-      return account;
-    }
+    session.save(account);
+    return account;
   }
 
   @Override
   public void update(Account account) {
-    try (Session session = HibernateUtil.getInstance()) {
-      Transaction transaction = session.beginTransaction();
-      session.update(account);
-      transaction.commit();
-    }
+    Transaction transaction = session.beginTransaction();
+    session.update(account);
+    transaction.commit();
   }
 
   @Override
   public void delete(Long accountNumber) {
-    try (Session session = HibernateUtil.getInstance()) {
-      Transaction transaction = session.beginTransaction();
-      Account account = findOne(accountNumber).get();
-      session.delete(account);
-      transaction.commit();
-    }
+    Transaction transaction = session.beginTransaction();
+    Account account = findOne(accountNumber).get();
+    session.delete(account);
+    transaction.commit();
   }
 
 
   @Override
   public List<Account> findByUser(User user) {
-    try (Session session = HibernateUtil.getInstance()) {
-      CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-      CriteriaQuery<Account> query = criteriaBuilder.createQuery(Account.class);
-      Root<Account> root = query.from(Account.class);
-      query.select(root);
-      query.where(criteriaBuilder.equal(root.get("accountHolder"), user.getId()));
-      return session.createQuery(query).getResultList();
-    }
+    CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+    CriteriaQuery<Account> query = criteriaBuilder.createQuery(Account.class);
+    Root<Account> root = query.from(Account.class);
+    query.select(root);
+    query.where(criteriaBuilder.equal(root.get("accountHolder"), user.getId()));
+    return session.createQuery(query).getResultList();
   }
 
   @Override
   public List<Account> findAllNotClosed() {
-    try (Session session = HibernateUtil.getInstance()) {
-      Query query = session.createQuery("from Account where status = :statusId", Account.class);
-      query.setParameter("statusId",
-          ((Status) session.createQuery("from Status where name != 'CLOSED'").getSingleResult())
-              .getId());
-      return query.getResultList();
-    }
+    Query query = session.createQuery("from Account where status = :statusId", Account.class);
+    query.setParameter("statusId",
+        ((Status) session.createQuery("from Status where name!= 'CLOSED'").getSingleResult())
+            .getId());
+    return query.getResultList();
   }
 
   @Override
@@ -114,7 +105,6 @@ public class HibernateAccountsDao implements AccountsDao {
   public void updateAccountStatus(Account account, int statusId) {
     Objects.requireNonNull(account);
 
-    Objects.requireNonNull(account);
     account = findOne(account.getAccountNumber()).get();
     account.setStatus(new Status(statusId, "empty"));
     update(account);
@@ -122,13 +112,11 @@ public class HibernateAccountsDao implements AccountsDao {
 
   @Override
   public Optional<Account> findOneByType(int typeId) {
-    try (Session session = HibernateUtil.getInstance()) {
-      Query query =
-          session.createQuery("from Account where accountType = :accountType", Account.class);
-      query.setParameter("accountType", typeId);
-      query.setMaxResults(1);
-      return Optional.ofNullable((Account) query.getSingleResult());
-    }
+    Query query =
+        session.createQuery("from Account where accountType.id = :accountType", Account.class);
+    query.setParameter("accountType", typeId);
+    query.setMaxResults(1);
+    return Optional.ofNullable((Account) query.getSingleResult());
   }
 
 

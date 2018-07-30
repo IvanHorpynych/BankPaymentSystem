@@ -1,7 +1,6 @@
 package dao.impl.hibernate;
 
 import dao.abstraction.UserDao;
-import dao.hibernate.HibernateUtil;
 import entity.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -17,68 +16,61 @@ import java.util.Optional;
  */
 public class HibernateUserDao implements UserDao {
 
+  private Session session;
+
+  public HibernateUserDao(Session session) {
+    this.session = session;
+  }
 
   @Override
   public Optional<User> findOne(Long id) {
 
-    try (Session session = HibernateUtil.getInstance()) {
-      CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-      CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
-      Root<User> root = query.from(User.class);
-      query.select(root);
-      query.where(criteriaBuilder.equal(root.get("id"), id));
-      return Optional.ofNullable(session.createQuery(query).getSingleResult());
-    }
+    CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+    CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+    Root<User> root = query.from(User.class);
+    query.select(root);
+    query.where(criteriaBuilder.equal(root.get("id"), id));
+    return Optional.ofNullable(session.createQuery(query).getSingleResult());
   }
 
   @Override
   public Optional<User> findOneByEmail(String email) {
-    try (Session session = HibernateUtil.getInstance()) {
-      CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-      CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
-      Root<User> root = query.from(User.class);
-      query.select(root);
-      query.where(criteriaBuilder.equal(root.get("email"), email));
-      return Optional.ofNullable(session.createQuery(query).getSingleResult());
-    }
+    CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+    CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+    Root<User> root = query.from(User.class);
+    query.select(root);
+    query.where(criteriaBuilder.equal(root.get("email"), email));
+    return Optional.ofNullable(session.createQuery(query).getSingleResult());
   }
 
   @Override
   public List<User> findAll() {
-    try (Session session = HibernateUtil.getInstance()) {
-      CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-      CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
-      Root<User> root = query.from(User.class);
-      query.select(root);
-      return session.createQuery(query).getResultList();
-    }
+    CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+    CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+    Root<User> root = query.from(User.class);
+    query.select(root);
+    return session.createQuery(query).getResultList();
   }
 
   @Override
   public User insert(User obj) {
-    try (Session session = HibernateUtil.getInstance()) {
-      session.save(obj);
-      return obj;
-    }
+    session.save(obj);
+    return obj;
   }
 
   @Override
   public void update(User obj) {
-    try (Session session = HibernateUtil.getInstance()) {
-      Transaction transaction = session.beginTransaction();
-      session.update(obj);
-      transaction.commit();
-    }
+    Transaction transaction = session.beginTransaction();
+    session.update(obj);
+    transaction.commit();
   }
 
   @Override
   public void delete(Long id) {
-    try (Session session = HibernateUtil.getInstance()) {
-      Transaction transaction = session.beginTransaction();
-      User user = findOne(id).get();
-      session.delete(user);
-      transaction.commit();
-    }
+    Transaction transaction = session.beginTransaction();
+    User user = findOne(id).get();
+    session.delete(user);
+    transaction.commit();
   }
 
   @Override

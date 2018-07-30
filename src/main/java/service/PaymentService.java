@@ -1,14 +1,13 @@
 package service;
 
-import dao.abstraction.DepositAccountDao;
 import dao.abstraction.GenericAccountDao;
 import dao.abstraction.PaymentDao;
 import dao.factory.DaoFactory;
-import dao.factory.connection.DaoConnection;
+import dao.config.HibernateUtil;
 import entity.Account;
-import entity.AccountType;
 import entity.Payment;
 import entity.User;
+import org.hibernate.Session;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,6 +21,7 @@ import java.util.Optional;
  */
 public class PaymentService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
+  private final Session session = HibernateUtil.getInstance();
 
   private PaymentService() {}
 
@@ -34,96 +34,82 @@ public class PaymentService {
   }
 
   public Optional<Payment> findById(Long id) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao(connection);
-      return paymentDao.findOne(id);
-    }
+    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
+    return paymentDao.findOne(id);
   }
 
   public List<Payment> findAll() {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao(connection);
-      return paymentDao.findAll();
-    }
+    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
+    return paymentDao.findAll();
   }
 
 
   public List<Payment> findAllByUser(User user) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao(connection);
-      return paymentDao.findByUser(user);
-    }
+    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
+    return paymentDao.findByUser(user);
   }
 
   public List<Payment> findAllByAccount(Long accountNumber) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao(connection);
-      return paymentDao.findByAccount(accountNumber);
-    }
+    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
+    return paymentDao.findByAccount(accountNumber);
   }
 
   public List<Payment> findAllByCard(Long cardNumber) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao(connection);
-      return paymentDao.findByCardNumber(cardNumber);
-    }
+    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
+    return paymentDao.findByCardNumber(cardNumber);
   }
 
   public Payment createPayment(Payment payment) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao(connection);
-      GenericAccountDao accountDaoFrom =
-          daoFactory.getAccountDao(connection, payment.getAccountFrom().getAccountType());
-      GenericAccountDao accountDaoTo =
-          daoFactory.getAccountDao(connection, payment.getAccountTo().getAccountType());
+    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
+    GenericAccountDao accountDaoFrom =
+        daoFactory.getAccountDao(session, payment.getAccountFrom().getAccountType());
+    GenericAccountDao accountDaoTo =
+        daoFactory.getAccountDao(session, payment.getAccountTo().getAccountType());
 
 
-      Account accountFrom = payment.getAccountFrom();
-      Account accountTo = payment.getAccountTo();
-      BigDecimal amount = payment.getAmount();
+    Account accountFrom = payment.getAccountFrom();
+    Account accountTo = payment.getAccountTo();
+    BigDecimal amount = payment.getAmount();
 
-      connection.startSerializableTransaction();
+    session.beginTransaction();
 
-      accountDaoFrom.decreaseBalance(accountFrom, amount);
-      accountDaoTo.increaseBalance(accountTo, amount);
+    accountDaoFrom.decreaseBalance(accountFrom, amount);
+    accountDaoTo.increaseBalance(accountTo, amount);
 
-      Payment inserted = paymentDao.insert(payment);
+    Payment inserted = paymentDao.insert(payment);
 
-      connection.commit();
+    session.getTransaction().commit();
 
-      return inserted;
-    }
+    return inserted;
   }
 
   @SuppressWarnings("unchecked")
   public Payment createPaymentWithUpdate(Payment payment) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao(connection);
+    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
 
-      GenericAccountDao accountDaoFrom =
-          daoFactory.getAccountDao(connection, payment.getAccountFrom().getAccountType());
-      GenericAccountDao accountDaoTo =
-          daoFactory.getAccountDao(connection, payment.getAccountTo().getAccountType());
+    GenericAccountDao accountDaoFrom =
+        daoFactory.getAccountDao(session, payment.getAccountFrom().getAccountType());
+    GenericAccountDao accountDaoTo =
+        daoFactory.getAccountDao(session, payment.getAccountTo().getAccountType());
 
 
-      Account accountFrom = payment.getAccountFrom();
-      Account accountTo = payment.getAccountTo();
-      BigDecimal amount = payment.getAmount();
+    Account accountFrom = payment.getAccountFrom();
+    Account accountTo = payment.getAccountTo();
+    BigDecimal amount = payment.getAmount();
 
-      connection.startSerializableTransaction();
+    session.beginTransaction();
 
-      accountDaoFrom.decreaseBalance(accountFrom, amount);
-      accountDaoTo.increaseBalance(accountTo, amount);
+    accountDaoFrom.decreaseBalance(accountFrom, amount);
+    accountDaoTo.increaseBalance(accountTo, amount);
 
-      accountDaoFrom.update(accountFrom);
-      accountDaoTo.update(accountTo);
+    accountDaoFrom.update(accountFrom);
+    accountDaoTo.update(accountTo);
 
-      Payment inserted = paymentDao.insert(payment);
+    Payment inserted = paymentDao.insert(payment);
 
-      connection.commit();
+    session.getTransaction().commit();
 
-      return inserted;
-    }
+    return inserted;
   }
 
 

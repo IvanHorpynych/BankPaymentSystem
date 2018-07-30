@@ -1,12 +1,19 @@
 package entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
+@Entity
+@Table(name = "curr_annual_rate")
 public class Rate {
-
+  @Id
   long id;
-
-  float annualRate;
+  @Column(name = "annual_rate")
+  double annualRate;
+  @Column(name = "created_time")
   Date createdTime;
 
   public Rate(float annualRate, Date createdTime) {
@@ -14,7 +21,9 @@ public class Rate {
     this.createdTime = createdTime;
   }
 
-  public float getAnnualRate() {
+  public Rate() {}
+
+  public double getAnnualRate() {
     return annualRate;
   }
 

@@ -2,10 +2,11 @@ package service;
 
 import dao.abstraction.CardDao;
 import dao.factory.DaoFactory;
-import dao.factory.connection.DaoConnection;
+import dao.config.HibernateUtil;
 import entity.Account;
 import entity.Card;
 import entity.User;
+import org.hibernate.Session;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import java.util.Optional;
  */
 public class CardService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
+  private final Session session = HibernateUtil.getInstance();
 
   private CardService() {}
 
@@ -30,45 +32,34 @@ public class CardService {
   }
 
   public Card createCard(Card card) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      CardDao cardDao = daoFactory.getCardDao(connection);
-      return cardDao.insert(card);
-    }
+
+    CardDao cardDao = daoFactory.getCardDao(session);
+    return cardDao.insert(card);
   }
 
   public List<Card> findAllCards() {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      CardDao cardDao = daoFactory.getCardDao(connection);
-      return cardDao.findAll();
-    }
+    CardDao cardDao = daoFactory.getCardDao(session);
+    return cardDao.findAll();
   }
 
   public Optional<Card> findCardByNumber(long cardNumber) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      CardDao cardDao = daoFactory.getCardDao(connection);
-      return cardDao.findOne(cardNumber);
-    }
+    CardDao cardDao = daoFactory.getCardDao(session);
+    return cardDao.findOne(cardNumber);
   }
 
   public List<Card> findAllByUser(User user) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      CardDao cardDao = daoFactory.getCardDao(connection);
-      return cardDao.findByUser(user);
-    }
+    CardDao cardDao = daoFactory.getCardDao(session);
+    return cardDao.findByUser(user);
   }
 
   public List<Card> findAllByAccount(Account account) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      CardDao cardDao = daoFactory.getCardDao(connection);
-      return cardDao.findByAccount(account);
-    }
+    CardDao cardDao = daoFactory.getCardDao(session);
+    return cardDao.findByAccount(account);
   }
 
   public void updateCardStatus(Card card, int statusId) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      CardDao cardDao = daoFactory.getCardDao(connection);
-      cardDao.updateCardStatus(card, statusId);
-    }
+    CardDao cardDao = daoFactory.getCardDao(session);
+    cardDao.updateCardStatus(card, statusId);
   }
 
 

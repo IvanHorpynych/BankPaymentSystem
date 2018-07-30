@@ -1,13 +1,15 @@
 package entity;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class Designation {
   @Id
-  private int id;
-  private String name;
+  protected int id;
+  @Column
+  protected String name;
 
 
   public Designation() {}

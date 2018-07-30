@@ -51,7 +51,7 @@ public class DepositAccount extends Account {
       return this;
     }
 
-    public DepositAccount.Builder addAnnualRate(float annualRate) {
+    public DepositAccount.Builder addAnnualRate(double annualRate) {
       depositAccount.setAnnualRate(annualRate);
       return this;
     }
@@ -95,7 +95,7 @@ public class DepositAccount extends Account {
     return annualRate;
   }
 
-  public void setAnnualRate(float annualRate) {
+  public void setAnnualRate(double annualRate) {
     this.annualRate = annualRate;
   }
 

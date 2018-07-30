@@ -2,10 +2,10 @@ package service;
 
 import dao.abstraction.CreditAccountDao;
 import dao.factory.DaoFactory;
-import dao.factory.connection.DaoConnection;
+import dao.config.HibernateUtil;
 import entity.CreditAccount;
-import entity.Status;
 import entity.User;
+import org.hibernate.Session;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +19,7 @@ import java.util.Optional;
  */
 public class CreditAccountService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
+  private final Session session = HibernateUtil.getInstance();
 
   private CreditAccountService() {}
 
@@ -31,58 +32,44 @@ public class CreditAccountService {
   }
 
   public List<CreditAccount> findAllCreditAccounts() {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
-      return creditAccountDao.findAll();
-    }
+    CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(session);
+    return creditAccountDao.findAll();
   }
 
   public Optional<CreditAccount> findAccountByNumber(long accountNumber) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
-      return creditAccountDao.findOne(accountNumber);
-    }
+    CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(session);
+    return creditAccountDao.findOne(accountNumber);
   }
 
   public List<CreditAccount> findAllByUser(User user) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
-      return creditAccountDao.findByUser(user);
-    }
+    CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(session);
+    return creditAccountDao.findByUser(user);
   }
 
   public List<CreditAccount> findAllNotClosed() {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
-      return creditAccountDao.findAllNotClosed();
-    }
+    CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(session);
+    return creditAccountDao.findAllNotClosed();
   }
 
   public CreditAccount createAccount(CreditAccount account) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
-      CreditAccount inserted = creditAccountDao.insert(account);
-      return inserted;
-    }
+    CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(session);
+    CreditAccount inserted = creditAccountDao.insert(account);
+    return inserted;
   }
 
   public void updateAccountStatus(CreditAccount account, int statusId) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      connection.startSerializableTransaction();
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
-      creditAccountDao.updateAccountStatus(account, statusId);
-      connection.commit();
-    }
+    session.beginTransaction();
+    CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(session);
+    creditAccountDao.updateAccountStatus(account, statusId);
+    session.getTransaction().commit();
   }
 
   public void accrue(CreditAccount creditAccount, BigDecimal accruedInterest) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      connection.startSerializableTransaction();
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(connection);
-      creditAccountDao.increaseBalance(creditAccount, accruedInterest);
-      creditAccountDao.increaseAccruedInterest(creditAccount, accruedInterest.abs());
-      connection.commit();
-    }
+    session.beginTransaction();
+    CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(session);
+    creditAccountDao.increaseBalance(creditAccount, accruedInterest);
+    creditAccountDao.increaseAccruedInterest(creditAccount, accruedInterest.abs());
+    session.getTransaction().commit();
   }
-
 }
+

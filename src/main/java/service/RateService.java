@@ -2,14 +2,16 @@ package service;
 
 import dao.abstraction.RateDao;
 import dao.factory.DaoFactory;
-import dao.factory.connection.DaoConnection;
+import dao.config.HibernateUtil;
 import entity.Rate;
+import org.hibernate.Session;
 
 import java.util.Optional;
 
 public class RateService {
 
   private final DaoFactory daoFactory = DaoFactory.getInstance();
+  private final Session session = HibernateUtil.getInstance();
 
   private RateService() {}
 
@@ -22,16 +24,12 @@ public class RateService {
   }
 
   public Optional<Rate> findValidAnnualRate() {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      RateDao rateDao = daoFactory.getRateDao(connection);
-      return rateDao.findLast();
-    }
+    RateDao rateDao = daoFactory.getRateDao(session);
+    return rateDao.findLast();
   }
 
   public Rate updateAnnualRate(Rate rate) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      RateDao rateDao = daoFactory.getRateDao(connection);
-      return rateDao.insert(rate);
-    }
+    RateDao rateDao = daoFactory.getRateDao(session);
+    return rateDao.insert(rate);
   }
 }

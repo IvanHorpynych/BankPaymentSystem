@@ -2,9 +2,10 @@ package service;
 
 import dao.abstraction.UserDao;
 import dao.factory.DaoFactory;
-import dao.factory.connection.DaoConnection;
+import dao.config.HibernateUtil;
 import dao.util.hashing.PasswordStorage;
 import entity.User;
+import org.hibernate.Session;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +19,7 @@ import java.util.Optional;
  */
 public class UserService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
+  private final Session session = HibernateUtil.getInstance();
 
   private UserService() {}
 
@@ -30,24 +32,18 @@ public class UserService {
   }
 
   public Optional<User> findById(Long id) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      UserDao userDao = daoFactory.getUserDao(connection);
-      return userDao.findOne(id);
-    }
+    UserDao userDao = daoFactory.getUserDao(session);
+    return userDao.findOne(id);
   }
 
   public Optional<User> findByEmail(String email) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      UserDao userDao = daoFactory.getUserDao(connection);
-      return userDao.findOneByEmail(email);
-    }
+    UserDao userDao = daoFactory.getUserDao(session);
+    return userDao.findOneByEmail(email);
   }
 
   public List<User> findAllUsers() {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      UserDao userDao = daoFactory.getUserDao(connection);
-      return userDao.findAll();
-    }
+    UserDao userDao = daoFactory.getUserDao(session);
+    return userDao.findAll();
   }
 
   public User createUser(User user) {
@@ -60,29 +56,22 @@ public class UserService {
     String hash = PasswordStorage.getSecurePassword(user.getPassword());
     user.setPassword(hash);
 
-
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      UserDao userDao = daoFactory.getUserDao(connection);
-      return userDao.insert(user);
-    }
+    UserDao userDao = daoFactory.getUserDao(session);
+    return userDao.insert(user);
   }
 
   public boolean isCredentialsValid(String email, String password) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      UserDao userDao = daoFactory.getUserDao(connection);
-      Optional<User> user = userDao.findOneByEmail(email);
+    UserDao userDao = daoFactory.getUserDao(session);
+    Optional<User> user = userDao.findOneByEmail(email);
 
-      return user.filter(u -> PasswordStorage.checkSecurePassword(password, u.getPassword()))
-          .isPresent();
-    }
+    return user.filter(u -> PasswordStorage.checkSecurePassword(password, u.getPassword()))
+        .isPresent();
 
   }
 
   public boolean isUserExists(User user) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      UserDao userDao = daoFactory.getUserDao(connection);
-      return userDao.exist(user.getId()) || userDao.existByEmail(user.getEmail());
-    }
+    UserDao userDao = daoFactory.getUserDao(session);
+    return userDao.exist(user.getId()) || userDao.existByEmail(user.getEmail());
   }
 
 }

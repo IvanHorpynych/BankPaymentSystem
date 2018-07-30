@@ -2,9 +2,9 @@ package dao.factory;
 
 import dao.abstraction.*;
 import dao.exception.DaoException;
-import dao.factory.connection.DaoConnection;
 import entity.AccountType;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 
 import java.util.ResourceBundle;
 
@@ -40,28 +40,26 @@ public abstract class DaoFactory {
     return instance;
   }
 
-  public abstract DaoConnection getConnection();
 
 
-  public abstract UserDao getUserDao(DaoConnection connection);
+  public abstract UserDao getUserDao(Session session);
 
-  public abstract GenericAccountDao getAccountDao(DaoConnection connection,
-      AccountType accountType);
+  public abstract GenericAccountDao getAccountDao(Session session, AccountType accountType);
 
-  public abstract CreditAccountDao getCreditAccountDao(DaoConnection connection);
+  public abstract CreditAccountDao getCreditAccountDao(Session session);
 
-  public abstract DepositAccountDao getDepositAccountDao(DaoConnection connection);
+  public abstract DepositAccountDao getDepositAccountDao(Session session);
 
-  public abstract DebitAccountDao getDebitAccountDao(DaoConnection connection);
+  public abstract DebitAccountDao getDebitAccountDao(Session session);
 
-  public abstract AccountsDao getAccountsDao(DaoConnection connection);
+  public abstract AccountsDao getAccountsDao(Session session);
 
-  public abstract RateDao getRateDao(DaoConnection connection);
+  public abstract RateDao getRateDao(Session session);
 
-  public abstract CardDao getCardDao(DaoConnection connection);
+  public abstract CardDao getCardDao(Session session);
 
-  public abstract PaymentDao getPaymentDao(DaoConnection connection);
+  public abstract PaymentDao getPaymentDao(Session session);
 
-  public abstract CreditRequestDao getCreditRequestDao(DaoConnection connection);
+  public abstract CreditRequestDao getCreditRequestDao(Session session);
 
 }

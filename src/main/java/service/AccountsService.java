@@ -3,11 +3,11 @@ package service;
 
 import dao.abstraction.AccountsDao;
 import dao.factory.DaoFactory;
-import dao.factory.connection.DaoConnection;
+import dao.config.HibernateUtil;
 import entity.Account;
 import entity.AccountType;
-import entity.Status;
 import entity.User;
+import org.hibernate.Session;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +20,7 @@ import java.util.Optional;
  */
 public class AccountsService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
+  private final Session session = HibernateUtil.getInstance();
 
   private AccountsService() {}
 
@@ -32,49 +33,44 @@ public class AccountsService {
   }
 
   public List<Account> findAllAccounts() {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      AccountsDao accountsDao = daoFactory.getAccountsDao(connection);
-      return accountsDao.findAll();
-    }
+
+    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
+    return accountsDao.findAll();
   }
 
   public Optional<Account> findAccountByNumber(long accountNumber) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      AccountsDao accountsDao = daoFactory.getAccountsDao(connection);
-      return accountsDao.findOne(accountNumber);
-    }
+
+    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
+    return accountsDao.findOne(accountNumber);
   }
 
   public List<Account> findAllByUser(User user) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      AccountsDao accountsDao = daoFactory.getAccountsDao(connection);
-      return accountsDao.findByUser(user);
-    }
+    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
+    return accountsDao.findByUser(user);
+
   }
 
 
   public Account createAccount(Account account) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      AccountsDao accountsDao = daoFactory.getAccountsDao(connection);
-      Account inserted = accountsDao.insert(account);
-      return inserted;
-    }
+    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
+    Account inserted = accountsDao.insert(account);
+    return inserted;
+
   }
 
   public void updateAccountStatus(Account account, int statusId) {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      connection.startSerializableTransaction();
-      AccountsDao accountsDao = daoFactory.getAccountsDao(connection);
-      accountsDao.updateAccountStatus(account, statusId);
-      connection.commit();
-    }
+    session.beginTransaction();
+    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
+    accountsDao.updateAccountStatus(account, statusId);
+    session.getTransaction().commit();
   }
 
+
   public Optional<Account> findAtmAccount() {
-    try (DaoConnection connection = daoFactory.getConnection()) {
-      AccountsDao accountsDao = daoFactory.getAccountsDao(connection);
-      return accountsDao.findOneByType(AccountType.TypeIdentifier.ATM_TYPE.getId());
-    }
+
+    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
+    return accountsDao.findOneByType(AccountType.TypeIdentifier.ATM_TYPE.getId());
+
   }
 
 }

@@ -1,4 +1,4 @@
-package dao.hibernate;
+package dao.config;
 
 import entity.*;
 import org.hibernate.Session;
@@ -14,7 +14,8 @@ public class HibernateUtil {
             .addAnnotatedClass(Status.class).addAnnotatedClass(AccountType.class)
             .addAnnotatedClass(Account.class).addAnnotatedClass(CreditAccount.class)
             .addAnnotatedClass(DepositAccount.class).addAnnotatedClass(Card.class)
-            .addAnnotatedClass(CreditRequest.class).addAnnotatedClass(Payment.class);
+            .addAnnotatedClass(Card.class).addAnnotatedClass(CreditRequest.class)
+            .addAnnotatedClass(Payment.class).addAnnotatedClass(Rate.class);
 
     SESSION_FACTORY = config.buildSessionFactory();
   }

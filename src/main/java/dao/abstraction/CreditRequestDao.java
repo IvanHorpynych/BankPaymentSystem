@@ -21,7 +21,7 @@ public interface CreditRequestDao extends GenericDao<CreditRequest, Long> {
    * @param statusId status of account
    * @return list of retrieved accounts
    */
-  List<CreditRequest> findByStatus(long statusId);
+  List<CreditRequest> findByStatus(int statusId);
 
   /**
    * Updates certain credit request status.
