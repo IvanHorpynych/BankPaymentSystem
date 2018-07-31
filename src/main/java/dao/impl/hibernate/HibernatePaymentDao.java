@@ -1,6 +1,7 @@
 package dao.impl.hibernate;
 
 import dao.abstraction.PaymentDao;
+import dao.config.HibernateUtil;
 import entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -16,14 +17,10 @@ import java.util.Optional;
  */
 public class HibernatePaymentDao implements PaymentDao {
 
-  private Session session;
-
-  public HibernatePaymentDao(Session session) {
-    this.session = session;
-  }
 
   @Override
   public Optional<Payment> findOne(Long paymentId) {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Payment where id = :paymentId", Payment.class);
     query.setParameter("paymentId", paymentId);
     query.setMaxResults(1);
@@ -37,12 +34,14 @@ public class HibernatePaymentDao implements PaymentDao {
 
   @Override
   public List<Payment> findAll() {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Payment ", Payment.class);
     return query.getResultList();
   }
 
   @Override
   public Payment insert(Payment payment) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(payment);
     session.beginTransaction();
     session.save(payment);
@@ -52,6 +51,7 @@ public class HibernatePaymentDao implements PaymentDao {
 
   @Override
   public void update(Payment payment) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(payment);
     Transaction transaction = session.beginTransaction();
     session.update(payment);
@@ -60,6 +60,7 @@ public class HibernatePaymentDao implements PaymentDao {
 
   @Override
   public void delete(Long paymentId) {
+    Session session = HibernateUtil.getCurrentSession();
     Transaction transaction = session.beginTransaction();
     Payment payment = findOne(paymentId).get();
     session.delete(payment);
@@ -69,6 +70,7 @@ public class HibernatePaymentDao implements PaymentDao {
 
   @Override
   public List<Payment> findByAccount(Long accountNumber) {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery(
         "from Payment where accountFrom.id = :accountNumber or accountTo.id = :accountNumber",
         Payment.class);
@@ -79,6 +81,7 @@ public class HibernatePaymentDao implements PaymentDao {
 
   @Override
   public List<Payment> findByUser(User user) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(user);
     Query query = session.createQuery(
         "from Payment where accountFrom.accountHolder.id = :accountHolder or accountTo.accountHolder.id = :accountHolder",
@@ -89,6 +92,7 @@ public class HibernatePaymentDao implements PaymentDao {
 
   @Override
   public List<Payment> findByCardNumber(long cardNumber) {
+    Session session = HibernateUtil.getCurrentSession();
     Query query =
         session.createQuery("from Payment where cardNumberFrom = :cardNumber", Payment.class);
     query.setParameter("cardNumber", cardNumber);

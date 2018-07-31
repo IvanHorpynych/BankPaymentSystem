@@ -1,6 +1,7 @@
 package dao.impl.hibernate;
 
 import dao.abstraction.CreditAccountDao;
+import dao.config.HibernateUtil;
 import entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -15,14 +16,9 @@ import java.util.Optional;
 public class HibernateCreditAccountDao implements CreditAccountDao {
 
 
-  private Session session;
-
-  public HibernateCreditAccountDao(Session session) {
-    this.session = session;
-  }
-
   @Override
   public Optional<CreditAccount> findOne(Long accountNumber) {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from CreditAccount where accountNumber = :accountNumber",
         CreditAccount.class);
     query.setParameter("accountNumber", accountNumber);
@@ -37,12 +33,14 @@ public class HibernateCreditAccountDao implements CreditAccountDao {
 
   @Override
   public List<CreditAccount> findAll() {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from CreditAccount", CreditAccount.class);
     return query.getResultList();
   }
 
   @Override
   public CreditAccount insert(CreditAccount account) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(account);
     session.save(account);
     return account;
@@ -50,6 +48,7 @@ public class HibernateCreditAccountDao implements CreditAccountDao {
 
   @Override
   public void update(CreditAccount account) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(account);
     Transaction transaction = session.beginTransaction();
     session.update(account);
@@ -58,6 +57,7 @@ public class HibernateCreditAccountDao implements CreditAccountDao {
 
   @Override
   public void delete(Long accountNumber) {
+    Session session = HibernateUtil.getCurrentSession();
     Transaction transaction = session.beginTransaction();
     Account account = findOne(accountNumber).get();
     session.delete(account);
@@ -66,6 +66,7 @@ public class HibernateCreditAccountDao implements CreditAccountDao {
 
   @Override
   public List<CreditAccount> findByUser(User user) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(user);
     Query query = session.createQuery("from CreditAccount where accountHolder = :accountHolder",
         CreditAccount.class);
@@ -75,6 +76,7 @@ public class HibernateCreditAccountDao implements CreditAccountDao {
 
   @Override
   public List<CreditAccount> findAllNotClosed() {
+    Session session = HibernateUtil.getCurrentSession();
     Query query =
         session.createQuery("from CreditAccount where status = :statusId", CreditAccount.class);
     query.setParameter("statusId",

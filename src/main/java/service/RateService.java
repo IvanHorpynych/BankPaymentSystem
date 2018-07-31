@@ -11,7 +11,6 @@ import java.util.Optional;
 public class RateService {
 
   private final DaoFactory daoFactory = DaoFactory.getInstance();
-  private final Session session = HibernateUtil.getInstance();
 
   private RateService() {}
 
@@ -24,12 +23,16 @@ public class RateService {
   }
 
   public Optional<Rate> findValidAnnualRate() {
-    RateDao rateDao = daoFactory.getRateDao(session);
-    return rateDao.findLast();
+    try(Session session = HibernateUtil.getInstance()) {
+      RateDao rateDao = daoFactory.getRateDao();
+      return rateDao.findLast();
+    }
   }
 
   public Rate updateAnnualRate(Rate rate) {
-    RateDao rateDao = daoFactory.getRateDao(session);
-    return rateDao.insert(rate);
+    try(Session session = HibernateUtil.getInstance()) {
+      RateDao rateDao = daoFactory.getRateDao();
+      return rateDao.insert(rate);
+    }
   }
 }

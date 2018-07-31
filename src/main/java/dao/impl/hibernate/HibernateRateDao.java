@@ -21,15 +21,10 @@ import java.util.Optional;
 
 public class HibernateRateDao implements RateDao {
 
-  private Session session;
-
-  public HibernateRateDao(Session session) {
-    this.session = session;
-  }
-
 
   @Override
   public Optional<Rate> findOne(Long number) {
+      Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Rate where id = :number", Rate.class);
     query.setParameter("number", number);
     query.setMaxResults(1);
@@ -43,12 +38,14 @@ public class HibernateRateDao implements RateDao {
 
   @Override
   public List<Rate> findAll() {
+      Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Rate ", Rate.class);
     return query.getResultList();
   }
 
   @Override
   public Rate insert(Rate rate) {
+      Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(rate);
     session.beginTransaction();
     session.persist(rate);
@@ -58,6 +55,7 @@ public class HibernateRateDao implements RateDao {
 
   @Override
   public void update(Rate rate) {
+      Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(rate);
     Transaction transaction = session.beginTransaction();
     session.update(rate);
@@ -66,6 +64,7 @@ public class HibernateRateDao implements RateDao {
 
   @Override
   public void delete(Long cardNumber) {
+      Session session = HibernateUtil.getCurrentSession();
     Transaction transaction = session.beginTransaction();
     Rate rate = findOne(cardNumber).get();
     session.delete(rate);
@@ -75,6 +74,7 @@ public class HibernateRateDao implements RateDao {
 
   @Override
   public Optional<Rate> findLast() {
+      Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Rate order by createdTime desc", Rate.class);
     query.setMaxResults(1);
     return Optional.ofNullable((Rate) query.getSingleResult());

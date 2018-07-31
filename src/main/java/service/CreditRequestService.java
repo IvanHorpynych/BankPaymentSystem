@@ -18,7 +18,6 @@ import java.util.Optional;
  */
 public class CreditRequestService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
-  private final Session session = HibernateUtil.getInstance();
 
   private CreditRequestService() {}
 
@@ -31,42 +30,53 @@ public class CreditRequestService {
   }
 
   public CreditRequest createRequest(CreditRequest creditRequest) {
-    CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao(session);
-    return creditRequestDao.insert(creditRequest);
+    try(Session session = HibernateUtil.getInstance()) {
+      CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
+      return creditRequestDao.insert(creditRequest);
+    }
   }
 
   public List<CreditRequest> findAllPendingRequests() {
-    CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao(session);
-    return creditRequestDao.findByStatus(Status.StatusIdentifier.PENDING_STATUS.getId());
+    try(Session session = HibernateUtil.getInstance()) {
+      CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
+      return creditRequestDao.findByStatus(Status.StatusIdentifier.PENDING_STATUS.getId());
+    }
   }
 
   public Optional<CreditRequest> findCreditRequestByNumber(long requestNumber) {
-    CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao(session);
-    return creditRequestDao.findOne(requestNumber);
+    try(Session session = HibernateUtil.getInstance()) {
+      CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
+      return creditRequestDao.findOne(requestNumber);
+    }
   }
 
 
   public List<CreditRequest> findAllByUser(User user) {
-    CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao(session);
-    return creditRequestDao.findByUser(user);
+    try(Session session = HibernateUtil.getInstance()) {
+      CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
+      return creditRequestDao.findByUser(user);
+    }
   }
 
   public void updateRequestStatus(CreditRequest creditRequest, int statusId) {
-    CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao(session);
-    creditRequestDao.updateRequestStatus(creditRequest, statusId);
+    try(Session session = HibernateUtil.getInstance()) {
+      CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
+      creditRequestDao.updateRequestStatus(creditRequest, statusId);
+    }
   }
 
   public void confirmRequest(CreditRequest creditRequest, CreditAccount creditAccount) {
-    CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao(session);
-    CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao(session);
+    try(Session session = HibernateUtil.getInstance()) {
+      session.beginTransaction();
+      CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
+      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao();
 
-    session.beginTransaction();
+      creditRequestDao.updateRequestStatus(creditRequest, creditRequest.getStatus().getId());
 
-    creditRequestDao.updateRequestStatus(creditRequest, creditRequest.getStatus().getId());
+      creditAccountDao.insert(creditAccount);
 
-    creditAccountDao.insert(creditAccount);
-
-    session.getTransaction().commit();
+      session.getTransaction().commit();
+    }
   }
 }
 

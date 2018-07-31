@@ -18,7 +18,6 @@ import java.util.Optional;
  */
 public class DebitAccountService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
-  private final Session session = HibernateUtil.getInstance();
 
   private DebitAccountService() {}
 
@@ -31,36 +30,48 @@ public class DebitAccountService {
   }
 
   public List<Account> findAllDebitAccounts() {
-    DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(session);
-    return debitAccountDao.findAll();
+    try(Session session = HibernateUtil.getInstance()) {
+      DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao();
+      return debitAccountDao.findAll();
+    }
   }
 
   public Optional<Account> findAccountByNumber(long accountNumber) {
-    DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(session);
-    return debitAccountDao.findOne(accountNumber);
+    try(Session session = HibernateUtil.getInstance()) {
+      DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao();
+      return debitAccountDao.findOne(accountNumber);
+    }
   }
 
   public List<Account> findAllByUser(User user) {
-    DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(session);
-    return debitAccountDao.findByUser(user);
+    try(Session session = HibernateUtil.getInstance()) {
+      DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao();
+      return debitAccountDao.findByUser(user);
+    }
   }
 
   public List<Account> findAllNotClosed() {
-    DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(session);
-    return debitAccountDao.findAllNotClosed();
+    try(Session session = HibernateUtil.getInstance()) {
+      DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao();
+      return debitAccountDao.findAllNotClosed();
+    }
   }
 
   public Account createAccount(Account account) {
-    DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(session);
-    Account inserted = debitAccountDao.insert(account);
-    return inserted;
+    try(Session session = HibernateUtil.getInstance()) {
+      DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao();
+      Account inserted = debitAccountDao.insert(account);
+      return inserted;
+    }
   }
 
   public void updateAccountStatus(Account account, int statusId) {
-    session.beginTransaction();
-    DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao(session);
-    debitAccountDao.updateAccountStatus(account, statusId);
-    session.getTransaction().commit();
+    try(Session session = HibernateUtil.getInstance()) {
+      session.beginTransaction();
+      DebitAccountDao debitAccountDao = daoFactory.getDebitAccountDao();
+      debitAccountDao.updateAccountStatus(account, statusId);
+      session.getTransaction().commit();
+    }
   }
 }
 

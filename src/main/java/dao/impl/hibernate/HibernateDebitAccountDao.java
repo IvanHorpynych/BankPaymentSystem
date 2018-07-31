@@ -2,6 +2,7 @@
 package dao.impl.hibernate;
 
 import dao.abstraction.DebitAccountDao;
+import dao.config.HibernateUtil;
 import entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -17,14 +18,9 @@ import java.util.Optional;
 public class HibernateDebitAccountDao implements DebitAccountDao {
 
 
-  private Session session;
-
-  public HibernateDebitAccountDao(Session session) {
-    this.session = session;
-  }
-
   @Override
   public Optional<Account> findOne(Long accountNumber) {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery(
         "from Account where accountNumber = :accountNumber and accountType.id = :typeId",
         Account.class);
@@ -42,6 +38,7 @@ public class HibernateDebitAccountDao implements DebitAccountDao {
 
   @Override
   public List<Account> findAll() {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Account where accountType.id = :typeId", Account.class);
     query.setParameter("typeId", ((AccountType) session
         .createQuery("from AccountType where name = 'DEBIT'").getSingleResult()).getId());
@@ -50,6 +47,7 @@ public class HibernateDebitAccountDao implements DebitAccountDao {
 
   @Override
   public Account insert(Account account) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(account);
     session.save(account);
     return account;
@@ -57,6 +55,7 @@ public class HibernateDebitAccountDao implements DebitAccountDao {
 
   @Override
   public void update(Account account) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(account);
     Transaction transaction = session.beginTransaction();
     session.update(account);
@@ -65,6 +64,7 @@ public class HibernateDebitAccountDao implements DebitAccountDao {
 
   @Override
   public void delete(Long accountNumber) {
+    Session session = HibernateUtil.getCurrentSession();
     Transaction transaction = session.beginTransaction();
     Account account = findOne(accountNumber).get();
     session.delete(account);
@@ -74,6 +74,7 @@ public class HibernateDebitAccountDao implements DebitAccountDao {
 
   @Override
   public List<Account> findByUser(User user) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(user);
     Query query = session.createQuery(
         "from Account where accountHolder = :accountHolder and accountType.id = :typeId",
@@ -86,6 +87,7 @@ public class HibernateDebitAccountDao implements DebitAccountDao {
 
   @Override
   public List<Account> findAllNotClosed() {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Account where status = :statusId", Account.class);
     query.setParameter("statusId",
         ((Status) session.createQuery("from Status where name != 'CLOSED'").getSingleResult())

@@ -2,6 +2,7 @@
 package dao.impl.hibernate;
 
 import dao.abstraction.DepositAccountDao;
+import dao.config.HibernateUtil;
 import entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -15,15 +16,11 @@ import java.util.Optional;
 
 public class HibernateDepositAccountDao implements DepositAccountDao {
 
-  private Session session;
-
-  public HibernateDepositAccountDao(Session session) {
-    this.session = session;
-  }
 
 
   @Override
   public Optional<DepositAccount> findOne(Long accountNumber) {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from DepositAccount where accountNumber = :accountNumber",
         Account.class);
     query.setParameter("accountNumber", accountNumber);
@@ -38,12 +35,14 @@ public class HibernateDepositAccountDao implements DepositAccountDao {
 
   @Override
   public List<DepositAccount> findAll() {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from DepositAccount ", DepositAccount.class);
     return query.getResultList();
   }
 
   @Override
   public DepositAccount insert(DepositAccount account) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(account);
     session.save(account);
     return account;
@@ -51,6 +50,7 @@ public class HibernateDepositAccountDao implements DepositAccountDao {
 
   @Override
   public void update(DepositAccount account) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(account);
     Transaction transaction = session.beginTransaction();
     session.update(account);
@@ -59,6 +59,7 @@ public class HibernateDepositAccountDao implements DepositAccountDao {
 
   @Override
   public void delete(Long accountNumber) {
+    Session session = HibernateUtil.getCurrentSession();
     Transaction transaction = session.beginTransaction();
     Account account = findOne(accountNumber).get();
     session.delete(account);
@@ -68,6 +69,7 @@ public class HibernateDepositAccountDao implements DepositAccountDao {
 
   @Override
   public List<DepositAccount> findByUser(User user) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(user);
     Query query = session.createQuery("from DepositAccount where accountHolder = :accountHolder",
         DepositAccount.class);
@@ -77,6 +79,7 @@ public class HibernateDepositAccountDao implements DepositAccountDao {
 
   @Override
   public List<DepositAccount> findAllNotClosed() {
+    Session session = HibernateUtil.getCurrentSession();
     Query query =
         session.createQuery("from DepositAccount where status = :statusId", DepositAccount.class);
     query.setParameter("statusId",

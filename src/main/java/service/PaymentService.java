@@ -21,7 +21,6 @@ import java.util.Optional;
  */
 public class PaymentService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
-  private final Session session = HibernateUtil.getInstance();
 
   private PaymentService() {}
 
@@ -34,84 +33,96 @@ public class PaymentService {
   }
 
   public Optional<Payment> findById(Long id) {
-    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
-    return paymentDao.findOne(id);
+    try(Session session = HibernateUtil.getInstance()) {
+      PaymentDao paymentDao = daoFactory.getPaymentDao();
+      return paymentDao.findOne(id);
+    }
   }
 
   public List<Payment> findAll() {
-    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
-    return paymentDao.findAll();
+    try(Session session = HibernateUtil.getInstance()) {
+      PaymentDao paymentDao = daoFactory.getPaymentDao();
+      return paymentDao.findAll();
+    }
   }
 
 
   public List<Payment> findAllByUser(User user) {
-    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
-    return paymentDao.findByUser(user);
+    try(Session session = HibernateUtil.getInstance()) {
+      PaymentDao paymentDao = daoFactory.getPaymentDao();
+      return paymentDao.findByUser(user);
+    }
   }
 
   public List<Payment> findAllByAccount(Long accountNumber) {
-    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
-    return paymentDao.findByAccount(accountNumber);
+    try(Session session = HibernateUtil.getInstance()) {
+      PaymentDao paymentDao = daoFactory.getPaymentDao();
+      return paymentDao.findByAccount(accountNumber);
+    }
   }
 
   public List<Payment> findAllByCard(Long cardNumber) {
-    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
-    return paymentDao.findByCardNumber(cardNumber);
+    try(Session session = HibernateUtil.getInstance()) {
+      PaymentDao paymentDao = daoFactory.getPaymentDao();
+      return paymentDao.findByCardNumber(cardNumber);
+    }
   }
 
   public Payment createPayment(Payment payment) {
-    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
-    GenericAccountDao accountDaoFrom =
-        daoFactory.getAccountDao(session, payment.getAccountFrom().getAccountType());
-    GenericAccountDao accountDaoTo =
-        daoFactory.getAccountDao(session, payment.getAccountTo().getAccountType());
+    try(Session session = HibernateUtil.getInstance()) {
+      PaymentDao paymentDao = daoFactory.getPaymentDao();
+      GenericAccountDao accountDaoFrom =
+              daoFactory.getAccountDao(payment.getAccountFrom().getAccountType());
+      GenericAccountDao accountDaoTo =
+              daoFactory.getAccountDao(payment.getAccountTo().getAccountType());
 
 
-    Account accountFrom = payment.getAccountFrom();
-    Account accountTo = payment.getAccountTo();
-    BigDecimal amount = payment.getAmount();
+      Account accountFrom = payment.getAccountFrom();
+      Account accountTo = payment.getAccountTo();
+      BigDecimal amount = payment.getAmount();
 
-    session.beginTransaction();
+      session.beginTransaction();
 
-    accountDaoFrom.decreaseBalance(accountFrom, amount);
-    accountDaoTo.increaseBalance(accountTo, amount);
+      accountDaoFrom.decreaseBalance(accountFrom, amount);
+      accountDaoTo.increaseBalance(accountTo, amount);
 
-    Payment inserted = paymentDao.insert(payment);
+      Payment inserted = paymentDao.insert(payment);
 
-    session.getTransaction().commit();
+      session.getTransaction().commit();
 
-    return inserted;
+      return inserted;
+    }
   }
 
   @SuppressWarnings("unchecked")
   public Payment createPaymentWithUpdate(Payment payment) {
-    PaymentDao paymentDao = daoFactory.getPaymentDao(session);
+    try(Session session = HibernateUtil.getInstance()) {
+      PaymentDao paymentDao = daoFactory.getPaymentDao();
 
-    GenericAccountDao accountDaoFrom =
-        daoFactory.getAccountDao(session, payment.getAccountFrom().getAccountType());
-    GenericAccountDao accountDaoTo =
-        daoFactory.getAccountDao(session, payment.getAccountTo().getAccountType());
+      GenericAccountDao accountDaoFrom =
+              daoFactory.getAccountDao(payment.getAccountFrom().getAccountType());
+      GenericAccountDao accountDaoTo =
+              daoFactory.getAccountDao(payment.getAccountTo().getAccountType());
 
 
-    Account accountFrom = payment.getAccountFrom();
-    Account accountTo = payment.getAccountTo();
-    BigDecimal amount = payment.getAmount();
+      Account accountFrom = payment.getAccountFrom();
+      Account accountTo = payment.getAccountTo();
+      BigDecimal amount = payment.getAmount();
 
-    session.beginTransaction();
+      session.beginTransaction();
 
-    accountDaoFrom.decreaseBalance(accountFrom, amount);
-    accountDaoTo.increaseBalance(accountTo, amount);
+      accountDaoFrom.decreaseBalance(accountFrom, amount);
+      accountDaoTo.increaseBalance(accountTo, amount);
 
-    accountDaoFrom.update(accountFrom);
-    accountDaoTo.update(accountTo);
+      accountDaoFrom.update(accountFrom);
+      accountDaoTo.update(accountTo);
 
-    Payment inserted = paymentDao.insert(payment);
+      Payment inserted = paymentDao.insert(payment);
 
-    session.getTransaction().commit();
+      session.getTransaction().commit();
 
-    return inserted;
+      return inserted;
+    }
   }
-
-
 
 }

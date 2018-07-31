@@ -19,7 +19,6 @@ import java.util.Optional;
  */
 public class UserService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
-  private final Session session = HibernateUtil.getInstance();
 
   private UserService() {}
 
@@ -32,46 +31,56 @@ public class UserService {
   }
 
   public Optional<User> findById(Long id) {
-    UserDao userDao = daoFactory.getUserDao(session);
-    return userDao.findOne(id);
+    try(Session session = HibernateUtil.getInstance()) {
+      UserDao userDao = daoFactory.getUserDao();
+      return userDao.findOne(id);
+    }
   }
 
   public Optional<User> findByEmail(String email) {
-    UserDao userDao = daoFactory.getUserDao(session);
-    return userDao.findOneByEmail(email);
+    try(Session session = HibernateUtil.getInstance()) {
+      UserDao userDao = daoFactory.getUserDao();
+      return userDao.findOneByEmail(email);
+    }
   }
 
   public List<User> findAllUsers() {
-    UserDao userDao = daoFactory.getUserDao(session);
-    return userDao.findAll();
+    try(Session session = HibernateUtil.getInstance()) {
+      UserDao userDao = daoFactory.getUserDao();
+      return userDao.findAll();
+    }
   }
 
   public User createUser(User user) {
-    Objects.requireNonNull(user);
+    try(Session session = HibernateUtil.getInstance()) {
+      Objects.requireNonNull(user);
 
-    if (user.getRole() == null) {
-      user.setDefaultRole();
+      if (user.getRole() == null) {
+        user.setDefaultRole();
+      }
+
+      String hash = PasswordStorage.getSecurePassword(user.getPassword());
+      user.setPassword(hash);
+
+      UserDao userDao = daoFactory.getUserDao();
+      return userDao.insert(user);
     }
-
-    String hash = PasswordStorage.getSecurePassword(user.getPassword());
-    user.setPassword(hash);
-
-    UserDao userDao = daoFactory.getUserDao(session);
-    return userDao.insert(user);
   }
 
   public boolean isCredentialsValid(String email, String password) {
-    UserDao userDao = daoFactory.getUserDao(session);
-    Optional<User> user = userDao.findOneByEmail(email);
+    try(Session session = HibernateUtil.getInstance()) {
+      UserDao userDao = daoFactory.getUserDao();
+      Optional<User> user = userDao.findOneByEmail(email);
 
-    return user.filter(u -> PasswordStorage.checkSecurePassword(password, u.getPassword()))
-        .isPresent();
-
+      return user.filter(u -> PasswordStorage.checkSecurePassword(password, u.getPassword()))
+              .isPresent();
+    }
   }
 
-  public boolean isUserExists(User user) {
-    UserDao userDao = daoFactory.getUserDao(session);
-    return userDao.exist(user.getId()) || userDao.existByEmail(user.getEmail());
+  public boolean isUserExists(User user){
+    try(Session session = HibernateUtil.getInstance()) {
+      UserDao userDao = daoFactory.getUserDao();
+      return userDao.exist(user.getId()) || userDao.existByEmail(user.getEmail());
+    }
   }
-
 }

@@ -1,6 +1,7 @@
 package dao.impl.hibernate;
 
 import dao.abstraction.CreditRequestDao;
+import dao.config.HibernateUtil;
 import entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -13,14 +14,9 @@ import java.util.Optional;
 
 public class HibernateCreditRequestDao implements CreditRequestDao {
 
-  private Session session;
-
-  public HibernateCreditRequestDao(Session session) {
-    this.session = session;
-  }
-
   @Override
   public Optional<CreditRequest> findOne(Long requestNumber) {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from CreditRequest where requestNumber = :requestNumber",
         CreditRequest.class);
     query.setParameter("requestNumber", requestNumber);
@@ -35,12 +31,14 @@ public class HibernateCreditRequestDao implements CreditRequestDao {
 
   @Override
   public List<CreditRequest> findAll() {
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from CreditRequest", CreditRequest.class);
     return query.getResultList();
   }
 
   @Override
   public CreditRequest insert(CreditRequest request) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(request);
     session.beginTransaction();
     session.persist(request);
@@ -50,12 +48,14 @@ public class HibernateCreditRequestDao implements CreditRequestDao {
 
   @Override
   public void update(CreditRequest request) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(request);
     session.update(request);
   }
 
   @Override
   public void delete(Long requestNumber) {
+    Session session = HibernateUtil.getCurrentSession();
     Transaction transaction = session.beginTransaction();
     CreditRequest request = findOne(requestNumber).get();
     session.delete(request);
@@ -65,6 +65,7 @@ public class HibernateCreditRequestDao implements CreditRequestDao {
 
   @Override
   public List<CreditRequest> findByUser(User user) {
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(user);
     Query query = session.createQuery("from CreditRequest where accountHolder = :accountHolder",
         CreditRequest.class);
@@ -74,6 +75,7 @@ public class HibernateCreditRequestDao implements CreditRequestDao {
 
   @Override
   public List<CreditRequest> findByStatus(int statusId) {
+    Session session = HibernateUtil.getCurrentSession();
     Query query =
         session.createQuery("from CreditRequest where status.id = :statusId", CreditRequest.class);
     query.setParameter("statusId", statusId);

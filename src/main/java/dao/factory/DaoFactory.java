@@ -42,24 +42,24 @@ public abstract class DaoFactory {
 
 
 
-  public abstract UserDao getUserDao(Session session);
+  public abstract UserDao getUserDao();
 
-  public abstract GenericAccountDao getAccountDao(Session session, AccountType accountType);
+  public abstract GenericAccountDao getAccountDao(AccountType accountType);
 
-  public abstract CreditAccountDao getCreditAccountDao(Session session);
+  public abstract CreditAccountDao getCreditAccountDao();
 
-  public abstract DepositAccountDao getDepositAccountDao(Session session);
+  public abstract DepositAccountDao getDepositAccountDao();
 
-  public abstract DebitAccountDao getDebitAccountDao(Session session);
+  public abstract DebitAccountDao getDebitAccountDao();
 
-  public abstract AccountsDao getAccountsDao(Session session);
+  public abstract AccountsDao getAccountsDao();
 
-  public abstract RateDao getRateDao(Session session);
+  public abstract RateDao getRateDao();
 
-  public abstract CardDao getCardDao(Session session);
+  public abstract CardDao getCardDao();
 
-  public abstract PaymentDao getPaymentDao(Session session);
+  public abstract PaymentDao getPaymentDao();
 
-  public abstract CreditRequestDao getCreditRequestDao(Session session);
+  public abstract CreditRequestDao getCreditRequestDao();
 
 }

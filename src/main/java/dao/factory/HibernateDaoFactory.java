@@ -11,62 +11,62 @@ public class HibernateDaoFactory extends DaoFactory {
 
 
 
-  public UserDao getUserDao(Session session) {
-    return new HibernateUserDao(session);
+  public UserDao getUserDao() {
+    return new HibernateUserDao();
   }
 
 
   @Override
-  public CreditAccountDao getCreditAccountDao(Session session) {
-    return new HibernateCreditAccountDao(session);
+  public CreditAccountDao getCreditAccountDao() {
+    return new HibernateCreditAccountDao();
   }
 
   @Override
-  public DepositAccountDao getDepositAccountDao(Session session) {
-    return new HibernateDepositAccountDao(session);
+  public DepositAccountDao getDepositAccountDao() {
+    return new HibernateDepositAccountDao();
   }
 
   @Override
-  public DebitAccountDao getDebitAccountDao(Session session) {
-    return new HibernateDebitAccountDao(session);
+  public DebitAccountDao getDebitAccountDao() {
+    return new HibernateDebitAccountDao();
   }
 
   @Override
-  public AccountsDao getAccountsDao(Session session) {
-    return new HibernateAccountsDao(session);
+  public AccountsDao getAccountsDao() {
+    return new HibernateAccountsDao();
   }
 
   @Override
-  public RateDao getRateDao(Session session) {
-    return new HibernateRateDao(session);
+  public RateDao getRateDao() {
+    return new HibernateRateDao();
   }
 
 
   @Override
-  public CardDao getCardDao(Session session) {
-    return new HibernateCardDao(session);
+  public CardDao getCardDao() {
+    return new HibernateCardDao();
   }
 
   @Override
-  public PaymentDao getPaymentDao(Session session) {
-    return new HibernatePaymentDao(session);
+  public PaymentDao getPaymentDao() {
+    return new HibernatePaymentDao();
   }
 
   @Override
-  public CreditRequestDao getCreditRequestDao(Session session) {
-    return new HibernateCreditRequestDao(session);
+  public CreditRequestDao getCreditRequestDao() {
+    return new HibernateCreditRequestDao();
   }
 
   @Override
-  public GenericAccountDao getAccountDao(Session session, AccountType accountType) {
+  public GenericAccountDao getAccountDao(AccountType accountType) {
     if (accountType.getId() == AccountType.TypeIdentifier.CREDIT_TYPE.getId())
-      return getCreditAccountDao(session);
+      return getCreditAccountDao();
     else if (accountType.getId() == AccountType.TypeIdentifier.DEPOSIT_TYPE.getId())
-      return getDepositAccountDao(session);
+      return getDepositAccountDao();
     else if (accountType.getId() == AccountType.TypeIdentifier.DEBIT_TYPE.getId())
-      return getDebitAccountDao(session);
+      return getDebitAccountDao();
     else if (accountType.getId() == AccountType.TypeIdentifier.ATM_TYPE.getId())
-      return getDebitAccountDao(session);
+      return getDebitAccountDao();
     return null;
   }
 

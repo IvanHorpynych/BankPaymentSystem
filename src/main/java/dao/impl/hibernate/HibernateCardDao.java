@@ -3,6 +3,7 @@ package dao.impl.hibernate;
 
 import dao.abstraction.CardDao;
 
+import dao.config.HibernateUtil;
 import entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -19,14 +20,9 @@ import java.util.*;
 public class HibernateCardDao implements CardDao {
 
 
-  private Session session;
-
-  public HibernateCardDao(Session session) {
-    this.session = session;
-  }
-
   @Override
   public Optional<Card> findOne(Long cardNumber) {
+      Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Card where cardNumber = :cardNumber", Card.class);
     query.setParameter("cardNumber", cardNumber);
     query.setMaxResults(1);
@@ -40,12 +36,14 @@ public class HibernateCardDao implements CardDao {
 
   @Override
   public List<Card> findAll() {
+      Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Card ", Card.class);
     return query.getResultList();
   }
 
   @Override
   public Card insert(Card card) {
+      Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(card);
 
     session.beginTransaction();
@@ -56,6 +54,7 @@ public class HibernateCardDao implements CardDao {
 
   @Override
   public void update(Card card) {
+      Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(card);
     Transaction transaction = session.beginTransaction();
     session.update(card);
@@ -64,6 +63,7 @@ public class HibernateCardDao implements CardDao {
 
   @Override
   public void delete(Long cardNumber) {
+      Session session = HibernateUtil.getCurrentSession();
     Transaction transaction = session.beginTransaction();
     Card card = findOne(cardNumber).get();
     session.delete(card);
@@ -73,6 +73,7 @@ public class HibernateCardDao implements CardDao {
 
   @Override
   public List<Card> findByUser(User user) {
+      Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(user);
     Query query = session.createQuery("from Card where account.accountHolder.id = :accountHolderId",
         Card.class);
@@ -82,6 +83,7 @@ public class HibernateCardDao implements CardDao {
 
   @Override
   public List<Card> findByAccount(Account account) {
+      Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Card where account.id = :accountId", Card.class);
     query.setParameter("accountId", account.getAccountNumber());
     query.setMaxResults(1);
@@ -91,7 +93,7 @@ public class HibernateCardDao implements CardDao {
 
   @Override
   public List<Card> findByUserAndStatus(User user, Status status) {
-
+      Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery(
         "from Card where account.accountHolder.id= :accountHolderId and status.id = :statusId",
         Card.class);
@@ -104,6 +106,7 @@ public class HibernateCardDao implements CardDao {
 
   @Override
   public void updateCardStatus(Card card, int statusId) {
+      Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(card);
 
     card = findOne(card.getCardNumber()).get();

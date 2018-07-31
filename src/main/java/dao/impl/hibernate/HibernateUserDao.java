@@ -1,6 +1,7 @@
 package dao.impl.hibernate;
 
 import dao.abstraction.UserDao;
+import dao.config.HibernateUtil;
 import entity.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -16,15 +17,9 @@ import java.util.Optional;
  */
 public class HibernateUserDao implements UserDao {
 
-  private Session session;
-
-  public HibernateUserDao(Session session) {
-    this.session = session;
-  }
-
   @Override
   public Optional<User> findOne(Long id) {
-
+    Session session = HibernateUtil.getCurrentSession();
     CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
     CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
     Root<User> root = query.from(User.class);
@@ -35,6 +30,7 @@ public class HibernateUserDao implements UserDao {
 
   @Override
   public Optional<User> findOneByEmail(String email) {
+    Session session = HibernateUtil.getCurrentSession();
     CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
     CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
     Root<User> root = query.from(User.class);
@@ -45,6 +41,7 @@ public class HibernateUserDao implements UserDao {
 
   @Override
   public List<User> findAll() {
+    Session session = HibernateUtil.getCurrentSession();
     CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
     CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
     Root<User> root = query.from(User.class);
@@ -54,12 +51,14 @@ public class HibernateUserDao implements UserDao {
 
   @Override
   public User insert(User obj) {
+    Session session = HibernateUtil.getCurrentSession();
     session.save(obj);
     return obj;
   }
 
   @Override
   public void update(User obj) {
+    Session session = HibernateUtil.getCurrentSession();
     Transaction transaction = session.beginTransaction();
     session.update(obj);
     transaction.commit();
@@ -67,6 +66,7 @@ public class HibernateUserDao implements UserDao {
 
   @Override
   public void delete(Long id) {
+    Session session = HibernateUtil.getCurrentSession();
     Transaction transaction = session.beginTransaction();
     User user = findOne(id).get();
     session.delete(user);

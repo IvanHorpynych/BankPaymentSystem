@@ -19,7 +19,6 @@ import java.util.Optional;
  */
 public class CardService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
-  private final Session session = HibernateUtil.getInstance();
 
   private CardService() {}
 
@@ -32,34 +31,45 @@ public class CardService {
   }
 
   public Card createCard(Card card) {
-
-    CardDao cardDao = daoFactory.getCardDao(session);
-    return cardDao.insert(card);
+    try(Session session = HibernateUtil.getInstance()) {
+      CardDao cardDao = daoFactory.getCardDao();
+      return cardDao.insert(card);
+    }
   }
 
   public List<Card> findAllCards() {
-    CardDao cardDao = daoFactory.getCardDao(session);
-    return cardDao.findAll();
+    try(Session session = HibernateUtil.getInstance()) {
+      CardDao cardDao = daoFactory.getCardDao();
+      return cardDao.findAll();
+    }
   }
 
   public Optional<Card> findCardByNumber(long cardNumber) {
-    CardDao cardDao = daoFactory.getCardDao(session);
-    return cardDao.findOne(cardNumber);
+    try(Session session = HibernateUtil.getInstance()) {
+      CardDao cardDao = daoFactory.getCardDao();
+      return cardDao.findOne(cardNumber);
+    }
   }
 
   public List<Card> findAllByUser(User user) {
-    CardDao cardDao = daoFactory.getCardDao(session);
-    return cardDao.findByUser(user);
+    try(Session session = HibernateUtil.getInstance()) {
+      CardDao cardDao = daoFactory.getCardDao();
+      return cardDao.findByUser(user);
+    }
   }
 
   public List<Card> findAllByAccount(Account account) {
-    CardDao cardDao = daoFactory.getCardDao(session);
-    return cardDao.findByAccount(account);
+    try(Session session = HibernateUtil.getInstance()) {
+      CardDao cardDao = daoFactory.getCardDao();
+      return cardDao.findByAccount(account);
+    }
   }
 
   public void updateCardStatus(Card card, int statusId) {
-    CardDao cardDao = daoFactory.getCardDao(session);
-    cardDao.updateCardStatus(card, statusId);
+    try(Session session = HibernateUtil.getInstance()) {
+      CardDao cardDao = daoFactory.getCardDao();
+      cardDao.updateCardStatus(card, statusId);
+    }
   }
 
 

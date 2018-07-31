@@ -20,7 +20,6 @@ import java.util.Optional;
  */
 public class AccountsService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
-  private final Session session = HibernateUtil.getInstance();
 
   private AccountsService() {}
 
@@ -33,44 +32,52 @@ public class AccountsService {
   }
 
   public List<Account> findAllAccounts() {
-
-    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
+  try(Session session = HibernateUtil.getInstance()) {
+    AccountsDao accountsDao = daoFactory.getAccountsDao();
     return accountsDao.findAll();
+  }
   }
 
   public Optional<Account> findAccountByNumber(long accountNumber) {
-
-    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
-    return accountsDao.findOne(accountNumber);
+    try(Session session = HibernateUtil.getInstance()) {
+      AccountsDao accountsDao = daoFactory.getAccountsDao();
+      return accountsDao.findOne(accountNumber);
+    }
   }
 
   public List<Account> findAllByUser(User user) {
-    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
-    return accountsDao.findByUser(user);
+    try(Session session = HibernateUtil.getInstance()) {
+      AccountsDao accountsDao = daoFactory.getAccountsDao();
+      return accountsDao.findByUser(user);
+    }
 
   }
 
 
   public Account createAccount(Account account) {
-    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
-    Account inserted = accountsDao.insert(account);
-    return inserted;
+    try(Session session = HibernateUtil.getInstance()) {
+      AccountsDao accountsDao = daoFactory.getAccountsDao();
+      Account inserted = accountsDao.insert(account);
+      return inserted;
+    }
 
   }
 
   public void updateAccountStatus(Account account, int statusId) {
-    session.beginTransaction();
-    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
-    accountsDao.updateAccountStatus(account, statusId);
-    session.getTransaction().commit();
+    try(Session session = HibernateUtil.getInstance()) {
+      session.beginTransaction();
+      AccountsDao accountsDao = daoFactory.getAccountsDao();
+      accountsDao.updateAccountStatus(account, statusId);
+      session.getTransaction().commit();
+    }
   }
 
 
   public Optional<Account> findAtmAccount() {
-
-    AccountsDao accountsDao = daoFactory.getAccountsDao(session);
-    return accountsDao.findOneByType(AccountType.TypeIdentifier.ATM_TYPE.getId());
-
+    try(Session session = HibernateUtil.getInstance()) {
+      AccountsDao accountsDao = daoFactory.getAccountsDao();
+      return accountsDao.findOneByType(AccountType.TypeIdentifier.ATM_TYPE.getId());
+    }
   }
 
 }

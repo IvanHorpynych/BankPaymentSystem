@@ -19,7 +19,6 @@ import java.util.Optional;
  */
 public class DepositAccountService {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
-  Session session = HibernateUtil.getInstance();
 
   private DepositAccountService() {
 
@@ -34,38 +33,52 @@ public class DepositAccountService {
   }
 
   public List<DepositAccount> findAllDepositAccounts() {
-    return daoFactory.getDepositAccountDao(session).findAll();
+    try(Session session = HibernateUtil.getInstance()) {
+      return daoFactory.getDepositAccountDao().findAll();
+    }
   }
 
   public Optional<DepositAccount> findAccountByNumber(long accountNumber) {
-    return daoFactory.getDepositAccountDao(session).findOne(accountNumber);
+    try(Session session = HibernateUtil.getInstance()) {
+      return daoFactory.getDepositAccountDao().findOne(accountNumber);
+    }
   }
 
   public List<DepositAccount> findAllByUser(User user) {
-    return daoFactory.getDepositAccountDao(session).findByUser(user);
+    try(Session session = HibernateUtil.getInstance()) {
+      return daoFactory.getDepositAccountDao().findByUser(user);
+    }
   }
 
   public List<DepositAccount> findAllNotClosed() {
-    return daoFactory.getDepositAccountDao(session).findAllNotClosed();
+    try(Session session = HibernateUtil.getInstance()) {
+      return daoFactory.getDepositAccountDao().findAllNotClosed();
+    }
   }
 
   public DepositAccount createAccount(DepositAccount account) {
-    DepositAccount inserted = daoFactory.getDepositAccountDao(session).insert(account);
-    return inserted;
+    try(Session session = HibernateUtil.getInstance()) {
+      DepositAccount inserted = daoFactory.getDepositAccountDao().insert(account);
+      return inserted;
+    }
   }
 
   public void updateAccountStatus(DepositAccount account, int statusId) {
-    session.beginTransaction();
-    daoFactory.getDepositAccountDao(session).updateAccountStatus(account, statusId);
-    session.getTransaction().commit();
+    try(Session session = HibernateUtil.getInstance()) {
+      session.beginTransaction();
+      daoFactory.getDepositAccountDao().updateAccountStatus(account, statusId);
+      session.getTransaction().commit();
+    }
 
   }
 
   public void accrue(DepositAccount account, BigDecimal interestCharges) {
-    session.beginTransaction();
-    DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao(session);
-    depositAccountDao.update(account);
-    depositAccountDao.increaseBalance(account, interestCharges);
-    session.getTransaction().commit();
+    try(Session session = HibernateUtil.getInstance()) {
+      session.beginTransaction();
+      DepositAccountDao depositAccountDao = daoFactory.getDepositAccountDao();
+      depositAccountDao.update(account);
+      depositAccountDao.increaseBalance(account, interestCharges);
+      session.getTransaction().commit();
+    }
   }
 }
