@@ -4,7 +4,6 @@ import dao.abstraction.CreditAccountDao;
 import dao.config.HibernateUtil;
 import entity.*;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -50,18 +49,14 @@ public class HibernateCreditAccountDao implements CreditAccountDao {
   public void update(CreditAccount account) {
     Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(account);
-    Transaction transaction = session.beginTransaction();
     session.update(account);
-    transaction.commit();
   }
 
   @Override
   public void delete(Long accountNumber) {
     Session session = HibernateUtil.getCurrentSession();
-    Transaction transaction = session.beginTransaction();
     Account account = findOne(accountNumber).get();
     session.delete(account);
-    transaction.commit();
   }
 
   @Override

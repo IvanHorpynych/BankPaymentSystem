@@ -19,7 +19,7 @@ import java.util.Optional;
  *
  * @author JohnUkraine
  */
-public class PaymentService {
+public class PaymentService implements TransactionServiceInvoker {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
 
   private PaymentService() {}
@@ -33,48 +33,33 @@ public class PaymentService {
   }
 
   public Optional<Payment> findById(Long id) {
-    try(Session session = HibernateUtil.getInstance()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao();
-      return paymentDao.findOne(id);
-    }
+    return transactionOperation(() -> daoFactory.getPaymentDao().findOne(id));
   }
 
   public List<Payment> findAll() {
-    try(Session session = HibernateUtil.getInstance()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao();
-      return paymentDao.findAll();
-    }
+    return transactionOperation(() -> daoFactory.getPaymentDao().findAll());
   }
 
 
   public List<Payment> findAllByUser(User user) {
-    try(Session session = HibernateUtil.getInstance()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao();
-      return paymentDao.findByUser(user);
-    }
+    return transactionOperation(() -> daoFactory.getPaymentDao().findByUser(user));
   }
 
   public List<Payment> findAllByAccount(Long accountNumber) {
-    try(Session session = HibernateUtil.getInstance()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao();
-      return paymentDao.findByAccount(accountNumber);
-    }
+    return transactionOperation(() -> daoFactory.getPaymentDao().findByAccount(accountNumber));
   }
 
   public List<Payment> findAllByCard(Long cardNumber) {
-    try(Session session = HibernateUtil.getInstance()) {
-      PaymentDao paymentDao = daoFactory.getPaymentDao();
-      return paymentDao.findByCardNumber(cardNumber);
-    }
+    return transactionOperation(() -> daoFactory.getPaymentDao().findByCardNumber(cardNumber));
   }
 
   public Payment createPayment(Payment payment) {
-    try(Session session = HibernateUtil.getInstance()) {
+    try (Session session = HibernateUtil.getCurrentSession()) {
       PaymentDao paymentDao = daoFactory.getPaymentDao();
       GenericAccountDao accountDaoFrom =
-              daoFactory.getAccountDao(payment.getAccountFrom().getAccountType());
+          daoFactory.getAccountDao(payment.getAccountFrom().getAccountType());
       GenericAccountDao accountDaoTo =
-              daoFactory.getAccountDao(payment.getAccountTo().getAccountType());
+          daoFactory.getAccountDao(payment.getAccountTo().getAccountType());
 
 
       Account accountFrom = payment.getAccountFrom();
@@ -96,13 +81,13 @@ public class PaymentService {
 
   @SuppressWarnings("unchecked")
   public Payment createPaymentWithUpdate(Payment payment) {
-    try(Session session = HibernateUtil.getInstance()) {
+    try (Session session = HibernateUtil.getCurrentSession()) {
       PaymentDao paymentDao = daoFactory.getPaymentDao();
 
       GenericAccountDao accountDaoFrom =
-              daoFactory.getAccountDao(payment.getAccountFrom().getAccountType());
+          daoFactory.getAccountDao(payment.getAccountFrom().getAccountType());
       GenericAccountDao accountDaoTo =
-              daoFactory.getAccountDao(payment.getAccountTo().getAccountType());
+          daoFactory.getAccountDao(payment.getAccountTo().getAccountType());
 
 
       Account accountFrom = payment.getAccountFrom();

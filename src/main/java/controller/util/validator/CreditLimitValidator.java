@@ -5,7 +5,7 @@ package controller.util.validator;
  */
 public class CreditLimitValidator extends RegexValidator {
   private final static int MAX_LENGTH = 14;
-  private final static String LIMIT_REGEX = "^(\\d{1,9}.?\\d{1,4})$";
+  private final static String LIMIT_REGEX = "^(\\d{0,9}.?\\d{1,4})$";
   private final static String INVALID_CREDIT_LIMIT = "invalid.credit.limit";
 
   public CreditLimitValidator() {

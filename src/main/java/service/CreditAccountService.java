@@ -17,7 +17,7 @@ import java.util.Optional;
  *
  * @author JohnUkraine
  */
-public class CreditAccountService {
+public class CreditAccountService implements TransactionServiceInvoker {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
 
   private CreditAccountService() {}
@@ -31,52 +31,32 @@ public class CreditAccountService {
   }
 
   public List<CreditAccount> findAllCreditAccounts() {
-    try(Session session = HibernateUtil.getInstance()) {
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao();
-      return creditAccountDao.findAll();
-    }
+    return transactionOperation(() -> daoFactory.getCreditAccountDao().findAll());
   }
 
   public Optional<CreditAccount> findAccountByNumber(long accountNumber) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao();
-      return creditAccountDao.findOne(accountNumber);
-    }
+    return transactionOperation(() -> daoFactory.getCreditAccountDao().findOne(accountNumber));
   }
 
   public List<CreditAccount> findAllByUser(User user) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao();
-      return creditAccountDao.findByUser(user);
-    }
+    return transactionOperation(() -> daoFactory.getCreditAccountDao().findByUser(user));
   }
 
   public List<CreditAccount> findAllNotClosed() {
-    try(Session session = HibernateUtil.getInstance()) {
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao();
-      return creditAccountDao.findAllNotClosed();
-    }
+    return transactionOperation(() -> daoFactory.getCreditAccountDao().findAllNotClosed());
   }
 
   public CreditAccount createAccount(CreditAccount account) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao();
-      CreditAccount inserted = creditAccountDao.insert(account);
-      return inserted;
-    }
+    return transactionOperation(() -> daoFactory.getCreditAccountDao().insert(account));
   }
 
   public void updateAccountStatus(CreditAccount account, int statusId) {
-    try(Session session = HibernateUtil.getInstance()) {
-      session.beginTransaction();
-      CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao();
-      creditAccountDao.updateAccountStatus(account, statusId);
-      session.getTransaction().commit();
-    }
+    transactionOperation(
+        () -> daoFactory.getCreditAccountDao().updateAccountStatus(account, statusId));
   }
 
   public void accrue(CreditAccount creditAccount, BigDecimal accruedInterest) {
-    try(Session session = HibernateUtil.getInstance()) {
+    try (Session session = HibernateUtil.getCurrentSession()) {
       session.beginTransaction();
       CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao();
       creditAccountDao.increaseBalance(creditAccount, accruedInterest);

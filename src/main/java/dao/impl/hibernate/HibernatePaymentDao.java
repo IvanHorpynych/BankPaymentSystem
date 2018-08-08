@@ -4,7 +4,6 @@ import dao.abstraction.PaymentDao;
 import dao.config.HibernateUtil;
 import entity.*;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -43,9 +42,7 @@ public class HibernatePaymentDao implements PaymentDao {
   public Payment insert(Payment payment) {
     Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(payment);
-    session.beginTransaction();
     session.save(payment);
-    session.getTransaction().commit();
     return payment;
   }
 
@@ -53,19 +50,14 @@ public class HibernatePaymentDao implements PaymentDao {
   public void update(Payment payment) {
     Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(payment);
-    Transaction transaction = session.beginTransaction();
     session.update(payment);
-    transaction.commit();
   }
 
   @Override
   public void delete(Long paymentId) {
     Session session = HibernateUtil.getCurrentSession();
-    Transaction transaction = session.beginTransaction();
     Payment payment = findOne(paymentId).get();
     session.delete(payment);
-    transaction.commit();
-
   }
 
   @Override

@@ -4,7 +4,6 @@ import dao.abstraction.CreditRequestDao;
 import dao.config.HibernateUtil;
 import entity.*;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -40,9 +39,7 @@ public class HibernateCreditRequestDao implements CreditRequestDao {
   public CreditRequest insert(CreditRequest request) {
     Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(request);
-    session.beginTransaction();
     session.persist(request);
-    session.getTransaction().commit();
     return request;
   }
 
@@ -56,11 +53,8 @@ public class HibernateCreditRequestDao implements CreditRequestDao {
   @Override
   public void delete(Long requestNumber) {
     Session session = HibernateUtil.getCurrentSession();
-    Transaction transaction = session.beginTransaction();
     CreditRequest request = findOne(requestNumber).get();
     session.delete(request);
-    transaction.commit();
-
   }
 
   @Override

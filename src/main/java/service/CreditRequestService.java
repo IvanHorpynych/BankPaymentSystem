@@ -16,7 +16,7 @@ import java.util.Optional;
  *
  * @author JohnUkraine
  */
-public class CreditRequestService {
+public class CreditRequestService implements TransactionServiceInvoker {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
 
   private CreditRequestService() {}
@@ -30,43 +30,30 @@ public class CreditRequestService {
   }
 
   public CreditRequest createRequest(CreditRequest creditRequest) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
-      return creditRequestDao.insert(creditRequest);
-    }
+    return transactionOperation(() -> daoFactory.getCreditRequestDao().insert(creditRequest));
   }
 
   public List<CreditRequest> findAllPendingRequests() {
-    try(Session session = HibernateUtil.getInstance()) {
-      CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
-      return creditRequestDao.findByStatus(Status.StatusIdentifier.PENDING_STATUS.getId());
-    }
+    return transactionOperation(() -> daoFactory.getCreditRequestDao()
+        .findByStatus(Status.StatusIdentifier.PENDING_STATUS.getId()));
   }
 
   public Optional<CreditRequest> findCreditRequestByNumber(long requestNumber) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
-      return creditRequestDao.findOne(requestNumber);
-    }
+    return transactionOperation(() -> daoFactory.getCreditRequestDao().findOne(requestNumber));
   }
 
 
   public List<CreditRequest> findAllByUser(User user) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
-      return creditRequestDao.findByUser(user);
-    }
+    return transactionOperation(() -> daoFactory.getCreditRequestDao().findByUser(user));
   }
 
   public void updateRequestStatus(CreditRequest creditRequest, int statusId) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
-      creditRequestDao.updateRequestStatus(creditRequest, statusId);
-    }
+    transactionOperation(
+        () -> daoFactory.getCreditRequestDao().updateRequestStatus(creditRequest, statusId));
   }
 
   public void confirmRequest(CreditRequest creditRequest, CreditAccount creditAccount) {
-    try(Session session = HibernateUtil.getInstance()) {
+    try (Session session = HibernateUtil.getCurrentSession()) {
       session.beginTransaction();
       CreditRequestDao creditRequestDao = daoFactory.getCreditRequestDao();
       CreditAccountDao creditAccountDao = daoFactory.getCreditAccountDao();

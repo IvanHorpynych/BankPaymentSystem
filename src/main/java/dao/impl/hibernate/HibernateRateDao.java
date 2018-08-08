@@ -2,14 +2,11 @@ package dao.impl.hibernate;
 
 import dao.abstraction.RateDao;
 import dao.config.HibernateUtil;
-import dao.factory.HibernateDaoFactory;
 import entity.Rate;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,7 +21,7 @@ public class HibernateRateDao implements RateDao {
 
   @Override
   public Optional<Rate> findOne(Long number) {
-      Session session = HibernateUtil.getCurrentSession();
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Rate where id = :number", Rate.class);
     query.setParameter("number", number);
     query.setMaxResults(1);
@@ -38,43 +35,36 @@ public class HibernateRateDao implements RateDao {
 
   @Override
   public List<Rate> findAll() {
-      Session session = HibernateUtil.getCurrentSession();
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Rate ", Rate.class);
     return query.getResultList();
   }
 
   @Override
   public Rate insert(Rate rate) {
-      Session session = HibernateUtil.getCurrentSession();
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(rate);
-    session.beginTransaction();
     session.persist(rate);
-    session.getTransaction().commit();
     return rate;
   }
 
   @Override
   public void update(Rate rate) {
-      Session session = HibernateUtil.getCurrentSession();
+    Session session = HibernateUtil.getCurrentSession();
     Objects.requireNonNull(rate);
-    Transaction transaction = session.beginTransaction();
     session.update(rate);
-    transaction.commit();
   }
 
   @Override
   public void delete(Long cardNumber) {
-      Session session = HibernateUtil.getCurrentSession();
-    Transaction transaction = session.beginTransaction();
+    Session session = HibernateUtil.getCurrentSession();
     Rate rate = findOne(cardNumber).get();
     session.delete(rate);
-    transaction.commit();
-
   }
 
   @Override
   public Optional<Rate> findLast() {
-      Session session = HibernateUtil.getCurrentSession();
+    Session session = HibernateUtil.getCurrentSession();
     Query query = session.createQuery("from Rate order by createdTime desc", Rate.class);
     query.setMaxResults(1);
     return Optional.ofNullable((Rate) query.getSingleResult());

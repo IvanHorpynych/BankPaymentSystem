@@ -66,7 +66,7 @@ public class HibernateDaoFactory extends DaoFactory {
     else if (accountType.getId() == AccountType.TypeIdentifier.DEBIT_TYPE.getId())
       return getDebitAccountDao();
     else if (accountType.getId() == AccountType.TypeIdentifier.ATM_TYPE.getId())
-      return getDebitAccountDao();
+      return getAccountsDao();
     return null;
   }
 

@@ -4,7 +4,6 @@ import dao.abstraction.UserDao;
 import dao.config.HibernateUtil;
 import entity.User;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -59,18 +58,14 @@ public class HibernateUserDao implements UserDao {
   @Override
   public void update(User obj) {
     Session session = HibernateUtil.getCurrentSession();
-    Transaction transaction = session.beginTransaction();
     session.update(obj);
-    transaction.commit();
   }
 
   @Override
   public void delete(Long id) {
     Session session = HibernateUtil.getCurrentSession();
-    Transaction transaction = session.beginTransaction();
     User user = findOne(id).get();
     session.delete(user);
-    transaction.commit();
   }
 
   @Override

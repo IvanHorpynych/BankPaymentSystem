@@ -1,12 +1,9 @@
 package service;
 
-import dao.abstraction.CardDao;
 import dao.factory.DaoFactory;
-import dao.config.HibernateUtil;
 import entity.Account;
 import entity.Card;
 import entity.User;
-import org.hibernate.Session;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +14,7 @@ import java.util.Optional;
  *
  * @author JohnUkraine
  */
-public class CardService {
+public class CardService implements TransactionServiceInvoker {
   private final DaoFactory daoFactory = DaoFactory.getInstance();
 
   private CardService() {}
@@ -31,45 +28,27 @@ public class CardService {
   }
 
   public Card createCard(Card card) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CardDao cardDao = daoFactory.getCardDao();
-      return cardDao.insert(card);
-    }
+    return transactionOperation(() -> daoFactory.getCardDao().insert(card));
   }
 
   public List<Card> findAllCards() {
-    try(Session session = HibernateUtil.getInstance()) {
-      CardDao cardDao = daoFactory.getCardDao();
-      return cardDao.findAll();
-    }
+    return transactionOperation(() -> daoFactory.getCardDao().findAll());
   }
 
   public Optional<Card> findCardByNumber(long cardNumber) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CardDao cardDao = daoFactory.getCardDao();
-      return cardDao.findOne(cardNumber);
-    }
+    return transactionOperation(() -> daoFactory.getCardDao().findOne(cardNumber));
   }
 
   public List<Card> findAllByUser(User user) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CardDao cardDao = daoFactory.getCardDao();
-      return cardDao.findByUser(user);
-    }
+    return transactionOperation(() -> daoFactory.getCardDao().findByUser(user));
   }
 
   public List<Card> findAllByAccount(Account account) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CardDao cardDao = daoFactory.getCardDao();
-      return cardDao.findByAccount(account);
-    }
+    return transactionOperation(() -> daoFactory.getCardDao().findByAccount(account));
   }
 
   public void updateCardStatus(Card card, int statusId) {
-    try(Session session = HibernateUtil.getInstance()) {
-      CardDao cardDao = daoFactory.getCardDao();
-      cardDao.updateCardStatus(card, statusId);
-    }
+    transactionOperation(() -> daoFactory.getCardDao().updateCardStatus(card, statusId));
   }
 
 

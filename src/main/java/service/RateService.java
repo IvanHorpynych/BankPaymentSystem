@@ -1,14 +1,11 @@
 package service;
 
-import dao.abstraction.RateDao;
 import dao.factory.DaoFactory;
-import dao.config.HibernateUtil;
 import entity.Rate;
-import org.hibernate.Session;
 
 import java.util.Optional;
 
-public class RateService {
+public class RateService implements TransactionServiceInvoker {
 
   private final DaoFactory daoFactory = DaoFactory.getInstance();
 
@@ -23,16 +20,10 @@ public class RateService {
   }
 
   public Optional<Rate> findValidAnnualRate() {
-    try(Session session = HibernateUtil.getInstance()) {
-      RateDao rateDao = daoFactory.getRateDao();
-      return rateDao.findLast();
-    }
+    return transactionOperation(() -> daoFactory.getRateDao().findLast());
   }
 
   public Rate updateAnnualRate(Rate rate) {
-    try(Session session = HibernateUtil.getInstance()) {
-      RateDao rateDao = daoFactory.getRateDao();
-      return rateDao.insert(rate);
-    }
+    return transactionOperation(() -> daoFactory.getRateDao().insert(rate));
   }
 }
